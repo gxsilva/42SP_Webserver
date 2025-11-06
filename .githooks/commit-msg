@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+commit_regex='^(feat|fix|docs|style|refactor|test|chore|ci|build|revert)(\(.+\))?: .{1,50}'
+
+if ! grep -qE "$commit_regex" "$1"; then
+    printf "\n"
+    printf "${RED}Invalid commit message format!${NC}\n"
+    printf "\n"
+    printf "${YELLOW}Required format:${NC}\n"
+    printf "  ${BLUE}<type>${NC}(${BLUE}<scope>${NC}): ${BLUE}<description>${NC}\n"
+    printf "\n"
+    printf "${YELLOW}Valid types:${NC}\n"
+    printf "  ${GREEN}feat${NC}     - New feature\n"
+    printf "  ${GREEN}fix${NC}      - Bug fix\n"
+    printf "  ${GREEN}docs${NC}     - Documentation changes\n"
+    printf "  ${GREEN}style${NC}    - Code formatting\n"
+    printf "  ${GREEN}refactor${NC} - Code refactoring\n"
+    printf "  ${GREEN}test${NC}     - Adding or updating tests\n"
+    printf "  ${GREEN}chore${NC}    - Maintenance tasks\n"
+    printf "  ${GREEN}ci${NC}       - CI/CD changes\n"
+    printf "  ${GREEN}build${NC}    - Build system changes\n"
+    printf "  ${GREEN}revert${NC}   - Revert previous commit\n"
+    printf "\n"
+    printf "${YELLOW}Examples:${NC}\n"
+    printf "  ${BLUE}feat: add fibonacci calculation for negative numbers${NC}\n"
+    printf "  ${BLUE}fix: resolve memory leak in main function${NC}\n"
+    printf "  ${BLUE}build(test): add 'verbose' flag to test suite build${NC}\n"
+    printf "\n"
+    exit 1
+fi
