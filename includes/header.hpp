@@ -1,26 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   teste.cpp                                          :+:      :+:    :+:   */
+/*   header.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cadete <cadete@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/05 20:53:03 by cadete            #+#    #+#             */
-/*   Updated: 2025/11/05 21:30:23 by cadete           ###   ########.fr       */
+/*   Created: 2025/11/07 20:29:24 by cadete            #+#    #+#             */
+/*   Updated: 2025/11/07 20:29:32 by cadete           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef HEADER_HPP
+#define HEADER_HPP
+
 #include <iostream>
 
-class Peixoto
-{
-
-	public:
-	void hello(void) { std::cout << "hello" << std::endl; }
-}
-
-int main(void)
-{
-	std::cout << " hello world" << std::endl;
-	return (0);
-}
+#endif // HEADER_HPP
