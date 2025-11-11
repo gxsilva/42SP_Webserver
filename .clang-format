@@ -1,0 +1,33 @@
+BasedOnStyle: LLVM
+
+UseTab: Always
+IndentWidth: 4
+TabWidth: 4
+
+ColumnLimit: 100
+
+BreakBeforeBraces: Allman
+
+AllowShortIfStatementsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: All
+
+NamespaceIndentation: All
+
+AccessModifierOffset: 1
+IndentAccessModifiers: true
+
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+
+ConstructorInitializerIndentWidth: 4
+AlignOperands: false
+
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+ContinuationIndentWidth: 4
+
+ReflowComments: true
+AlwaysBreakTemplateDeclarations: Yes
+
+InsertNewlineAtEOF: true
