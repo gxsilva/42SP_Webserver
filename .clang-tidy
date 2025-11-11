@@ -1,9 +1,49 @@
+---
 Checks: >
   clang-analyzer-*,
-  modernize-*,
+  bugprone-*,
+  cppcoreguidelines-*,
   performance-*,
-  readability-*
+  readability-*,
+  portability-*,
+  misc-*,
+  readability-named-parameter-*,
+  -modernize-*,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-pro-type-vararg,
+  -readability-magic-numbers,
+  -cppcoreguidelines-owning-memory
 
+#cppcoreguidelines-pro-type-vararg -> allow C-like functions (as printf)
+
+#Treat warning as = warning in this case
 WarningsAsErrors: ''
-HeaderFilterRegex: '.*'
-FormatStyle: none
+
+#Set header folder "./includes/*.hpp"
+HeaderFilterRegex: 'includes/.*'
+
+#Set to use .clang-format
+FormatStyle: file
+
+#How done the test (irrelevant in the context of a collaborative project)
+User: ''
+
+CheckOptions:
+  # Warning about down-casts (Base -> Derived with static_cast)
+  - key: cppcoreguidelines-pro-type-static-cast-downcast.StrictMode
+    value: '1'
+  # How much a class can be complexity
+  - key: readability-function-cognitive-complexity.Threshold
+    value: '30'
+  # Avoid the linter warning macros indentation
+  - key: readability-misleading-indentation.IgnoreMacros
+    value: 'true'
+  - key: performance-unnecessary-value-param.AllowedTypes
+    value: 'std::string;std::vector'
+  - key: cppcoreguidelines-non-private-member-variables-in-classes.IgnoreClassesWithAllPrivateMembers
+    value: 'true'
+  # For readability — not style enforcement
+  - key: readability-braces-around-statements.ShortStatementLines
+    value: '1'
+...

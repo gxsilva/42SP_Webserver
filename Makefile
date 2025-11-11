@@ -1,62 +1,108 @@
-#                          /$$                                                                          
-#                         | $$                                                                          
-#  /$$  /$$  /$$  /$$$$$$ | $$$$$$$         /$$$$$$$  /$$$$$$   /$$$$$$  /$$    /$$ /$$$$$$   /$$$$$$   
-# | $$ | $$ | $$ /$$__  $$| $$__  $$       /$$_____/ /$$__  $$ /$$__  $$|  $$  /$$//$$__  $$ /$$__  $$  
-# | $$ | $$ | $$| $$$$$$$$| $$  \ $$      |  $$$$$$ | $$$$$$$$| $$  \__/ \  $$/$$/| $$$$$$$$| $$  \__/  
-# | $$ | $$ | $$| $$_____/| $$  | $$       \____  $$| $$_____/| $$        \  $$$/ | $$_____/| $$        
-# |  $$$$$/$$$$/|  $$$$$$$| $$$$$$$/       /$$$$$$$/|  $$$$$$$| $$         \  $/  |  $$$$$$$| $$        
-#  \_____/\___/  \_______/|_______//$$$$$$|_______/  \_______/|__/          \_/    \_______/|__/        
-#                                 |______/                                                              
-#                                                                                                       
-#                                                                                                       
+#                          /$$                                                                           
+#                         | $$                                                                           
+#  /$$  /$$  /$$  /$$$$$$ | $$$$$$$         /$$$$$$$  /$$$$$$   /$$$$$$  /$$    /$$ /$$$$$$   /$$$$$$    
+# | $$ | $$ | $$ /$$__  $$| $$__  $$       /$$_____/ /$$__  $$ /$$__  $$|  $$  /$$//$$__  $$ /$$__  $$   
+# | $$ | $$ | $$| $$$$$$$$| $$  \ $$      |  $$$$$$ | $$$$$$$$| $$  \__/ \  $$/$$/| $$$$$$$$| $$  \__/   
+# | $$ | $$ | $$| $$_____/| $$  | $$       \____  $$| $$_____/| $$        \  $$$/ | $$_____/| $$         
+# |  $$$$$/$$$$/|  $$$$$$$| $$$$$$$/       /$$$$$$$/|  $$$$$$$| $$         \  $/  |  $$$$$$$| $$         
+#  \_____/\___/  \_______/|_______//$$$$$$|_______/  \_______/|__/          \_/    \_______/|__/         
+#                                 |______/                                                               
+#                                                                                                        
+#    by: @gxsilva & @ailton-bezerra                                                                      
 
-CC = c++
+# DEFINES
+NAME		= webserver
 
-CPP_VERSION = -std=c++98
-CPP_FLAGS = -Wall -Wextra -Werror -Wshadow $(CPP_VERSION)
+CXX			= c++
+CXXSTD		= -std=c++98
+CXXWARN		= -Wall -Wextra -Werror -Wshadow
+CXXDEP		= -MMD -MP
+CXXFLAGS	= $(CXXSTD) $(CXXWARN) $(CXXDEP)
 
-SRC =	src/main.cpp
+REQ_TOOLS	= clang-format clang-tidy bear
 
-OBJDIR = obj
-OBJ = $(patsubst src/%.cpp,$(OBJDIR)/%.o,$(SRC))
+# DIRECTORIES
+SRCS_DIR	= src
+OBJ_DIR		= obj
 
-NAME = webserver
+# FILES
+SRCS		= main.cpp \
+	manga.cpp
 
+# EXPANSIONS
+SRC			= $(addprefix $(SRCS_DIR)/,$(SRCS))
+OBJ			= $(patsubst $(SRCS_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC))
+DEPS		= $(OBJ:.o=.d)
+
+# TARGET
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@echo "⚙️ Compiling..."
-	$(CC) $(CPP_FLAGS) -o $(NAME) $(OBJ)
+	@echo "⚙️  Linking..."
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJ)
 
-$(OBJDIR)/%.o: src/%.cpp | $(OBJDIR)
+$(OBJ_DIR)/%.o: $(SRCS_DIR)/%.cpp | $(OBJ_DIR)
+	@echo "🛠️  Building..."
 	@mkdir -p $(dir $@)
-	$(CC) $(CPP_FLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(OBJDIR):
-	mkdir -p $(OBJDIR)
-
-# ---------------- Tidy target using clang-tidy and bear ----------------
-tidy:
-	@echo "🧹 Tidying up..."
-	@$(MAKE) fclean
-	@bear -- make
-	@run-clang-tidy -p=. -j$$(nproc) -quiet src/
-
-# ---------------- Format target using clang-format ----------------
-format:
-	@echo "🔧 Formatting code..."
-	@clang-format -i $(SRC)
-
-# ---------------- Generic rule for compiling .cpp files to .o files ----------------
-%.o: %.cpp
-	$(CC) $(CPP_FLAGS) -c $< -o $@
+$(OBJ_DIR):
+	@mkdir -p $(OBJ_DIR)
 
 clean:
-	rm -f $(OBJ)
+	@echo "🧹 Removing objects..."
+	@rm -f $(OBJ) $(DEPS)
 
 fclean: clean
-	rm -f $(NAME)
+	@echo "🧹 Removing binary..."
+	@rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re format
+# $$ -> to be treat as normal $ in bash
+# -n -> not empty
+check-tools:
+	@echo "🔎 Checking required tools..."
+	@missing=""; \
+	for t in $(REQ_TOOLS); do \
+		if ! command -v $$t >/dev/null 2>&1; then \
+			missing="$$missing $$t"; \
+		fi; \
+	done; \
+	if [ -n "$$missing" ]; then \
+		echo "❌ Missing required tools:$$missing" >&2; \
+		exit 1; \
+	else \
+		echo "✅ All required tools available."; \
+	fi
+
+format: check-tools
+	@echo "🔧 Formatting..."
+	@clang-format -i $(SRC)
+
+
+#gt = greater than | -B force recompile | -s = existe and it size is grater than 0
+compile_commands_json:
+	@if command -v bear >/dev/null 2>&1; then \
+		jobs=$$(nproc 2>/dev/null || echo 1); \
+		[ $$jobs -gt 1 ] && jobs=$$((jobs-1)); \
+		echo "📋 Rebuilding to generate compile_commands.json (jobs=$$jobs)..."; \
+		rm -f compile_commands.json; \
+		$(MAKE) clean >/dev/null; \
+		bear -- $(MAKE) all -B -j$$jobs; \
+		if [ ! -s compile_commands.json ]; then \
+			echo "❌ Failed to generate compile_commands.json"; exit 1; \
+		else \
+			echo "✅ compile_commands.json ready."; \
+		fi; \
+	else \
+		echo "⚠️  Bear not found. Skipping compile database step."; \
+	fi
+
+tidy: check-tools compile_commands_json
+	@echo "🔍 Running clang-tidy..."
+	@clang-tidy -p . $(SRC)
+
+.PHONY: all clean fclean re format check-tools tidy compile_commands_json
+
+-include $(DEPS)

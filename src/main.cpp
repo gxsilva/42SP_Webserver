@@ -3,17 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cadete <cadete@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/07 18:19:13 by cadete            #+#    #+#             */
-/*   Updated: 2025/11/07 20:32:41 by cadete           ###   ########.fr       */
+/*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
+/*   Updated: 2025/11/11 01:42:18 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/header.hpp"
 
+#include <iostream>
+
 int main()
 {
-	std::cout << "Hello, Webserver!" << std::endl;
+	std::cout << "Hello, Webserver!" << '\n';
+	sayManga();
 	return 0;
 }
