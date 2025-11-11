@@ -1,8 +1,8 @@
 #!/bin/sh
 set -e
 
-HOOK_SRC="../.githooks/commit-msg"
-HOOK_DIR="../.git/hooks"
+HOOK_SRC="./.githooks/commit-msg"
+HOOK_DIR="./.git/hooks"
 
 echo "🔧 Setting up development environment..."
 
