@@ -27,7 +27,7 @@ OBJ_DIR		= obj
 
 # FILES
 SRCS		= main.cpp \
-	manga.cpp
+			  utils/Logger.cpp
 
 # EXPANSIONS
 SRC			= $(addprefix $(SRCS_DIR)/,$(SRCS))
@@ -78,7 +78,14 @@ check-tools:
 
 format: check-tools
 	@echo "🔧 Formatting..."
-	@clang-format -i $(SRC)
+	@hdrs="$$(find . -type f -name '*.hpp' -print)"; \
+	files="$(SRC) $$hdrs"; \
+	if [ -z "$$files" ]; then \
+		echo "Nothing to format."; \
+	else \
+		clang-format -i $$files; \
+		echo "✅ Formatted files."; \
+	fi
 
 
 #gt = greater than | -B force recompile | -s = existe and it size is grater than 0

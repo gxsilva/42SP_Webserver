@@ -29,5 +29,4 @@ ContinuationIndentWidth: 4
 
 ReflowComments: true
 AlwaysBreakTemplateDeclarations: Yes
-
-InsertNewlineAtEOF: true
+SortIncludes: false

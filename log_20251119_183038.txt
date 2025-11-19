@@ -1,0 +1,13 @@
+[2025-11-19 18:30:38] [INFO] Starting the application...
+[2025-11-19 18:30:38] [INFO] User logged in
+[2025-11-19 18:30:38] [WARN] Disk space running low
+[2025-11-19 18:30:38] [ERROR] Unable to connect to database
+[2025-11-19 18:30:38] [INFO] Shutting down the application...
+[2025-11-19 18:30:38] [DEBUG] Initializing configuration...
+[2025-11-19 18:30:38] [INFO] Configuration loaded successfully
+[2025-11-19 18:30:38] [INFO] Network connection established
+[2025-11-19 18:30:38] [WARN] Memory usage exceeds threshold
+[2025-11-19 18:30:38] [ERROR] Critical error: System overheating
+[2025-11-19 18:30:38] [ERROR] Application terminated unexpectedly
+[2025-11-19 18:30:38] [DEBUG] Restarting application...
+[2025-11-19 18:30:38] [INFO] Application restarted successfully
