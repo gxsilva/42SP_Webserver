@@ -42,3 +42,6 @@
 
 # python
 venv
+
+# logs
+log_*

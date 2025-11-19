@@ -6,7 +6,7 @@
 /*   By: cadete <cadete@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 02:21:54 by lsilva-x          #+#    #+#             */
-/*   Updated: 2025/11/19 18:31:35 by cadete           ###   ########.fr       */
+/*   Updated: 2025/11/19 19:02:20 by cadete           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,15 @@
 #include <fstream>
 #include <ctime>
 
-#include "colors.hpp"
+#include "../colors.hpp"
 
 enum LogLevel
 {
 	DEBUG,
 	INFO,
 	WARN,
-	ERROR
+	ERROR,
+	NONE
 };
 
 class Logger
@@ -34,6 +35,7 @@ class Logger
 	private:
 		std::string	  _logFileName;
 		std::ofstream _fdOutput;
+		LogLevel	  _filterLevel;
 		bool		  _fileLoggingEnabled;
 
 		Logger();
@@ -52,6 +54,7 @@ class Logger
 		static Logger& getInstance();
 		void		   log(const std::string& msg, LogLevel lvl = INFO);
 		void		   enableFileLogging();
+		void		   setFilterLevel(LogLevel lvl);
 };
 
 #endif /* LOGGER_HPP */

@@ -6,7 +6,7 @@
 /*   By: cadete <cadete@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2025/11/19 18:29:00 by cadete           ###   ########.fr       */
+/*   Updated: 2025/11/19 19:05:17 by cadete           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ int main(int argc, char* argv[])
 
 	Logger& Logger = Logger::getInstance();
 
+	Logger.setFilterLevel(WARN);
 	Logger.enableFileLogging();
 
 	Logger.log("Starting the application...");
