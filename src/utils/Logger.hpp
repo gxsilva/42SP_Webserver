@@ -3,23 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   Logger.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cadete <cadete@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 02:21:54 by lsilva-x          #+#    #+#             */
-/*   Updated: 2025/11/19 19:02:20 by cadete           ###   ########.fr       */
+/*   Updated: 2025/11/26 20:49:28 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LOGGER_HPP
 #define LOGGER_HPP
 
-#include <iostream>
-#include <string>
-#include <sstream>
 #include <fstream>
-#include <ctime>
-
-#include "../colors.hpp"
+#include <sstream>
 
 enum LogLevel
 {

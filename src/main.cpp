@@ -3,18 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cadete <cadete@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2025/11/19 19:05:17 by cadete           ###   ########.fr       */
+/*   Updated: 2025/11/26 20:42:13 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/header.hpp"
-
 #include <iostream>
 
-#include "../includes/utils/Logger.hpp"
+#include "./utils/Logger.hpp"
 
 int main(int argc, char* argv[])
 {

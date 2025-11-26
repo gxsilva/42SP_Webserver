@@ -9,6 +9,7 @@ Checks: >
   misc-*,
   readability-named-parameter-*,
   -modernize-*,
+  -misc-const-correctness,
   -cppcoreguidelines-avoid-c-arrays,
   -readability-convert-member-functions-to-static,
   -readability-braces-around-statements,

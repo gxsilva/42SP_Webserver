@@ -3,14 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   Logger.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cadete <cadete@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 02:56:47 by lsilva-x          #+#    #+#             */
-/*   Updated: 2025/11/19 19:04:19 by cadete           ###   ########.fr       */
+/*   Updated: 2025/11/26 20:49:27 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/utils/Logger.hpp"
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <ctime>
+
+#include "../colors.hpp"
+
+#include "Logger.hpp"
 
 // ------------------------ Logger Implementation ----------------------- //
 
@@ -94,18 +101,17 @@ void Logger::log(const std::string& msg, LogLevel lvl)
 	if (lvl == ERROR && (lvl == _filterLevel || _filterLevel == NONE))
 	{
 		if (_fileLoggingEnabled && _fdOutput.is_open())
-			_fdOutput << "[" + timeStr + "] [" + levelStr + "] " + msg << std::endl;
+			_fdOutput << "[" + timeStr + "] [" + levelStr + "] " + msg << '\n';
 		if (lvl == _filterLevel || _filterLevel == NONE)
-			std::cerr << color + "[" + timeStr + "]" + " [" + levelStr + "] " + msg + RESET
-					  << std::endl;
+			std::cerr << color + "[" + timeStr + "]" + " [" + levelStr + "] " + msg + RESET << '\n';
 	}
 	else
 	{
 		if (_fileLoggingEnabled && _fdOutput.is_open() &&
 			(lvl == _filterLevel || _filterLevel == NONE))
-			_fdOutput << "[" + timeStr + "] [" + levelStr + "] " + msg << std::endl;
+			_fdOutput << "[" + timeStr + "] [" + levelStr + "] " + msg << '\n';
 		if (lvl == _filterLevel || _filterLevel == NONE)
-			std::cout << color + "[" + timeStr + "] [" + levelStr + "] " + msg + RESET << std::endl;
+			std::cout << color + "[" + timeStr + "] [" + levelStr + "] " + msg + RESET << '\n';
 	}
 }
 
@@ -123,7 +129,7 @@ void Logger::enableFileLogging()
 	_fdOutput.open(_logFileName.c_str(), std::ios::out | std::ios::app);
 	if (!_fdOutput.is_open())
 	{
-		std::cerr << RED << "Failed to open log file: " << _logFileName << RESET << std::endl;
+		std::cerr << RED << "Failed to open log file: " << _logFileName << RESET << '\n';
 		return;
 	}
 	_fileLoggingEnabled = true;
