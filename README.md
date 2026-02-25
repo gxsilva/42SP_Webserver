@@ -60,4 +60,12 @@ These targets help with development, code quality, and tooling:
   Uses `bear` to generate a JSON compilation database (`compile_commands.json`), which is used by `clang-tidy` and other analysis tools.
 
 - `tidy`  
-  Runs `clang-tidy` using the generated `compile_commands.json` and the configuration in `.clang-tidy` to analyze the code, check its quality, and detect potential bugs.
+  Runs `clang-tidy` using the generated `compile_commands.json` and the `.clang-tidy` configuration file to analyze the codebase, check code quality, and detect potential bugs.
+
+  ### Stack & Tooling
+
+  - **Language:** C++98  
+  - **Formatter:** `clang-format` (LLVM style)  
+  - **CI:** pre-commit hooks (in progress)  
+  - **Automation:** Shell (Bash) and Makefile  
+  - **Code Quality:** `clang-tidy` (LLVM) with `bear` (in progress)
