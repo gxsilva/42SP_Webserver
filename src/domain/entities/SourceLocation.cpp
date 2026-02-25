@@ -6,13 +6,13 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 20:48:15 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/25 00:25:37 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/25 01:28:18 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "SourceLocation.hpp"
 
-#include <cstddef>
+#include <cstddef> // for size_t
 #include <iostream>
 #include <sstream>
 #include <string>

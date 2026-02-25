@@ -3,8 +3,9 @@
 
 #include <iostream>
 
-#include "../value_objects/TokenType.hpp"
 #include "SourceLocation.hpp"
+
+#include "../value_objects/TokenType.hpp"
 
 class Token
 {

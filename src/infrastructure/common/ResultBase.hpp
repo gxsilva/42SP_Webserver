@@ -1,18 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   header.hpp                                         :+:      :+:    :+:   */
+/*   ResultBase.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/07 20:29:24 by cadete            #+#    #+#             */
-/*   Updated: 2025/11/11 01:34:51 by lsilva-x         ###   ########.fr       */
+/*   Created: 2026/02/25 00:37:58 by lsilva-x          #+#    #+#             */
+/*   Updated: 2026/02/25 01:15:14 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HEADER_HPP
-#define HEADER_HPP
+#ifndef RESULT_HPP
+#define RESULT_HPP
 
-void sayManga(void);
+class ResultBase
+{
+	protected:
+		bool _is_ok;
 
-#endif // HEADER_HPP
+		ResultBase(bool ok) : _is_ok(ok) {}
+
+	public:
+		virtual ~ResultBase() {}
+
+		bool isOk() const { return _is_ok; }
+		bool isErr() const { return !_is_ok; }
+};
+
+#endif /* RESULT_HPP */

@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 22:19:10 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/24 23:51:09 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/25 00:35:42 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,9 @@
 
 #include <vector>
 
+#include "../entities/SourceLocation.hpp"
 #include "../value_objects/ErrorCode.hpp"
 #include "../value_objects/ErrorSeverity.hpp"
-
-#include "../entities/SourceLocation.hpp"
 
 // OBS: Static Factory Method
 

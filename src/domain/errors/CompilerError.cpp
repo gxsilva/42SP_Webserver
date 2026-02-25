@@ -6,13 +6,13 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 22:29:41 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/25 00:25:29 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/25 01:28:14 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CompilerError.hpp"
 
-#include <cstddef>
+#include <cstddef> // for size_t
 #include <sstream>
 #include <string>
 
