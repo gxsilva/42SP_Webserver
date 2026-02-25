@@ -22,17 +22,25 @@ CXXFLAGS	= $(CXXSTD) $(CXXWARN) $(CXXDEP)
 REQ_TOOLS	= clang-format clang-tidy bear
 
 # DIRECTORIES
-SRCS_DIR	= src
-OBJ_DIR		= obj
+SRCS_DIR			= src
+DOMAIN_DIR			= $(SRCS_DIR)/domain
+ENTITIES_DIR		= $(DOMAIN_DIR)/entities
+VALUE_OBJECTS_DIR	= $(DOMAIN_DIR)/value_objects
 
-# FILES
-SRCS		= main.cpp \
-	manga.cpp
+# ---------------- PROVISÒRIO ----------------
+HDRS				= $(shell find $(SRCS_DIR) -name "*.hpp")
+
+OBJ_DIR				= obj
+
+ENTITIES_SRC		= $(ENTITIES_DIR)/SourceLocation.cpp \
+					$(ENTITIES_DIR)/Token.cpp
 
 # EXPANSIONS
-SRC			= $(addprefix $(SRCS_DIR)/,$(SRCS))
-OBJ			= $(patsubst $(SRCS_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC))
-DEPS		= $(OBJ:.o=.d)
+SRC_SET				= $(SRCS_DIR)/main.cpp \
+						$(ENTITIES_SRC)
+
+OBJ					= $(patsubst $(SRCS_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_SET))
+DEPS				= $(OBJ:.o=.d)
 
 # TARGET
 all: $(NAME)
@@ -78,7 +86,7 @@ check-tools:
 
 format: check-tools
 	@echo "🔧 Formatting..."
-	@clang-format -i $(SRC)
+	@clang-format -i $(SRC_SET) $(HDRS)
 
 
 #gt = greater than | -B force recompile | -s = existe and it size is grater than 0
@@ -101,7 +109,7 @@ compile_commands_json:
 
 tidy: check-tools compile_commands_json
 	@echo "🔍 Running clang-tidy..."
-	@clang-tidy -p . $(SRC)
+	@clang-tidy -p . $(SRC_SET) 
 
 .PHONY: all clean fclean re format check-tools tidy compile_commands_json
 
