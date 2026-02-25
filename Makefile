@@ -26,6 +26,7 @@ SRCS_DIR			= src
 DOMAIN_DIR			= $(SRCS_DIR)/domain
 ENTITIES_DIR		= $(DOMAIN_DIR)/entities
 VALUE_OBJECTS_DIR	= $(DOMAIN_DIR)/value_objects
+ERRORS_DIR			= $(DOMAIN_DIR)/errors
 
 # ---------------- PROVISÒRIO ----------------
 HDRS				= $(shell find $(SRCS_DIR) -name "*.hpp")
@@ -33,7 +34,9 @@ HDRS				= $(shell find $(SRCS_DIR) -name "*.hpp")
 OBJ_DIR				= obj
 
 ENTITIES_SRC		= $(ENTITIES_DIR)/SourceLocation.cpp \
-					$(ENTITIES_DIR)/Token.cpp
+					$(ENTITIES_DIR)/Token.cpp \
+					$(ERRORS_DIR)/CompilerError.cpp \
+					$(ERRORS_DIR)/ErrorList.cpp
 
 # EXPANSIONS
 SRC_SET				= $(SRCS_DIR)/main.cpp \

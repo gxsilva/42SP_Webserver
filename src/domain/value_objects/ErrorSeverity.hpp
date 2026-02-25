@@ -1,33 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   SourceLocation.hpp                                 :+:      :+:    :+:   */
+/*   ErrorSeverity.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/24 20:48:10 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/25 00:15:17 by lsilva-x         ###   ########.fr       */
+/*   Created: 2026/02/24 22:27:39 by lsilva-x          #+#    #+#             */
+/*   Updated: 2026/02/24 23:28:17 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SOURCELOCATION_HPP
-#define SOURCELOCATION_HPP
+#ifndef ERRORSEVERITY_HPP
+#define ERRORSEVERITY_HPP
 
-#include <iostream>
-
-class SourceLocation
+enum ErrorSeverity
 {
-	public:
-		std::string filename;
-		size_t		line;
-		size_t		column;
-		size_t		length;
-
-		SourceLocation(void);
-		SourceLocation(const std::string& file_name, size_t line_number, size_t column_number,
-					   size_t token_length);
-
-		std::string toString() const;
+	SEVERITY_UNKNOWN = 0,
+	SEVERITY_WARNING,
+	SEVERITY_ERROR,
+	SEVERITY_FATAL
 };
 
-#endif /* SOURCELOCATION_HPP */
+#endif /* ERRORSEVERITY_HPP */

@@ -6,16 +6,22 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 21:07:39 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/24 21:42:41 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/25 00:24:52 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Token.hpp"
 #include <sstream>
+#include <string>
+
+#include "../value_objects/TokenType.hpp"
+
+#include "SourceLocation.hpp"
+#include "Token.hpp"
+
 // ------------------------ TOKEN IMP ------------------------ //
 
 // ------------------------ OCCF ------------------------ //
-Token::Token() : type(UNKNOWN), value(""), location() {}
+Token::Token() : type(UNKNOWN) {}
 
 Token::Token(TokenType t, const std::string& v, const SourceLocation& loc)
 	: type(t), value(v), location(loc)
@@ -25,7 +31,7 @@ Token::Token(TokenType t, const std::string& v, const SourceLocation& loc)
 std::string Token::toString() const
 {
 	std::ostringstream ss;
-	const char*		   typeStr = this->_tokenTypeToString(type);
+	const char*		   typeStr = Token::_tokenTypeToString(type);
 
 	ss << "Token(" << typeStr << ", \"" << value << "\", " << location.toString() << ")";
 	return ss.str();
