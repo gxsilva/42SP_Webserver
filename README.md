@@ -1,29 +1,63 @@
 # 42SP_Webserver
-42 SP | Web Server project
-
+42 SP | Web Server Project
 
 ## How to Contribute
 
-To contribute to the project, follow these steps:
+To contribute to this project, follow the steps below:
 
-1. Clone the repository:
+1. **Clone the repository**:
     ```bash
     git clone https://github.com/gxsilva/42SP_Webserver
     ```
 
-2. Navigate to the project directory:
+2. **Enter the project directory**:
     ```bash
     cd 42SP_Webserver
     ```
 
-3. Make the setup script executable:
+3. **Make the setup script executable**:
     ```bash
     chmod +x ./scripts/setup.sh
     ```
 
-4. Run the setup script:
+4. **Run the setup script**:
     ```bash
     ./scripts/setup.sh
     ```
 
-Feel free to submit issues or pull requests to improve the project!
+After that, you can start working on the project.  
+Feel free to open issues or submit pull requests to suggest improvements or report problems.
+
+
+## Makefile Commands
+
+The project provides several useful Makefile targets:
+
+- `all`  
+  Builds the project.
+
+- `clean`  
+  Removes object files and other temporary files generated during compilation.
+
+- `fclean`  
+  Performs a full cleanup, removing all build artifacts, including the executable.
+
+- `re`  
+  Equivalent to running `fclean` followed by `all`, forcing a full rebuild.
+
+
+### Development Utilities
+
+These targets help with development, code quality, and tooling:
+
+- `check-tools`  
+  Verifies whether all required tools for development (such as compilers and analyzers) are installed on the system.
+
+- `format`  
+  Runs `clang-format` using the `.clang-format` configuration file to format all `.cpp` and `.hpp` files in the codebase.
+
+- `compile_commands_json`  
+  Uses `bear` to generate a JSON compilation database (`compile_commands.json`), which is used by `clang-tidy` and other analysis tools.
+
+- `tidy`  
+  Runs `clang-tidy` using the generated `compile_commands.json` and the configuration in `.clang-tidy` to analyze the code, check its quality, and detect potential bugs.

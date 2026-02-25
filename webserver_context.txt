@@ -1,0 +1,43 @@
+# Webserv – Resumo de Contexto (42 School Project)
+
+## O que é
+Projeto de implementação de um servidor HTTP próprio em C++98, testável com navegador real.
+
+## Regras técnicas obrigatórias
+- Linguagem: C++98 (`-Wall -Wextra -Werror -std=c++98`)
+- Makefile com regras: `$(NAME) all clean fclean re`
+- Sem bibliotecas externas ou Boost
+- Sem `execve` de outro servidor web
+- Sem `fork` exceto para CGI
+
+## Comportamento do servidor
+- Nunca pode travar ou terminar inesperadamente (nota 0 se ocorrer)
+- Deve ser **totalmente não-bloqueante**
+- Usa **apenas 1 `poll()`** (ou equivalente: `select`, `epoll`, `kqueue`) para todos os I/O (incluindo `listen`)
+- `poll()` deve monitorar leitura e escrita simultaneamente
+- Nenhuma operação de `read`/`write` sem passar por `poll()` (nota 0 se violado)
+- Proibido checar `errno` após operações de leitura/escrita para ajustar comportamento
+- Requisições nunca devem bloquear indefinidamente
+
+## Funcionalidades obrigatórias
+- Servir site **totalmente estático**
+- Métodos HTTP: **GET, POST, DELETE**
+- Upload de arquivos por clientes
+- Múltiplas portas de escuta
+- Páginas de erro padrão (caso não fornecidas)
+- Códigos de status HTTP precisos
+- Compatível com navegadores web reais (pode usar NGINX como referência)
+
+## Arquivo de configuração
+Inspirado no bloco `server` do NGINX. Deve suportar:
+- Pares `interface:porta` (múltiplos virtual hosts)
+- Páginas de erro customizadas
+- Tamanho máximo do corpo da requisição (`client_max_body_size`)
+- Configuração por rota/URL:
+  - Métodos HTTP permitidos
+  - Redirecionamento HTTP
+  - Root directory (mapeamento de URL para diretório físico)
+  - Listagem de diretórios (on/off)
+  - Arquivo padrão para diretórios (tipo `index`)
+  - Diretório de upload de arquivos
+  - Execução de CGI por extensão de arquivo (ex: `.php`, `.py`)

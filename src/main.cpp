@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2025/11/11 01:42:18 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/24 21:30:33 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,16 @@
 
 #include <iostream>
 
+// ------------------------ TMP IMPORT TO TEST ------------------------ //
+#include "domain/entities/Token.hpp"
+
 int main()
 {
-	std::cout << "Hello, Webserver!" << '\n';
-	sayManga();
+	// std::string fileName = "config.conf";
+	// SourceLocation loc(fileName, 1, 1, 6);
+	// std::cout << loc.toString() << std::endl;
+	Token t(WORD, "server", SourceLocation("config.conf", 1, 1, 6));
+	std::cout << t.toString() << std::endl;
+
 	return 0;
 }

@@ -1,0 +1,36 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-std=c++98",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wshadow",
+      "-c",
+      "-o",
+      "obj/manga.o",
+      "src/manga.cpp"
+    ],
+    "directory": "/home/gxil/webserver",
+    "file": "/home/gxil/webserver/src/manga.cpp",
+    "output": "/home/gxil/webserver/obj/manga.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-std=c++98",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wshadow",
+      "-c",
+      "-o",
+      "obj/main.o",
+      "src/main.cpp"
+    ],
+    "directory": "/home/gxil/webserver",
+    "file": "/home/gxil/webserver/src/main.cpp",
+    "output": "/home/gxil/webserver/obj/main.o"
+  }
+]
