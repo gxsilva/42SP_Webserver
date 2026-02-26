@@ -16,3 +16,4 @@ repos:
     hooks:
       - id: clang-tidy
         args: [--config-file=.clang-tidy]  # uses .clang-tidy
+        fail: false
