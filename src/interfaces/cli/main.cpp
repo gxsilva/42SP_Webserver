@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/25 00:28:31 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/26 20:23:43 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 // ------------------------ TMP IMPORT TO TEST ------------------------ //
 // #include "domain/entities/Token.hpp"
-#include "domain/errors/CompilerError.hpp"
-#include "domain/errors/ErrorList.hpp"
+#include "../../domain/errors/CompilerError.hpp"
+#include "../../domain/errors/ErrorList.hpp"
 
 #include <vector>
 
