@@ -23,17 +23,25 @@ REQ_TOOLS	= clang-format clang-tidy bear
 
 # DIRECTORIES
 SRCS_DIR			= src
+
 DOMAIN_DIR			= $(SRCS_DIR)/domain
 ENTITIES_DIR		= $(DOMAIN_DIR)/entities
 VALUE_OBJECTS_DIR	= $(DOMAIN_DIR)/value_objects
+ERRORS_DIR			= $(DOMAIN_DIR)/errors
+
+INFRA_DIR			= $(SRCS_DIR)/infrastructure
+COMMON_DIR			= $(INFRA_DIR)/common
 
 # ---------------- PROVISÒRIO ----------------
-HDRS				= $(shell find $(SRCS_DIR) -name "*.hpp")
+HDRS				= $(shell find . -name "*.hpp")
 
 OBJ_DIR				= obj
 
 ENTITIES_SRC		= $(ENTITIES_DIR)/SourceLocation.cpp \
-					$(ENTITIES_DIR)/Token.cpp
+					$(ENTITIES_DIR)/Token.cpp \
+					$(ERRORS_DIR)/CompilerError.cpp \
+					$(ERRORS_DIR)/ErrorList.cpp \
+					$(COMMON_DIR)/TokenResult.cpp
 
 # EXPANSIONS
 SRC_SET				= $(SRCS_DIR)/main.cpp \

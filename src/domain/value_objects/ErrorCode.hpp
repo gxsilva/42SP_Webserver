@@ -1,18 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   header.hpp                                         :+:      :+:    :+:   */
+/*   ErrorCode.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/07 20:29:24 by cadete            #+#    #+#             */
-/*   Updated: 2025/11/11 01:34:51 by lsilva-x         ###   ########.fr       */
+/*   Created: 2026/02/24 22:23:52 by lsilva-x          #+#    #+#             */
+/*   Updated: 2026/02/24 23:28:12 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HEADER_HPP
-#define HEADER_HPP
+#ifndef ERRORCODE_HPP
+#define ERRORCODE_HPP
 
-void sayManga(void);
+enum ErrorCode
+{
+	ERROR_UNKNOWN = 0,
+	ERROR_FILE_NOT_FOUND,
+	ERROR_PERMISSION_DENIED,
+	ERROR_IO_ERROR
+};
 
-#endif // HEADER_HPP
+#endif /* ERRORCODE_HPP */

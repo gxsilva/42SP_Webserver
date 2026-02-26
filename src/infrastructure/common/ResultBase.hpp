@@ -1,33 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   SourceLocation.hpp                                 :+:      :+:    :+:   */
+/*   ResultBase.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/24 20:48:10 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/25 00:15:17 by lsilva-x         ###   ########.fr       */
+/*   Created: 2026/02/25 00:37:58 by lsilva-x          #+#    #+#             */
+/*   Updated: 2026/02/25 01:15:14 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SOURCELOCATION_HPP
-#define SOURCELOCATION_HPP
+#ifndef RESULT_HPP
+#define RESULT_HPP
 
-#include <iostream>
-
-class SourceLocation
+class ResultBase
 {
+	protected:
+		bool _is_ok;
+
+		ResultBase(bool ok) : _is_ok(ok) {}
+
 	public:
-		std::string filename;
-		size_t		line;
-		size_t		column;
-		size_t		length;
+		virtual ~ResultBase() {}
 
-		SourceLocation(void);
-		SourceLocation(const std::string& file_name, size_t line_number, size_t column_number,
-					   size_t token_length);
-
-		std::string toString() const;
+		bool isOk() const { return _is_ok; }
+		bool isErr() const { return !_is_ok; }
 };
 
-#endif /* SOURCELOCATION_HPP */
+#endif /* RESULT_HPP */

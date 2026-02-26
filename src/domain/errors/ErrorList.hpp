@@ -1,33 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   SourceLocation.hpp                                 :+:      :+:    :+:   */
+/*   ErrorList.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/24 20:48:10 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/25 00:15:17 by lsilva-x         ###   ########.fr       */
+/*   Created: 2026/02/24 23:13:36 by lsilva-x          #+#    #+#             */
+/*   Updated: 2026/02/24 23:33:47 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SOURCELOCATION_HPP
-#define SOURCELOCATION_HPP
+#ifndef ERRORLIST_HPP
+#define ERRORLIST_HPP
 
-#include <iostream>
+#include <vector>
 
-class SourceLocation
+#include "CompilerError.hpp"
+
+class ErrorList
 {
 	public:
-		std::string filename;
-		size_t		line;
-		size_t		column;
-		size_t		length;
+		ErrorList();
+		~ErrorList();
 
-		SourceLocation(void);
-		SourceLocation(const std::string& file_name, size_t line_number, size_t column_number,
-					   size_t token_length);
+		void addError(const CompilerError& error);
+		bool hasErrors() const;
 
-		std::string toString() const;
+		const std::vector<CompilerError>& getErrors() const;
+		int								  size() const;
+
+		void formatAllErrors() const;
+
+	private:
+		std::vector<CompilerError> errors;
 };
 
-#endif /* SOURCELOCATION_HPP */
+#endif /* ERRORLIST_HPP */
