@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/26 22:59:52 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/26 23:06:00 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ int main()
 		std::cout << "Source file loaded successfully. Lexer is ready for tokenization.\n";
 	// return baseTest();
 	Lexer* lexer = res.unwrap();
+	(void)lexer;
 	return (0);
 }
 

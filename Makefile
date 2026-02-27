@@ -36,6 +36,7 @@ CLI_DIR					= $(INTERFACES_DIR)/cli
 
 INFRA_DIR				= $(SRCS_DIR)/infrastructure
 I_COMMON_DIR			= $(INFRA_DIR)/common
+I_IO_DIR				= $(INFRA_DIR)/io
 
 # ---------------- PROVISÒRIO ----------------
 HDRS				= $(shell find . -name "*.hpp")
@@ -52,7 +53,9 @@ DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 INTERFACE_SRCS	= $(CLI_DIR)/main.cpp
 
 INFRA_SRCS		= $(I_COMMON_DIR)/TokenResult.cpp \
-					$(I_COMMON_DIR)/LexerResult.cpp
+					$(I_COMMON_DIR)/LexerResult.cpp \
+					$(I_IO_DIR)/FileReader.cpp \
+					$(I_IO_DIR)/FileValidator.cpp
 
 # EXPANSIONS
 SRC_SET				= $(INTERFACE_SRCS) \
