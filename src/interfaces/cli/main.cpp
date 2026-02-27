@@ -6,11 +6,13 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/27 02:31:28 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 03:29:10 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
+#include <sstream>
+#include <string>
 
 // ------------------------ TMP IMPORT TO TEST ------------------------ //
 // #include "domain/entities/Token.hpp"
@@ -20,6 +22,7 @@
 #include "../../application/use_cases/CompileSourceFile.hpp"
 #include "../../domain/entities/Token.hpp"
 #include "../../infrastructure/common/TokenResult.hpp"
+#include "../../infrastructure/logging/Logger.hpp"
 
 #include <vector>
 
@@ -40,6 +43,9 @@ static void logTokens(const std::vector<Token>& tokens)
 int main()
 {
 	LexerResult res = CompileSourceFile::execute("config.conf");
+	Logger		logger;
+
+	logger.enableFileLogging();
 
 	if (res.isErr())
 	{
@@ -47,7 +53,7 @@ int main()
 		errors.formatAllErrors();
 	}
 	else
-		std::cout << "Source file loaded successfully. Lexer is ready for tokenization.\n";
+		logger.log("Source file loaded successfully. Lexer is ready for tokenization.", INFO);
 	// Momento de adicionar um logger? se pá
 
 	Lexer* lexer = res.unwrap();
@@ -59,9 +65,11 @@ int main()
 		errors.formatAllErrors();
 	}
 	else
-		std::cout << "Tokenization successful. Tokens are ready for parsing.\n";
+		logger.log("Tokenization successful. Tokens are ready for parsing.", INFO);
 	std::vector<Token>* tokens = tokenRes.unwrap();
-	std::cout << "Total tokens generated: " << tokens->size() << '\n';
+	std::stringstream	ss;
+	ss << "Tokens generated: " << tokens->size();
+	logger.log(ss.str().c_str(), INFO);
 	logTokens(*tokens);
 	return (0);
 }
