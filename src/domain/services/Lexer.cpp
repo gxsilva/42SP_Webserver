@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 22:36:54 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/27 02:40:21 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 03:59:37 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,6 +207,7 @@ TokenResult Lexer::tokenize()
 	{
 		skipWhitespace();
 		skipComment();
+		skipWhitespace();
 
 		if (isAtEnd())
 			break;
