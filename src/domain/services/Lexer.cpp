@@ -6,17 +6,20 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 22:36:54 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/27 03:59:37 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 04:26:47 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Lexer.hpp"
 
 #include <cstddef> // for size_t
+#include <iostream>
 #include <string>
+#include <vector>
 
 #include "../entities/SourceLocation.hpp"
 #include "../entities/Token.hpp"
+
 #include "../errors/CompilerError.hpp"
 #include "../value_objects/TokenType.hpp"
 
@@ -52,7 +55,7 @@ char Lexer::advance()
 {
 	if (!isAtEnd())
 	{
-		char c = _content[_pos++];
+		const char c = _content[_pos++];
 		if (c == '\n')
 		{
 			_line++;
@@ -83,12 +86,9 @@ void Lexer::skipComment()
 
 // ---------------------- CLASSIFICATION ---------------------- //
 
-bool Lexer::isDigit(char c) const { return c >= '0' && c <= '9'; }
+bool Lexer::isDigit(char c) { return c >= '0' && c <= '9'; }
 
-bool Lexer::isAlpha(char c) const
-{
-	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
-}
+bool Lexer::isAlpha(char c) { return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'; }
 
 /*
 Example of valid paths:
@@ -97,7 +97,7 @@ Example of valid paths:
 - -images
 - _assets
 */
-bool Lexer::isPathChar(char c) const
+bool Lexer::isPathChar(char c)
 {
 	return isAlpha(c) || isDigit(c) || c == '/' || c == '.' || c == '-' || c == '_';
 }
@@ -105,8 +105,8 @@ bool Lexer::isPathChar(char c) const
 // ----------------------- SCANNERS --------------------------- //
 Token Lexer::scanWord()
 {
-	size_t		   start = _pos;
-	SourceLocation loc	 = currentLocation();
+	const size_t		 start = _pos;
+	const SourceLocation loc   = currentLocation();
 
 	while (!isAtEnd() && (isAlpha(peek()) || isDigit(peek()) || peek() == '_'))
 		advance();
@@ -116,8 +116,8 @@ Token Lexer::scanWord()
 
 Token Lexer::scanNumber()
 {
-	size_t		   start = _pos;
-	SourceLocation loc	 = currentLocation();
+	const size_t		 start = _pos;
+	const SourceLocation loc   = currentLocation();
 
 	while (!isAtEnd() && isDigit(peek()))
 		advance();
@@ -143,8 +143,8 @@ Case 3
 Token Lexer::scanString()
 {
 	advance();
-	size_t		   start = _pos;
-	SourceLocation loc	 = currentLocation();
+	const size_t		 start = _pos;
+	const SourceLocation loc   = currentLocation();
 
 	while (!isAtEnd() && peek() != '"')
 	{
@@ -164,8 +164,8 @@ Token Lexer::scanString()
 
 Token Lexer::scanPath()
 {
-	size_t		   start = _pos;
-	SourceLocation loc	 = currentLocation();
+	const size_t		 start = _pos;
+	const SourceLocation loc   = currentLocation();
 
 	while (!isAtEnd() && isPathChar(peek()))
 		advance();
@@ -175,23 +175,23 @@ Token Lexer::scanPath()
 
 Token Lexer::scanSingle(TokenType type)
 {
-	SourceLocation loc = currentLocation();
-	std::string	   value(1, peek());
+	const SourceLocation loc = currentLocation();
+	std::string			 value(1, peek());
 	advance();
 	return makeToken(type, loc, value);
 }
 
 Token Lexer::scanUnknown()
 {
-	SourceLocation loc = currentLocation();
-	char		   c   = peek();
+	const SourceLocation loc = currentLocation();
+	char				 c	 = peek();
 	addError(CompilerError::unregonizedCharacterError(loc, c));
 	advance();
 	return makeToken(UNKNOWN, loc, std::string(1, c));
 }
 
 // ----------------------- HELPERS ---------------------------- //
-Token Lexer::makeToken(TokenType type, SourceLocation location, const std::string& value) const
+Token Lexer::makeToken(TokenType type, const SourceLocation& location, const std::string& value)
 {
 	return Token(type, value, location);
 }
@@ -246,11 +246,11 @@ SourceLocation Lexer::currentLocation() const
 
 void Lexer::internalTest()
 {
-	std::cout << "Lexer internal state:" << std::endl;
-	std::cout << "  _filePath : " << _filePath << std::endl;
-	std::cout << "  _content  : " << _content.size() << std::endl;
-	std::cout << "  _pos      : " << _pos << std::endl;
-	std::cout << "  _line     : " << _line << std::endl;
-	std::cout << "  _column   : " << _column << std::endl;
-	std::cout << "  _errorList size: " << _errorList.size() << std::endl;
+	std::cout << "Lexer internal state:" << '\n';
+	std::cout << "  _filePath : " << _filePath << '\n';
+	std::cout << "  _content  : " << _content.size() << '\n';
+	std::cout << "  _pos      : " << _pos << '\n';
+	std::cout << "  _line     : " << _line << '\n';
+	std::cout << "  _column   : " << _column << '\n';
+	std::cout << "  _errorList size: " << _errorList.size() << '\n';
 }

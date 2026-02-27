@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 19:42:33 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/27 02:40:21 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 04:25:45 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ class Lexer
 		void skipComment();
 
 		// ---------------------- CLASSIFICATION ---------------------- //
-		bool isDigit(char c) const;
-		bool isAlpha(char c) const;
-		bool isPathChar(char c) const;
+		static bool isDigit(char c);
+		static bool isAlpha(char c);
+		static bool isPathChar(char c);
 
 		// ----------------------- SCANNERS --------------------------- //
 		Token scanWord();
@@ -55,8 +55,10 @@ class Lexer
 
 		// ----------------------- HELPERS ---------------------------- //
 		SourceLocation currentLocation() const;
-		Token makeToken(TokenType type, SourceLocation location, const std::string& value) const;
-		void  addError(const CompilerError& error);
+		void		   addError(const CompilerError& error);
+
+		static Token makeToken(TokenType type, const SourceLocation& location,
+							   const std::string& value);
 
 	public:
 		Lexer(const std::string& fileContent, const std::string& path);

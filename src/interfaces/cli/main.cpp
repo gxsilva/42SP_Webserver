@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/27 03:29:10 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 04:36:20 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ int main()
 	Lexer* lexer = res.unwrap();
 	lexer->internalTest();
 	TokenResult tokenRes = lexer->tokenize();
+	lexer->internalTest();
 	if (tokenRes.isErr())
 	{
 		const ErrorList& errors = tokenRes.error();
