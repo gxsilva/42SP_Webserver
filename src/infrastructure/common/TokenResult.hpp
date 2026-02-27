@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 00:51:55 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/26 20:01:52 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 02:08:03 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class TokenResult : public ResultBase
 		std::vector<Token>* unwrap();
 		const ErrorList&	error() const;
 
-		DISABLE_COPY(TokenResult);
+		// DISABLE_COPY(TokenResult);
 };
 
 #endif /* TOKENRESULT_HPP */
