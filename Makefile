@@ -46,7 +46,8 @@ HDRS				= $(shell find . -name "*.hpp")
 DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 					$(D_ENTITIES_DIR)/Token.cpp \
 					$(D_ERRORS_DIR)/CompilerError.cpp \
-					$(D_ERRORS_DIR)/ErrorList.cpp
+					$(D_ERRORS_DIR)/ErrorList.cpp \
+					$(D_SERVICES_DIR)/Lexer.cpp 
 
 INTERFACE_SRCS	= $(CLI_DIR)/main.cpp
 
