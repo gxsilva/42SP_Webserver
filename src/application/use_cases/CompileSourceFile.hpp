@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 20:47:16 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/26 22:35:36 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 02:32:22 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ LexerResult CompileSourceFile::loadSourceFile(const std::string& filepath)
 	}
 
 	std::string fileContent;
-	bool		readSuccess = FileReader::readFile(filepath);
+	bool		readSuccess = FileReader::readFile(filepath, fileContent);
 	if (!readSuccess)
 		return LexerResult(CompilerError::ioError(filepath));
 	Lexer* lexer = new Lexer(fileContent, filepath);

@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 22:19:10 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/26 22:51:00 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 01:50:48 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ class CompilerError
 		static CompilerError fileNotFoundError(const std::string& filename);
 		static CompilerError permissionDeniedError(const std::string& filename);
 		static CompilerError ioError(const std::string& filename);
+		static CompilerError unterminatedStringError(const SourceLocation& location);
+		static CompilerError unregonizedCharacterError(const SourceLocation& location, char c);
 };
 
 #endif /* COMPILERERROR_HPP */
