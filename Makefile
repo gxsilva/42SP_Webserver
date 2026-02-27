@@ -133,8 +133,13 @@ compile_commands_json:
 
 tidy: check-tools compile_commands_json
 	@echo "🔍 Running clang-tidy..."
-	@clang-tidy -p . $(SRC_SET) 
+	@clang-tidy -p . $(SRC_SET)
 
-.PHONY: all clean fclean re format check-tools tidy compile_commands_json
+clean_logs:
+	@echo "🧹 Removing log files..."
+	@rm -f log/log_*
+	@rm -f log_*
+
+.PHONY: all clean fclean re format check-tools tidy compile_commands_json clean_logs
 
 -include $(DEPS)
