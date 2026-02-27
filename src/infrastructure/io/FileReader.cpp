@@ -6,15 +6,14 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 23:04:05 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/26 23:04:11 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 02:32:58 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "FileReader.hpp"
 
-bool FileReader::readFile(const std::string& filepath)
+bool FileReader::readFile(const std::string& filepath, std::string& content)
 {
-	std::string	  content;
 	std::ifstream file(filepath.c_str());
 	if (file.good())
 	{

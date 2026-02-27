@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/26 23:06:00 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 02:31:28 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,50 @@
 
 #include <vector>
 
-int baseTest();
+static void logTokens(const std::vector<Token>& tokens)
+{
+	std::cout << "---- Token list (" << tokens.size() << " tokens) ----\n";
+
+	for (std::vector<Token>::const_iterator it = tokens.begin(); it != tokens.end(); ++it)
+	{
+		const Token& token = *it;
+
+		std::cout << token.toString() << '\n';
+	}
+
+	std::cout << "---- End of tokens ----\n";
+}
 
 int main()
+{
+	LexerResult res = CompileSourceFile::execute("config.conf");
+
+	if (res.isErr())
+	{
+		const ErrorList& errors = res.error();
+		errors.formatAllErrors();
+	}
+	else
+		std::cout << "Source file loaded successfully. Lexer is ready for tokenization.\n";
+	// Momento de adicionar um logger? se pá
+
+	Lexer* lexer = res.unwrap();
+	lexer->internalTest();
+	TokenResult tokenRes = lexer->tokenize();
+	if (tokenRes.isErr())
+	{
+		const ErrorList& errors = tokenRes.error();
+		errors.formatAllErrors();
+	}
+	else
+		std::cout << "Tokenization successful. Tokens are ready for parsing.\n";
+	std::vector<Token>* tokens = tokenRes.unwrap();
+	std::cout << "Total tokens generated: " << tokens->size() << '\n';
+	logTokens(*tokens);
+	return (0);
+}
+
+int LexerResultTest()
 {
 	LexerResult res = CompileSourceFile::execute("config.conf");
 
@@ -40,7 +81,7 @@ int main()
 	// return baseTest();
 	Lexer* lexer = res.unwrap();
 	(void)lexer;
-	return (0);
+	return (42); // sp
 }
 
 int baseTest()
