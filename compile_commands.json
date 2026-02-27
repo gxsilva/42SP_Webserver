@@ -9,12 +9,114 @@
       "-Wshadow",
       "-c",
       "-o",
-      "obj/infrastructure/common/TokenResult.o",
-      "src/infrastructure/common/TokenResult.cpp"
+      "obj/domain/entities/SourceLocation.o",
+      "src/domain/entities/SourceLocation.cpp"
     ],
     "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/infrastructure/common/TokenResult.cpp",
-    "output": "/home/gxil/webserver/obj/infrastructure/common/TokenResult.o"
+    "file": "/home/gxil/webserver/src/domain/entities/SourceLocation.cpp",
+    "output": "/home/gxil/webserver/obj/domain/entities/SourceLocation.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-std=c++98",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wshadow",
+      "-c",
+      "-o",
+      "obj/interfaces/cli/main.o",
+      "src/interfaces/cli/main.cpp"
+    ],
+    "directory": "/home/gxil/webserver",
+    "file": "/home/gxil/webserver/src/interfaces/cli/main.cpp",
+    "output": "/home/gxil/webserver/obj/interfaces/cli/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-std=c++98",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wshadow",
+      "-c",
+      "-o",
+      "obj/infrastructure/io/FileValidator.o",
+      "src/infrastructure/io/FileValidator.cpp"
+    ],
+    "directory": "/home/gxil/webserver",
+    "file": "/home/gxil/webserver/src/infrastructure/io/FileValidator.cpp",
+    "output": "/home/gxil/webserver/obj/infrastructure/io/FileValidator.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-std=c++98",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wshadow",
+      "-c",
+      "-o",
+      "obj/infrastructure/io/FileReader.o",
+      "src/infrastructure/io/FileReader.cpp"
+    ],
+    "directory": "/home/gxil/webserver",
+    "file": "/home/gxil/webserver/src/infrastructure/io/FileReader.cpp",
+    "output": "/home/gxil/webserver/obj/infrastructure/io/FileReader.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-std=c++98",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wshadow",
+      "-c",
+      "-o",
+      "obj/domain/entities/Token.o",
+      "src/domain/entities/Token.cpp"
+    ],
+    "directory": "/home/gxil/webserver",
+    "file": "/home/gxil/webserver/src/domain/entities/Token.cpp",
+    "output": "/home/gxil/webserver/obj/domain/entities/Token.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-std=c++98",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wshadow",
+      "-c",
+      "-o",
+      "obj/infrastructure/common/LexerResult.o",
+      "src/infrastructure/common/LexerResult.cpp"
+    ],
+    "directory": "/home/gxil/webserver",
+    "file": "/home/gxil/webserver/src/infrastructure/common/LexerResult.cpp",
+    "output": "/home/gxil/webserver/obj/infrastructure/common/LexerResult.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-std=c++98",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wshadow",
+      "-c",
+      "-o",
+      "obj/infrastructure/logging/Logger.o",
+      "src/infrastructure/logging/Logger.cpp"
+    ],
+    "directory": "/home/gxil/webserver",
+    "file": "/home/gxil/webserver/src/infrastructure/logging/Logger.cpp",
+    "output": "/home/gxil/webserver/obj/infrastructure/logging/Logger.o"
   },
   {
     "arguments": [
@@ -43,62 +145,45 @@
       "-Wshadow",
       "-c",
       "-o",
+      "obj/domain/services/Lexer.o",
+      "src/domain/services/Lexer.cpp"
+    ],
+    "directory": "/home/gxil/webserver",
+    "file": "/home/gxil/webserver/src/domain/services/Lexer.cpp",
+    "output": "/home/gxil/webserver/obj/domain/services/Lexer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-std=c++98",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wshadow",
+      "-c",
+      "-o",
+      "obj/infrastructure/common/TokenResult.o",
+      "src/infrastructure/common/TokenResult.cpp"
+    ],
+    "directory": "/home/gxil/webserver",
+    "file": "/home/gxil/webserver/src/infrastructure/common/TokenResult.cpp",
+    "output": "/home/gxil/webserver/obj/infrastructure/common/TokenResult.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-std=c++98",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wshadow",
+      "-c",
+      "-o",
       "obj/domain/errors/CompilerError.o",
       "src/domain/errors/CompilerError.cpp"
     ],
     "directory": "/home/gxil/webserver",
     "file": "/home/gxil/webserver/src/domain/errors/CompilerError.cpp",
     "output": "/home/gxil/webserver/obj/domain/errors/CompilerError.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-c",
-      "-o",
-      "obj/domain/entities/SourceLocation.o",
-      "src/domain/entities/SourceLocation.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/entities/SourceLocation.cpp",
-    "output": "/home/gxil/webserver/obj/domain/entities/SourceLocation.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-c",
-      "-o",
-      "obj/main.o",
-      "src/main.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/main.cpp",
-    "output": "/home/gxil/webserver/obj/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-c",
-      "-o",
-      "obj/domain/entities/Token.o",
-      "src/domain/entities/Token.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/entities/Token.cpp",
-    "output": "/home/gxil/webserver/obj/domain/entities/Token.o"
   }
 ]

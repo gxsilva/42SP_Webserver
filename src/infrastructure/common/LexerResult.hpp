@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 19:40:45 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/26 22:47:10 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 04:21:01 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ class LexerResult : public ResultBase
 	public:
 		LexerResult(Lexer* lexer);
 
-		LexerResult(CompilerError err);
-		LexerResult(ErrorList error);
+		LexerResult(const CompilerError& err);
+		LexerResult(const ErrorList& error);
 		virtual ~LexerResult();
 
 		Lexer*			 unwrap();

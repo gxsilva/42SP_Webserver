@@ -6,15 +6,17 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 03:11:50 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/27 03:35:59 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 04:31:35 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Logger.hpp"
-
 #include <ctime>
 #include <iostream>
-#include <sstream>
+#include <string>
+
+#include "Logger.hpp"
+
+#include "../../application/ports/ILogger.hpp"
 
 // ----------------------- ANSI COLOR CODES ----------------------- //
 #define RESET "\033[0m"
@@ -37,7 +39,7 @@ Logger::~Logger()
 
 // ------------------------ PRIVATE HELPERS ------------------------ //
 
-std::string Logger::_levelToString(LogLevel lvl) const
+std::string Logger::_levelToString(LogLevel lvl)
 {
 	switch (lvl)
 	{
@@ -54,7 +56,7 @@ std::string Logger::_levelToString(LogLevel lvl) const
 	}
 }
 
-std::string Logger::_levelToColor(LogLevel lvl) const
+std::string Logger::_levelToColor(LogLevel lvl)
 {
 	switch (lvl)
 	{
@@ -71,15 +73,15 @@ std::string Logger::_levelToColor(LogLevel lvl) const
 	}
 }
 
-std::string Logger::_currentTime() const
+std::string Logger::_currentTime()
 {
-	std::time_t now = std::time(NULL);
-	char		buf[20];
+	const std::time_t now = std::time(NULL);
+	char			  buf[20];
 	std::strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
 	return std::string(buf);
 }
 
-std::string Logger::_genUniqueLogFileName() const
+std::string Logger::_genUniqueLogFileName()
 {
 	std::time_t now = std::time(NULL);
 	char		buf[32];

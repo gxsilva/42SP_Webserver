@@ -6,11 +6,19 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 23:04:22 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/26 23:04:30 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 04:29:27 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cstddef>
+#include <fstream>
+#include <ios>
+#include <string>
+#include <unistd.h> // for access()
+
 #include "FileValidator.hpp"
+
+#include "../../domain/errors/CompilerError.hpp"
 
 CompilerError* FileValidator::validateFile(const std::string& filePath)
 {

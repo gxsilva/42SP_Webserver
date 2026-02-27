@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 03:11:50 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/27 03:32:36 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 04:31:44 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,12 @@ class Logger : public ILogger
 		LogLevel	  _filterLevel;
 		bool		  _fileLoggingEnabled;
 
-		std::string _levelToColor(LogLevel lvl) const;
-		std::string _levelToString(LogLevel lvl) const;
-		std::string _currentTime() const;
-		std::string _genUniqueLogFileName() const;
-		bool		_tryOpen(const std::string& path);
+		bool _tryOpen(const std::string& path);
+
+		static std::string _levelToString(LogLevel lvl);
+		static std::string _levelToColor(LogLevel lvl);
+		static std::string _currentTime();
+		static std::string _genUniqueLogFileName();
 
 		Logger(const Logger&);
 		Logger& operator=(const Logger&);
