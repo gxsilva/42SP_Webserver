@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 22:29:41 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/25 01:28:14 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 02:37:03 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,18 @@ std::string CompilerError::_errorCodeToString(ErrorCode code)
 {
 	switch (code)
 	{
+	case ERROR_UNKNOWN:
+		return "ERROR_UNKNOWN";
 	case ERROR_FILE_NOT_FOUND:
 		return "ERROR_FILE_NOT_FOUND";
 	case ERROR_PERMISSION_DENIED:
 		return "ERROR_PERMISSION_DENIED";
 	case ERROR_IO_ERROR:
 		return "ERROR_IO_ERROR";
-	case ERROR_UNKNOWN:
+	case ERROR_UNTERMINATED_STRING_LITERAL:
+		return "ERROR_UNTERMINATED_STRING_LITERAL";
+	case ERROR_UNRECOGNIZED_CHARACTER:
+		return "ERROR_UNRECOGNIZED_CHARACTER";
 	default:
 		return "Error not registered in the system.";
 	}
@@ -76,7 +81,7 @@ std::string CompilerError::format() const
 }
 // ------------------------ FACTORY METHOD ------------------------ //
 
-CompilerError CompilerError::fileNotFound(const std::string& filename)
+CompilerError CompilerError::fileNotFoundError(const std::string& filename)
 {
 	CompilerError err;
 	err.code		 = ERROR_FILE_NOT_FOUND;
@@ -87,7 +92,7 @@ CompilerError CompilerError::fileNotFound(const std::string& filename)
 	return err;
 }
 
-CompilerError CompilerError::permissionDenied(const std::string& filename)
+CompilerError CompilerError::permissionDeniedError(const std::string& filename)
 {
 	CompilerError err;
 	err.code		 = ERROR_PERMISSION_DENIED;
@@ -97,5 +102,53 @@ CompilerError CompilerError::permissionDenied(const std::string& filename)
 	err.has_hint	 = true;
 	err.hint =
 		"Check the read permissions on the file and ensure that the compiler has access to it.";
+	return err;
+}
+
+CompilerError CompilerError::emptyPathError(const std::string& path)
+{
+	CompilerError err;
+	err.code		 = ERROR_FILE_NOT_FOUND;
+	err.severity	 = SEVERITY_FATAL;
+	err.message		 = "File path is empty: " + path;
+	err.has_location = false;
+	err.has_hint	 = true;
+	err.hint		 = "Provide a valid file path to the compiler.";
+	return err;
+}
+
+CompilerError CompilerError::ioError(const std::string& filename)
+{
+	CompilerError err;
+	err.code		 = ERROR_IO_ERROR;
+	err.severity	 = SEVERITY_FATAL;
+	err.message		 = "I/O error while accessing the file: " + filename;
+	err.has_location = false;
+	err.has_hint	 = true;
+	err.hint		 = "Check if the file is accessible and not locked by another process.";
+	return err;
+}
+
+CompilerError CompilerError::unterminatedStringError(const SourceLocation& location)
+{
+	CompilerError err;
+	err.code		 = ERROR_UNTERMINATED_STRING_LITERAL;
+	err.severity	 = SEVERITY_ERROR;
+	err.message		 = "Unterminated string literal";
+	err.has_location = true;
+	err.location	 = location;
+	err.has_hint	 = false;
+	return err;
+}
+
+CompilerError CompilerError::unregonizedCharacterError(const SourceLocation& location, char c)
+{
+	CompilerError err;
+	err.code		 = ERROR_UNRECOGNIZED_CHARACTER;
+	err.severity	 = SEVERITY_ERROR;
+	err.message		 = "Unrecognized character: '" + std::string(1, c) + "'";
+	err.has_location = true;
+	err.location	 = location;
+	err.has_hint	 = false;
 	return err;
 }

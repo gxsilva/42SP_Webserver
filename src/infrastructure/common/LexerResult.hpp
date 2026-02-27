@@ -1,43 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   TokenResult.hpp                                    :+:      :+:    :+:   */
+/*   LexerResult.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/25 00:51:55 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/27 02:08:03 by lsilva-x         ###   ########.fr       */
+/*   Created: 2026/02/26 19:40:45 by lsilva-x          #+#    #+#             */
+/*   Updated: 2026/02/26 22:47:10 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TOKENRESULT_HPP
-#define TOKENRESULT_HPP
-
-#include <vector>
+#ifndef LEXERRESULT_HPP
+#define LEXERRESULT_HPP
 
 #include "ResultBase.hpp"
 
+#include "../../../includes/macros.hpp"
+#include "../../domain/errors/CompilerError.hpp"
 #include "../../domain/errors/ErrorList.hpp"
 
-#include "../../../includes/macros.hpp"
+class Lexer;
 
-class Token;
-
-class TokenResult : public ResultBase
+class LexerResult : public ResultBase
 {
 	private:
-		std::vector<Token>* _tokens;
-		ErrorList			_errorList;
+		Lexer*	  _lexer;
+		ErrorList _errorList;
 
 	public:
-		TokenResult(std::vector<Token>* toks);
-		TokenResult(const ErrorList& error);
-		~TokenResult();
+		LexerResult(Lexer* lexer);
 
-		std::vector<Token>* unwrap();
-		const ErrorList&	error() const;
+		LexerResult(CompilerError err);
+		LexerResult(ErrorList error);
+		virtual ~LexerResult();
 
-		// DISABLE_COPY(TokenResult);
+		Lexer*			 unwrap();
+		const ErrorList& error() const;
+
+		// DISABLE_COPY(LexerResult);
 };
 
-#endif /* TOKENRESULT_HPP */
+#endif /* LEXERRESULT_HPP */

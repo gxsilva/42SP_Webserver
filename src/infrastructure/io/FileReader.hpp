@@ -1,26 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ErrorCode.hpp                                      :+:      :+:    :+:   */
+/*   FileReader.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/24 22:23:52 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/27 02:36:04 by lsilva-x         ###   ########.fr       */
+/*   Created: 2026/02/26 22:08:23 by lsilva-x          #+#    #+#             */
+/*   Updated: 2026/02/27 02:32:38 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ERRORCODE_HPP
-#define ERRORCODE_HPP
+#ifndef FILEREADER_HPP
+#define FILEREADER_HPP
 
-enum ErrorCode
+#include <fstream>
+#include <string>
+
+struct FileReader
 {
-	ERROR_UNKNOWN = 0,
-	ERROR_FILE_NOT_FOUND,
-	ERROR_PERMISSION_DENIED,
-	ERROR_IO_ERROR,
-	ERROR_UNTERMINATED_STRING_LITERAL,
-	ERROR_UNRECOGNIZED_CHARACTER
+		static bool readFile(const std::string& filepath, std::string& content);
 };
 
-#endif /* ERRORCODE_HPP */
+#endif /* FILEREADER_HPP */

@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 22:19:10 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/25 00:35:42 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/02/27 01:50:48 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,12 @@ class CompilerError
 
 		std::string format() const;
 		// ------------------------ FACTORY METHODS ------------------------ //
-		static CompilerError fileNotFound(const std::string& filename);
-		static CompilerError permissionDenied(const std::string& filename);
+		static CompilerError emptyPathError(const std::string& path);
+		static CompilerError fileNotFoundError(const std::string& filename);
+		static CompilerError permissionDeniedError(const std::string& filename);
+		static CompilerError ioError(const std::string& filename);
+		static CompilerError unterminatedStringError(const SourceLocation& location);
+		static CompilerError unregonizedCharacterError(const SourceLocation& location, char c);
 };
 
 #endif /* COMPILERERROR_HPP */
