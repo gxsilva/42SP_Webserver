@@ -41,6 +41,7 @@
 *.dwo
 
 webserver
-
+log/
+log_*
 # python
 venv
