@@ -6,7 +6,10 @@ HttpSession::HttpSession(ClientSocket* socket)
   _state(READING)
 {}
 
-HttpSession::~HttpSession() {}
+HttpSession::~HttpSession()
+{
+    delete _socket;
+}
 
 ClientSocket* HttpSession::getSocket() const
 {
