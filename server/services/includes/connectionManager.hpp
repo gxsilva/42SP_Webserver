@@ -1,22 +1,23 @@
 #ifndef	CONNECTIONMANAGER_HPP
 #define CONNECTIONMANAGER_HPP
 
+#include "../../domain/includes/httpSession.hpp"
+#include "../../domain/includes/epollEvents.hpp"
 #include "../../infra/includes/serverSocket.hpp"
 #include "../../infra/includes/clientSocket.hpp"
-#include "../../domain/includes/epollEvents.hpp"
+#include "../../infra/includes/testHttpResponse.hpp"
 #include "epollManager.hpp"
 
 #include <vector>
 #include <poll.h>
 #include <unistd.h>
 #include <iostream>
-#include "../../infra/includes/testHttpResponse.hpp"
 
 class	ConnectionManager
 {
 	private:	
 		EpollManager&				_epollManager;
-		std::vector<ClientSocket*>	_clients;
+		std::vector<HttpSession*>	_sessions;
 
 		void	disconnectClient(int fd);
 
