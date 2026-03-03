@@ -58,6 +58,12 @@ int	EpollManager::waitForEvents()
 
 int EpollManager::getEventFd(int index) const
 {
+	if (index < 0)
+		throw std::out_of_range("EpollManager::getEventFd: Negative index!");
+	if (index >= _readyEventsCount)
+		throw std::out_of_range("EpollManager::getEventFd: index exceeds ready events!");
+	if (static_cast<size_t>(index) >= _triggeredEvents.size())
+		throw std::out_of_range("EpollManager::getEventFd: index exceeds triggered events buffer");
 	return (_triggeredEvents[index].data.fd);
 }
 
