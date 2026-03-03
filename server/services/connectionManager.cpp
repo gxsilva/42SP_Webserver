@@ -1,6 +1,6 @@
 #include "includes/connectionManager.hpp"
 
-ConnectionManager::ConnectionManager(EpollManager& epollManager, const MaxEvents& maxEvents)
+ConnectionManager::ConnectionManager(EpollManager& epollManager, const PollCapacity& maxEvents)
 : _epollManager(epollManager),
 _clients(maxEvents.getAmount(), (ClientSocket*)NULL)
 {}

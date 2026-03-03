@@ -12,12 +12,12 @@ class	EpollManager
 {
 	private:
 		int							_epollFd;
-		MaxEvents					_maxEvents;
+		PollCapacity				_maxEvents;
 		std::vector<epoll_event>	_triggeredEvents;
 		int							_readyEventsCount;
 
 	public:
-		explicit EpollManager(const MaxEvents& maxEvents);
+		explicit EpollManager(const PollCapacity& maxEvents);
 		~EpollManager();
 		
 		void	addFd(int fd, short event);

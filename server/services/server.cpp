@@ -9,7 +9,7 @@ _isValid(false)
 Server::Server(const Port& port, const IpAddr& ipAddr)
 : _serverSocket(port, ipAddr), _epollManager(NULL), _connectionManager(NULL), _isValid(false)
 {
-    MaxEvents maxEvents(1024);
+    PollCapacity maxEvents(1024);
     _epollManager = new EpollManager(maxEvents);
     
     if (!_epollManager)

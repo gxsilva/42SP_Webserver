@@ -21,7 +21,7 @@ class	ConnectionManager
 		void	disconnectClient(int fd);
 
 	public:
-		ConnectionManager(EpollManager& epollManager, const MaxEvents& maxEvents);
+		ConnectionManager(EpollManager& epollManager, const PollCapacity& maxEvents);
 		~ConnectionManager();
 
 		void	acceptNewClient(ServerSocket& serverSocket);

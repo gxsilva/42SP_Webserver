@@ -1,6 +1,6 @@
 #include "includes/epollManager.hpp"
 
-EpollManager::EpollManager(const MaxEvents& maxEvents)
+EpollManager::EpollManager(const PollCapacity& maxEvents)
 : _epollFd(epoll_create1(0)),
 _maxEvents(maxEvents),
 _triggeredEvents(maxEvents.getAmount()),

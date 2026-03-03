@@ -3,13 +3,13 @@
 
 #include <stdexcept>
 
-class MaxEvents
+class PollCapacity
 {
 	private:
 	    int _amount;
 
 	public:
-	    explicit MaxEvents(int amount);
+	    explicit PollCapacity(int amount);
 
 	    int getAmount() const;
 };
