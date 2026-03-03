@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <cstddef>
 #include <sys/socket.h>
+#include <sys/epoll.h>
 #include "../../domain/includes/port.hpp"
 #include "../../domain/includes/ipAddr.hpp"
 #include "../../domain/includes/epollEvents.hpp"

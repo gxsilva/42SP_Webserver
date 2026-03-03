@@ -77,14 +77,22 @@ void Server::processEvents(int count)
 void Server::handleEventByIndex(int index)
 {
     int fd = _epollManager->getEventFd(index);
+    unsigned int flags = _epollManager->getEventFlags(index);
     
     if (isServerSocket(fd))
     {
         _connectionManager->acceptNewClient(_serverSocket);
         return;
     }
+
+    if (flags & EPOLLOUT)
+    {
+        _connectionManager->handleClientWrite(fd);
+        return;
+    }
     
-    _connectionManager->handleClientData(fd);
+    if (flags & EPOLLIN)
+        _connectionManager->handleClientRead(fd);
 }
 
 bool Server::isServerSocket(int fd) const
