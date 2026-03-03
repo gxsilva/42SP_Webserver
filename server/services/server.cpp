@@ -11,19 +11,7 @@ Server::Server(const Port& port, const IpAddr& ipAddr)
 {
     PollCapacity maxEvents(1024);
     _epollManager = new EpollManager(maxEvents);
-    
-    if (!_epollManager)
-    {
-        handleError("Failed to create event manager");
-        return;
-    }
-    
     _connectionManager = new ConnectionManager(*_epollManager, maxEvents);
-    if (!_connectionManager)
-    {
-        handleError("Failed to create connection manager");
-        return;
-    }
     
     if (!_serverSocket.isValid())
     {
