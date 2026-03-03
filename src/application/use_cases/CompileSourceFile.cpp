@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 16:37:11 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 16:37:56 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/03 17:49:42 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,24 @@ LexerResult CompileSourceFile::loadSourceFile(const std::string& filepath)
 	return LexerResult(lexer);
 }
 
-// This will return TokenResult in the future, but for now it will return a
-//   LexerResult since we haven't implemented the tokenization process yet k k k
-LexerResult CompileSourceFile::execute(const std::string& filePath)
+TokenResult CompileSourceFile::execute(const std::string& filePath, ILogger* logger)
 {
-	return CompileSourceFile::loadSourceFile(filePath);
+	LexerResult lexerRes = CompileSourceFile::loadSourceFile(filePath);
+	if (lexerRes.isErr())
+	{
+		const ErrorList& errors = lexerRes.error();
+		logger->log("Failed to load source file: " + filePath, ERROR);
+		return TokenResult(errors);
+	}
+	Lexer* lexer = lexerRes.unwrap();
+	logger->log("Successfully loaded source file: " + filePath, INFO);
+	TokenResult tokenRes = lexer->tokenize();
+	if (tokenRes.isErr())
+	{
+		const ErrorList& errors = tokenRes.error();
+		logger->log("Failed to tokenize source file: " + filePath, ERROR);
+		return TokenResult(errors);
+	}
+	logger->log("Successfully tokenized source file: " + filePath, INFO);
+	return (tokenRes);
 }

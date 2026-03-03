@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 22:29:41 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/27 02:37:03 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/03 17:40:05 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,5 +150,30 @@ CompilerError CompilerError::unregonizedCharacterError(const SourceLocation& loc
 	err.has_location = true;
 	err.location	 = location;
 	err.has_hint	 = false;
+	return err;
+}
+
+CompilerError CompilerError::notARegularFileError(const std::string& filename)
+{
+	CompilerError err;
+	err.code		 = ERROR_FILE_NOT_FOUND;
+	err.severity	 = SEVERITY_FATAL;
+	err.message		 = "Not a regular file: " + filename;
+	err.has_location = false;
+	err.has_hint	 = true;
+	err.hint = "Ensure that the path points to a regular file and not a directory or special file.";
+	return err;
+}
+
+CompilerError CompilerError::invalidBinaryFileError(const std::string& filename)
+{
+	CompilerError err;
+	err.code		 = ERROR_IO_ERROR;
+	err.severity	 = SEVERITY_FATAL;
+	err.message		 = "Invalid binary file: " + filename;
+	err.has_location = false;
+	err.has_hint	 = true;
+	err.hint = "The file appears to be a binary file. Ensure that you are providing a valid source "
+			   "code file.";
 	return err;
 }

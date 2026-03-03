@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 20:47:16 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 16:38:09 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/03 17:29:29 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 
 #include "../../../includes/macros.hpp"
 #include "../../infrastructure/common/LexerResult.hpp"
+#include "../../infrastructure/common/TokenResult.hpp"
+#include "../ports/ILogger.hpp"
 
 /*
 	orquestão inical dessa bomba
@@ -36,7 +38,7 @@ class CompileSourceFile
 		DISABLE_COPY(CompileSourceFile);
 
 	public:
-		static LexerResult execute(const std::string& filePath);
+		static TokenResult execute(const std::string& filePath, ILogger* logger);
 };
 
 #endif /* COMPILE_SOURCE_FILE_HPP */
