@@ -38,6 +38,9 @@ INFRA_DIR				= $(SRCS_DIR)/infrastructure
 I_COMMON_DIR			= $(INFRA_DIR)/common
 I_IO_DIR				= $(INFRA_DIR)/io
 
+APPLICATION_DIR			= $(SRCS_DIR)/application
+USE_CASES_DIR			= $(APPLICATION_DIR)/use_cases
+
 # ---------------- PROVISÒRIO ----------------
 HDRS				= $(shell find . -name "*.hpp")
 # -------------------------------
@@ -58,10 +61,13 @@ INFRA_SRCS		= $(I_COMMON_DIR)/TokenResult.cpp \
 					$(I_IO_DIR)/FileValidator.cpp \
 					$(INFRA_DIR)/logging/Logger.cpp
 
+APPLICATION_SRCS	= $(USE_CASES_DIR)/CompileSourceFile.cpp
+
 # EXPANSIONS
 SRC_SET				= $(INTERFACE_SRCS) \
 						$(DOMAIN_SRCS) \
 						$(INFRA_SRCS) \
+						$(APPLICATION_SRCS)
 
 OBJ					= $(patsubst $(SRCS_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_SET))
 DEPS				= $(OBJ:.o=.d)

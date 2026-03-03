@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/27 04:36:20 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/03 16:40:59 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 
 #include "../../application/use_cases/CompileSourceFile.hpp"
 #include "../../domain/entities/Token.hpp"
+#include "../../domain/services/Lexer.hpp"
 #include "../../infrastructure/common/TokenResult.hpp"
 #include "../../infrastructure/logging/Logger.hpp"
 
