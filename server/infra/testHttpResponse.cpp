@@ -1,7 +1,6 @@
 #include "includes/testHttpResponse.hpp"
-#include <cstring>
 
-bool sendTestHttpResponse(ClientSocket& client)
+void bufferTestHttpResponse(ClientSocket& client)
 {
     const char* response =
         "HTTP/1.1 200 OK\r\n"
@@ -11,7 +10,5 @@ bool sendTestHttpResponse(ClientSocket& client)
         "\r\n"
         "Hello, World!";
 
-    ssize_t sent = client.sendData(response, strlen(response));
-    
-    return (sent > 0);
+    client.appendToWriteBuffer(response, strlen(response));
 }
