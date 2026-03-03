@@ -113,6 +113,7 @@ clean:
 fclean: clean
 	@echo "🧹 Removing binary..."
 	@rm -f $(NAME)
+	@rm -f $(TEST_NAME) $(TEST_VALIDATION_NAME) $(TEST_USECASE_NAME)
 
 re: fclean all
 
