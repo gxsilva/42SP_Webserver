@@ -45,7 +45,7 @@ void	ConnectionManager::disconnectClient(int fd)
 	_clients[fd] = NULL;
 }
 
-void ConnectionManager::handleClientData(int fd)
+void ConnectionManager::handleClientRead(int fd)
 {
     ClientSocket* client = _clients[fd];
     
@@ -64,10 +64,26 @@ void ConnectionManager::handleClientData(int fd)
 
     std::cout << "Data from fd " << fd << ": " << buffer << std::endl;
     
-    sendTestHttpResponse(*client);
-    shutdown(fd, SHUT_WR);
+    bufferTestHttpResponse(*client);
+    _epollManager.modifyFd(fd, EPOLLOUT);
+}
+
+void ConnectionManager::handleClientWrite(int fd)
+{
+    ClientSocket* client = _clients[fd];
     
-    std::cout << "Client disconnected: fd " << fd << std::endl;
-    
-    disconnectClient(fd);
+    if (client == NULL)
+        return;
+
+    if (!client->flushWriteBuffer())
+    {
+        disconnectClient(fd);
+        return;
+    }
+
+    if (!client->hasDataToSend())
+    {
+        std::cout << "Response sent to fd " << fd << std::endl;
+        disconnectClient(fd);
+    }
 }

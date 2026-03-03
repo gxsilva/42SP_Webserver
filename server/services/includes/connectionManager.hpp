@@ -14,11 +14,6 @@
 
 class	ConnectionManager
 {
-	/*enum	connectionState
-	{
-
-	};*/
-
 	private:	
 		EpollManager&				_epollManager;
 		std::vector<ClientSocket*>	_clients;
@@ -30,7 +25,8 @@ class	ConnectionManager
 		~ConnectionManager();
 
 		void	acceptNewClient(ServerSocket& serverSocket);
-		void	handleClientData(int fd);
+		void	handleClientRead(int fd);
+		void	handleClientWrite(int fd);
 };
 
 #endif
