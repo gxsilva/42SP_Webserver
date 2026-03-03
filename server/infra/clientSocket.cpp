@@ -45,3 +45,26 @@ ssize_t ClientSocket::sendData(const char* data, size_t size)
 
     return (send(_fd.get(), data, size, 0));
 }
+
+void    ClientSocket::appendToWriteBuffer(const char* data, size_t len)
+{
+    _writeBuffer.append(data, len);
+}
+
+bool    ClientSocket::hasDataToSend() const
+{
+    return (!_writeBuffer.empty());
+}
+
+bool    ClientSocket::flushWriteBuffer()
+{
+    if (_writeBuffer.empty())
+        return (true);
+
+    ssize_t sent = sendData(_writeBuffer.c_str(), _writeBuffer.size());
+    if (sent <= 0)
+        return (false);
+
+    _writeBuffer.erase(0, static_cast<size_t>(sent));
+    return (_writeBuffer.empty());
+}
