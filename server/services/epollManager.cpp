@@ -28,6 +28,18 @@ void	EpollManager::addFd(int fd, short event)
 		throw std::runtime_error("Failed to add fd to epoll");
 }
 
+void	EpollManager::modifyFd(int fd, unsigned int event)
+{
+	struct epoll_event create;
+	memset(&create, 0, sizeof(create));
+
+	create.events = event;
+	create.data.fd = fd;
+
+	if (epoll_ctl(_epollFd, EPOLL_CTL_MOD, fd, &create) < 0)
+		throw std::runtime_error("Failed to modify fd in epoll");
+}
+
 void	EpollManager::removeFd(int fd)
 {
 	epoll_ctl(_epollFd, EPOLL_CTL_DEL, fd, NULL);
@@ -47,4 +59,9 @@ int	EpollManager::waitForEvents()
 int EpollManager::getEventFd(int index) const
 {
 	return (_triggeredEvents[index].data.fd);
+}
+
+unsigned int EpollManager::getEventFlags(int index) const
+{
+	return (_triggeredEvents[index].events);
 }

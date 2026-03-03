@@ -21,10 +21,12 @@ class	EpollManager
 		~EpollManager();
 		
 		void	addFd(int fd, short event);
+		void	modifyFd(int fd, unsigned int event);
 		void	removeFd(int fd);
 		int		waitForEvents();
 		
-		int		getEventFd(int index) const;
+		int				getEventFd(int index) const;
+		unsigned int	getEventFlags(int index) const;
 };
 
 #endif
