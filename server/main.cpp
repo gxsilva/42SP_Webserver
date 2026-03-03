@@ -2,6 +2,8 @@
 
 int main()
 {
+    /* Refatorar main: Substituir porta 8080 e IP "0.0.0.0" por 
+    parsing do arquivo de configuração passado como argumento.*/
     try
     {
         std::cout << "Initializing server on port 8080..." << std::endl;
