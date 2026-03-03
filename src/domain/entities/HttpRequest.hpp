@@ -15,19 +15,18 @@ public:
     const std::map<std::string, std::string> &getHeaders() const;
     const std::string &getBody() const;
 
-private:
-    std::string _method;
-    std::string _uri;
-    std::string _version;
-    std::map<std::string, std::string> _headers;
-    std::string _body;
     void setMethod(const std::string &method);
     void setUri(const std::string &uri);
     void setVersion(const std::string &version);
     void setHeader(const std::string &name, const std::string &value);
     void setBody(const std::string &body);
 
-    friend class HttpRequestParser;
+private:
+    std::string _method;
+    std::string _uri;
+    std::string _version;
+    std::map<std::string, std::string> _headers;
+    std::string _body;
 };
 
 #endif // HTTPREQUEST_HPP
