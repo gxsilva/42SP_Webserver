@@ -56,7 +56,15 @@ INFRA_SRCS		= $(I_COMMON_DIR)/TokenResult.cpp \
 					$(I_COMMON_DIR)/LexerResult.cpp \
 					$(I_IO_DIR)/FileReader.cpp \
 					$(I_IO_DIR)/FileValidator.cpp \
+					$(I_IO_DIR)/HttpRequestParser.cpp \
+					$(D_ENTITIES_DIR)/HttpRequest.cpp \
 					$(INFRA_DIR)/logging/Logger.cpp
+
+# TEST DEFINITIONS
+TEST_NAME		= test_http_request
+TEST_SRC		= test/HttpRequestTest.cpp
+TEST_OBJS		= $(OBJ_DIR)/test/HttpRequest.o \
+					$(OBJ_DIR)/test/HttpRequestParser.o
 
 # EXPANSIONS
 SRC_SET				= $(INTERFACE_SRCS) \
@@ -90,6 +98,15 @@ fclean: clean
 	@rm -f $(NAME)
 
 re: fclean all
+
+test: $(TEST_NAME)
+	@echo "🧪 Running tests..."
+	@./$(TEST_NAME)
+
+$(TEST_NAME): $(TEST_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp | $(OBJ_DIR)
+	@echo "🛠️  Building test..."
+	@mkdir -p $(OBJ_DIR)/test
+	$(CXX) $(CXXFLAGS) -o $@ $(TEST_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp
 
 # $$ -> to be treat as normal $ in bash
 # -n -> not empty
@@ -140,6 +157,6 @@ clean_logs:
 	@rm -f log/log_*
 	@rm -f log_*
 
-.PHONY: all clean fclean re format check-tools tidy compile_commands_json clean_logs
+.PHONY: all clean fclean re format check-tools tidy compile_commands_json clean_logs test
 
 -include $(DEPS)
