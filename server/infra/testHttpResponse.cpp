@@ -1,5 +1,6 @@
 #include "includes/testHttpResponse.hpp"
 
+//por hora teste, mas depois possivelmente quando alterarmos coisas sera implementacao real
 void bufferTestHttpResponse(ClientSocket& client)
 {
     const char* response =
