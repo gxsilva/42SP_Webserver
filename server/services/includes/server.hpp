@@ -29,6 +29,9 @@ class  Server
 
         bool	handleError(const std::string& msg);
 
+        Server(const Server&);
+        Server& operator=(const Server&);
+
     public:
         Server();
         Server(const Port& port, const IpAddr& ipAddr);
