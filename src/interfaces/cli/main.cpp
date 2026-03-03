@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 17:29:11 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/03 18:06:36 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,24 @@
 #include "../../infrastructure/logging/Logger.hpp"
 
 #include <vector>
+
+class Debugger
+{
+	public:
+		static void logTokens(const std::vector<Token>& tokens)
+		{
+			std::cout << "---- Token list (" << tokens.size() << " tokens) ----\n";
+
+			for (std::vector<Token>::const_iterator it = tokens.begin(); it != tokens.end(); ++it)
+			{
+				const Token& token = *it;
+
+				std::cout << token.toString() << '\n';
+			}
+
+			std::cout << "---- End of tokens ----\n";
+		}
+};
 
 int main(int argc, const char** argv)
 {
@@ -47,7 +65,7 @@ int main(int argc, const char** argv)
 	}
 
 	std::vector<Token>* tokens = res.unwrap();
-	(void)tokens;
+	Debugger::logTokens(*tokens);
 
 	return (0);
 }

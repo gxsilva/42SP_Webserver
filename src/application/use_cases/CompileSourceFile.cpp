@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 16:37:11 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 17:49:42 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/03 18:01:46 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ TokenResult CompileSourceFile::execute(const std::string& filePath, ILogger* log
 	Lexer* lexer = lexerRes.unwrap();
 	logger->log("Successfully loaded source file: " + filePath, INFO);
 	TokenResult tokenRes = lexer->tokenize();
+	lexer->internalTest();
 	if (tokenRes.isErr())
 	{
 		const ErrorList& errors = tokenRes.error();

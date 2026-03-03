@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 22:36:54 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/27 04:26:47 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/03 18:07:18 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,7 @@ void Lexer::addError(const CompilerError& error) { _errorList.addError(error); }
 // ---------------------- PUBLIC METHODS ---------------------- //
 TokenResult Lexer::tokenize()
 {
-	std::vector<Token> tokens;
+	std::vector<Token>* tokens = new std::vector<Token>();
 
 	while (!isAtEnd())
 	{
@@ -214,28 +214,28 @@ TokenResult Lexer::tokenize()
 
 		char c = peek();
 		if (c == '{')
-			tokens.push_back(scanSingle(LBRACE));
+			tokens->push_back(scanSingle(LBRACE));
 		else if (c == '}')
-			tokens.push_back(scanSingle(RBRACE));
+			tokens->push_back(scanSingle(RBRACE));
 		else if (c == ';')
-			tokens.push_back(scanSingle(SEMICOLON));
+			tokens->push_back(scanSingle(SEMICOLON));
 		else if (isAlpha(c))
-			tokens.push_back(scanWord());
+			tokens->push_back(scanWord());
 		else if (isDigit(c))
-			tokens.push_back(scanNumber());
+			tokens->push_back(scanNumber());
 		else if (c == '"')
-			tokens.push_back(scanString());
+			tokens->push_back(scanString());
 		else if (isPathChar(c))
-			tokens.push_back(scanPath());
+			tokens->push_back(scanPath());
 		else
-			tokens.push_back(scanUnknown());
+			tokens->push_back(scanUnknown());
 	}
-	if (!tokens.empty())
-		tokens.push_back(makeToken(EOF_TOKEN, currentLocation(), ""));
+	if (!tokens->empty())
+		tokens->push_back(makeToken(EOF_TOKEN, currentLocation(), ""));
 	if (_errorList.hasErrors())
 		return TokenResult(_errorList);
 
-	return TokenResult(new std::vector<Token>(tokens));
+	return TokenResult(tokens);
 }
 
 // ------------------------ arrumar algum dia ------------------------ //
