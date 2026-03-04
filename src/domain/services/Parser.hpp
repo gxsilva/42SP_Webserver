@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 21:24:34 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 23:31:18 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/04 00:29:46 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include "../entities/ast/node/ASTBlock.hpp"
 #include "../entities/ast/node/ASTRoot.hpp"
 #include "../entities/ast/node/ASTValue.hpp"
+
+#include "../../infrastructure/common/ASTResult.hpp"
 
 #include <vector>
 
@@ -72,20 +74,22 @@ class Parser
 		void		 _synchronize();
 		ASTValueType _convertTokenTypeToAstValue(TokenType type) const;
 
+		void _addError(const CompilerError& error);
+
+		ASTValue* parseValue();
+		ASTNode*  parseStatement();
+		ASTRoot*  parseConfig();
+		// ASTDirective* parseDirective(const std::string& name, const SourceLocation& loc);
+		// ASTBlock* parseBlock(const std::string& name, const SourceLocation& loc);
+
 	public:
 		Parser(std::vector<Token>* tokens);
 		~Parser();
 
-		void parse();
+		ASTResult parser();
 
-		void	  addError(const CompilerError& error);
 		ErrorList getErrors() const;
-
-		ASTValue* parseValue();
-		// ASTDirective* parseDirective(const std::string& name, const SourceLocation& loc);
-		// ASTBlock* parseBlock(const std::string& name, const SourceLocation& loc);
-		ASTNode* parseStatement();
-		ASTRoot* parseConfig();
+		bool	  hasErrors() const;
 };
 
 #endif /* PARSER_HPP */

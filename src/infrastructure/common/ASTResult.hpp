@@ -1,34 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ASTValue.hpp                                       :+:      :+:    :+:   */
+/*   ASTResult.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/03 20:20:42 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/04 00:36:52 by lsilva-x         ###   ########.fr       */
+/*   Created: 2026/03/04 00:13:21 by lsilva-x          #+#    #+#             */
+/*   Updated: 2026/03/04 00:20:42 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ASTVALUE_HPP
-#define ASTVALUE_HPP
+#ifndef ASTRESULT_HPP
+#define ASTRESULT_HPP
 
-#include "../../../value_objects/ASTValueType.hpp"
-#include "../base/ASTNode.hpp"
+#include "ResultBase.hpp"
 
-class ASTValue : public ASTNode
+#include "../../domain/entities/ast/base/ASTNode.hpp"
+
+#include "../../domain/errors/ErrorList.hpp"
+
+class ASTResult : public ResultBase
 {
 	private:
-		ASTValueType _valueType;
-		std::string	 _value;
+		ASTNode*  _astRoot;
+		ErrorList _errorList;
 
 	public:
-		ASTValue(ASTValueType vtype, const std::string& value, const SourceLocation& loc);
-		virtual ~ASTValue();
+		ASTResult(const ErrorList& error);
+		ASTResult(ASTNode* astRoot);
+		~ASTResult();
 
-		std::string getValue() const;
-
-		virtual std::string toString() const;
+		ASTNode*		 unwrap();
+		const ErrorList& error() const;
 };
 
-#endif /* ASTVALUE_HPP */
+#endif /* ASTRESULT_HPP */

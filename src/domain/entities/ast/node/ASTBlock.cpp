@@ -6,15 +6,15 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 21:06:24 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 21:07:40 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/04 00:37:12 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ASTBlock.hpp"
 #include "ASTValue.hpp"
 
-#include "../../value_objects/ASTNodeType.hpp"
-#include "../../value_objects/ASTValueType.hpp"
+#include "../../../value_objects/ASTNodeType.hpp"
+#include "../../../value_objects/ASTValueType.hpp"
 
 // ------------------------ OCCD ------------------------ //
 ASTBlock::ASTBlock(const std::string& name, const SourceLocation& loc)

@@ -64,6 +64,7 @@ INTERFACE_SRCS	= $(CLI_DIR)/main.cpp
 
 INFRA_SRCS		= $(I_COMMON_DIR)/TokenResult.cpp \
 					$(I_COMMON_DIR)/LexerResult.cpp \
+					$(I_COMMON_DIR)/ASTResult.cpp \
 					$(I_IO_DIR)/FileReader.cpp \
 					$(I_IO_DIR)/FileValidator.cpp \
 					$(INFRA_DIR)/logging/Logger.cpp

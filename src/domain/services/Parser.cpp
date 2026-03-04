@@ -6,41 +6,73 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 23:30:48 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 23:49:44 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/04 00:30:31 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Parser.hpp"
+#include "../../infrastructure/common/ASTResult.hpp"
 #include "../entities/ast/node/ASTDirective.hpp"
 #include "../value_objects/ASTValueType.hpp"
 
-bool Parser::_isValueToken(TokenType type) const
+// ------------------------ OCCF ------------------------ //
+Parser::Parser(std::vector<Token>* tokens) : _tokens(tokens), _current(0) {}
+
+Parser::~Parser() {}
+
+Token Parser::_peek() const
 {
-	return type == WORD || type == NUMBER || type == STRING || type == PATH;
+	if (_current < _tokens->size())
+		return _tokens->at(_current);
+	return Token();
 }
 
-ASTValueType Parser::_convertTokenTypeToAstValue(TokenType type) const
+// ------------------------ NAVIGATION ------------------------ //
+
+Token Parser::_advance()
 {
-	switch (type)
+	if (_current < _tokens->size())
+		return _tokens->at(_current++);
+	return Token();
+}
+
+bool Parser::_match(TokenType expected)
+{
+	if (_peek().type == expected)
 	{
-	case WORD:
-		return AST_VALUE_IDENTIFIER;
-	case NUMBER:
-		return AST_VALUE_NUMBER;
-	case STRING:
-		return AST_VALUE_STRING;
-	case PATH:
-		return AST_VALUE_PATH;
-	default:
-		return AST_VALUE_UNDEFINED;
+		_advance();
+		return true;
 	}
+	return false;
 }
 
+// ------------------------ ERROR METHODS ------------------------ //
+
+ErrorList Parser::getErrors() const { return _errors; }
+
+void Parser::_addError(const CompilerError& error) { _errors.addError(error); }
+
+// ------------------------ PARSE METHODS ------------------------ //
+
+ASTValue* Parser::parseValue()
+{
+	if (!_isValueToken(_peek().type))
+	{
+		_addError(CompilerError::expectedValueError(
+			"Expected a value (identifier, number, string, or path)", _peek().location));
+		return (NULL);
+	}
+	Token		 valueToken = _advance();
+	ASTValueType valueType	= _convertTokenTypeToAstValue(valueToken.type);
+	return new ASTValue(valueType, valueToken.value, valueToken.location);
+}
+
+// ------------------------  ------------------------ //
 ASTNode* Parser::parseStatement()
 {
 	if (!_check(WORD))
 	{
-		addError(
+		_addError(
 			CompilerError::expectedNameError("Expected directive or block name", _peek().location));
 		_synchronize();
 		return (NULL);
@@ -85,8 +117,10 @@ ASTNode* Parser::parseStatement()
 			_advance(); // Consome o RBRACE
 		else
 		{
-			addError(CompilerError::expectedRightBraceError("Expected '}' to close block",
-															_peek().location));
+			std::string	  expectedTokens = "'}' to close block";
+			CompilerError error =
+				CompilerError::expectedRightBraceError(expectedTokens, _peek().location);
+			_addError(error);
 			_synchronize();
 		}
 
@@ -104,10 +138,65 @@ ASTNode* Parser::parseStatement()
 	}
 	else
 	{
-		addError(CompilerError::unepxectedTokenError("Expected '{' for block or ';' for directive",
-													 _peek().location));
+		std::string	  expectedTokens = "'{' for block or ';' for directive";
+		CompilerError error = CompilerError::unepxectedTokenError(expectedTokens, _peek().location);
+		_addError(error);
+
 		_synchronize();
 		return (NULL);
+	}
+}
+
+// ------------------------  ------------------------ //
+
+ASTRoot* Parser::parseConfig()
+{
+	ASTRoot* root = new ASTRoot();
+	while (!_isAtEnd())
+	{
+		ASTNode* statement = parseStatement();
+		if (statement)
+			root->addStatement(statement);
+		else
+			_synchronize();
+	}
+	return root;
+}
+
+// ------------------------ MAIN METHODS ------------------------ //
+ASTResult Parser::parser()
+{
+	_astRoot = parseConfig();
+	if (hasErrors())
+	{
+		delete _astRoot;
+		_astRoot = NULL;
+		return ASTResult(getErrors());
+	}
+	return ASTResult(_astRoot);
+}
+
+// ------------------------ UTILS ------------------------ //
+
+bool Parser::_isValueToken(TokenType type) const
+{
+	return type == WORD || type == NUMBER || type == STRING || type == PATH;
+}
+
+ASTValueType Parser::_convertTokenTypeToAstValue(TokenType type) const
+{
+	switch (type)
+	{
+	case WORD:
+		return AST_VALUE_IDENTIFIER;
+	case NUMBER:
+		return AST_VALUE_NUMBER;
+	case STRING:
+		return AST_VALUE_STRING;
+	case PATH:
+		return AST_VALUE_PATH;
+	default:
+		return AST_VALUE_UNDEFINED;
 	}
 }
 
@@ -124,15 +213,6 @@ void Parser::_synchronize()
 	}
 }
 
-ASTRoot* Parser::parseConfig()
-{
-	ASTRoot* root = new ASTRoot();
-	while (!_isAtEnd())
-	{
-		ASTNode* statement = parseStatement();
-	}
-}
-
 bool Parser::_isAtEnd() const { return _peek().type == EOF_TOKEN; }
 
 bool Parser::_check(TokenType expected) const
@@ -142,65 +222,6 @@ bool Parser::_check(TokenType expected) const
 	return _peek().type == expected;
 }
 
-// ------------------------ OCCF ------------------------ //
-Parser::Parser(std::vector<Token>* tokens) : _tokens(tokens), _current(0) {}
-
-Parser::~Parser() {}
-
-Token Parser::_peek() const
-{
-	if (_current < _tokens->size())
-		return _tokens->at(_current);
-	return Token();
-}
-
-// ------------------------ NAVIGATION ------------------------ //
-
-Token Parser::_advance()
-{
-	if (_current < _tokens->size())
-		return _tokens->at(_current++);
-	return Token();
-}
-
-bool Parser::_match(TokenType expected)
-{
-	if (_peek().type == expected)
-	{
-		_advance();
-		return true;
-	}
-	return false;
-}
-
-// ------------------------ ERROR METHODS ------------------------ //
-ErrorList Parser::getErrors() const { return _errors; }
-
-void Parser::addError(const CompilerError& error) { _errors.addError(error); }
-
-// ------------------------ PARSE METHODS ------------------------ //
-ASTValue* Parser::parseValue()
-{
-	if (!_isValueToken(_peek().type))
-	{
-		addError(CompilerError::expectedValueError(
-			"Expected a value (identifier, number, string, or path)", _peek().location));
-		return (NULL);
-	}
-	Token		 valueToken = _advance();
-	ASTValueType valueType	= _convertTokenTypeToAstValue(valueToken.type);
-	return new ASTValue(valueType, valueToken.value, valueToken.location);
-}
-
-// ------------------------ MAIN METHODS ------------------------ //
-void Parser::parse()
-{
-	while (_peek().type != EOF_TOKEN)
-	{
-		Token currentToken = _peek();
-		std::cout << "Parsing token: " << currentToken.toString() << std::endl;
-		_advance();
-	}
-}
+bool Parser::hasErrors() const { return _errors.hasErrors(); }
 
 // que bagunça

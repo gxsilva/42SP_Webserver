@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 18:06:36 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/04 00:39:52 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 
 #include "../../application/use_cases/CompileSourceFile.hpp"
 #include "../../domain/entities/Token.hpp"
+#include "../../domain/services/Parser.hpp"
+#include "../../infrastructure/common/ASTResult.hpp"
 #include "../../infrastructure/common/TokenResult.hpp"
 #include "../../infrastructure/logging/Logger.hpp"
 
@@ -65,7 +67,18 @@ int main(int argc, const char** argv)
 	}
 
 	std::vector<Token>* tokens = res.unwrap();
-	Debugger::logTokens(*tokens);
 
+	Debugger::logTokens(*tokens);
+	ASTResult astRes = Parser(tokens).parser();
+
+	if (astRes.isErr())
+	{
+		const ErrorList& errors = astRes.error();
+		errors.formatAllErrors();
+		logger.log("Failed to parse tokens from source file: " + std::string(argv[1]), ERROR);
+		return (1);
+	}
+	ASTNode* astRoot = astRes.unwrap();
+	astRoot->toString();
 	return (0);
 }
