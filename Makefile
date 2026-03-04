@@ -27,6 +27,7 @@ OBJ_DIR				= obj
 
 DOMAIN_DIR				= $(SRCS_DIR)/domain
 D_ENTITIES_DIR			= $(DOMAIN_DIR)/entities
+D_AST_DIR				= $(D_ENTITIES_DIR)/ast
 D_ERRORS_DIR			= $(DOMAIN_DIR)/errors
 D_SERVICES_DIR			= $(DOMAIN_DIR)/services
 D_VALUE_OBJECTS_DIR		= $(DOMAIN_DIR)/value_objects
@@ -51,7 +52,8 @@ DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 					$(D_ENTITIES_DIR)/Token.cpp \
 					$(D_ERRORS_DIR)/CompilerError.cpp \
 					$(D_ERRORS_DIR)/ErrorList.cpp \
-					$(D_SERVICES_DIR)/Lexer.cpp 
+					$(D_SERVICES_DIR)/Lexer.cpp \
+					$(D_AST_DIR)/base/ASTNode.cpp 
 
 INTERFACE_SRCS	= $(CLI_DIR)/main.cpp
 
