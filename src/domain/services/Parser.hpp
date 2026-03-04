@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 21:24:34 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 21:39:34 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/03 23:31:18 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,13 @@
 
 #include "../entities/Token.hpp"
 #include "../errors/ErrorList.hpp"
+#include "../value_objects/TokenType.hpp"
+
+#include "../entities/ast/base/ASTNode.hpp"
+#include "../entities/ast/node/ASTBlock.hpp"
+#include "../entities/ast/node/ASTRoot.hpp"
+#include "../entities/ast/node/ASTValue.hpp"
+
 #include <vector>
 
 /*
@@ -52,43 +59,33 @@ class Parser
 		std::vector<Token>* _tokens;
 		size_t				_current;
 		ErrorList			_errors;
+		ASTRoot*			_astRoot;
 
 		Token _peek() const;
 		Token _advance();
+
+		bool _match(TokenType expected);
+		bool _isAtEnd() const;
+		bool _isValueToken(TokenType type) const;
+		bool _check(TokenType expected) const;
+
+		void		 _synchronize();
+		ASTValueType _convertTokenTypeToAstValue(TokenType type) const;
 
 	public:
 		Parser(std::vector<Token>* tokens);
 		~Parser();
 
 		void parse();
+
+		void	  addError(const CompilerError& error);
+		ErrorList getErrors() const;
+
+		ASTValue* parseValue();
+		// ASTDirective* parseDirective(const std::string& name, const SourceLocation& loc);
+		// ASTBlock* parseBlock(const std::string& name, const SourceLocation& loc);
+		ASTNode* parseStatement();
+		ASTRoot* parseConfig();
 };
-
-Parser::Parser(std::vector<Token>* tokens) : _tokens(tokens), _current(0) {}
-
-Parser::~Parser() {}
-
-Token Parser::_peek() const
-{
-	if (_current < _tokens->size())
-		return _tokens->at(_current);
-	return Token();
-}
-
-Token Parser::_advance()
-{
-	if (_current < _tokens->size())
-		return _tokens->at(_current++);
-	return Token();
-}
-
-void Parser::parse()
-{
-	while (_peek().type != EOF_TOKEN)
-	{
-		Token currentToken = _peek();
-		std::cout << "Parsing token: " << currentToken.toString() << std::endl;
-		_advance();
-	}
-}
 
 #endif /* PARSER_HPP */

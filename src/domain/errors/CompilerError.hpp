@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 22:19:10 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 17:39:51 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/03 23:25:54 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ class CompilerError
 
 		std::string format() const;
 		// ------------------------ FACTORY METHODS ------------------------ //
+		// File-related errors
 		static CompilerError emptyPathError(const std::string& path);
 		static CompilerError fileNotFoundError(const std::string& filename);
 		static CompilerError permissionDeniedError(const std::string& filename);
@@ -57,6 +58,12 @@ class CompilerError
 		static CompilerError unregonizedCharacterError(const SourceLocation& location, char c);
 		static CompilerError notARegularFileError(const std::string& filename);
 		static CompilerError invalidBinaryFileError(const std::string& filename);
+
+		// Parsing-related errors
+		static CompilerError expectedNameError(const std::string&	 message,
+											   const SourceLocation& location);
+		static CompilerError expectedValueError(const std::string&	  message,
+												const SourceLocation& location);
 };
 
 #endif /* COMPILERERROR_HPP */

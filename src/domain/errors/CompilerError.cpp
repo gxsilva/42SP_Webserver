@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 22:29:41 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 17:40:05 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/03 23:26:11 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ std::string CompilerError::_errorCodeToString(ErrorCode code)
 		return "ERROR_UNTERMINATED_STRING_LITERAL";
 	case ERROR_UNRECOGNIZED_CHARACTER:
 		return "ERROR_UNRECOGNIZED_CHARACTER";
+	case ERROR_EXPECTED_NAME:
+		return "ERROR_EXPECTED_NAME";
 	default:
 		return "Error not registered in the system.";
 	}
@@ -175,5 +177,31 @@ CompilerError CompilerError::invalidBinaryFileError(const std::string& filename)
 	err.has_hint	 = true;
 	err.hint = "The file appears to be a binary file. Ensure that you are providing a valid source "
 			   "code file.";
+	return err;
+}
+
+CompilerError CompilerError::expectedNameError(const std::string&	 message,
+											   const SourceLocation& location)
+{
+	CompilerError err;
+	err.code		 = ERROR_EXPECTED_NAME;
+	err.severity	 = SEVERITY_ERROR;
+	err.message		 = message;
+	err.has_location = true;
+	err.location	 = location;
+	err.has_hint	 = false;
+	return err;
+}
+
+CompilerError CompilerError::expectedValueError(const std::string&	  message,
+												const SourceLocation& location)
+{
+	CompilerError err;
+	err.code		 = ERROR_EXPECTED_VALUE;
+	err.severity	 = SEVERITY_ERROR;
+	err.message		 = message;
+	err.has_location = true;
+	err.location	 = location;
+	err.has_hint	 = false;
 	return err;
 }
