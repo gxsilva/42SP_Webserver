@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 22:29:41 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 23:26:11 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/03 23:49:11 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,6 +198,32 @@ CompilerError CompilerError::expectedValueError(const std::string&	  message,
 {
 	CompilerError err;
 	err.code		 = ERROR_EXPECTED_VALUE;
+	err.severity	 = SEVERITY_ERROR;
+	err.message		 = message;
+	err.has_location = true;
+	err.location	 = location;
+	err.has_hint	 = false;
+	return err;
+}
+
+CompilerError CompilerError::expectedRightBraceError(const std::string&	   message,
+													 const SourceLocation& location)
+{
+	CompilerError err;
+	err.code		 = ERROR_EXPECTED_LEFT_BRACE;
+	err.severity	 = SEVERITY_ERROR;
+	err.message		 = message;
+	err.has_location = true;
+	err.location	 = location;
+	err.has_hint	 = false;
+	return err;
+}
+
+CompilerError CompilerError::unepxectedTokenError(const std::string&	message,
+												  const SourceLocation& location)
+{
+	CompilerError err;
+	err.code		 = ERROR_UNEXPECTED_TOKEN;
 	err.severity	 = SEVERITY_ERROR;
 	err.message		 = message;
 	err.has_location = true;

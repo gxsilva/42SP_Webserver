@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 22:19:10 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 23:25:54 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/03 23:48:35 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,10 @@ class CompilerError
 											   const SourceLocation& location);
 		static CompilerError expectedValueError(const std::string&	  message,
 												const SourceLocation& location);
+		static CompilerError expectedRightBraceError(const std::string&	   message,
+													 const SourceLocation& location);
+		static CompilerError unepxectedTokenError(const std::string&	message,
+												  const SourceLocation& location);
 };
 
 #endif /* COMPILERERROR_HPP */
