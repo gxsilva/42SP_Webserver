@@ -53,7 +53,11 @@ DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 					$(D_ERRORS_DIR)/CompilerError.cpp \
 					$(D_ERRORS_DIR)/ErrorList.cpp \
 					$(D_SERVICES_DIR)/Lexer.cpp \
-					$(D_AST_DIR)/base/ASTNode.cpp 
+					$(D_AST_DIR)/base/ASTNode.cpp \
+					$(D_AST_DIR)/node/ASTValue.cpp \
+					$(D_AST_DIR)/node/ASTDirective.cpp \
+					$(D_AST_DIR)/node/ASTBlock.cpp \
+					$(D_AST_DIR)/node/ASTRoot.cpp 
 
 INTERFACE_SRCS	= $(CLI_DIR)/main.cpp
 
