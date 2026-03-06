@@ -6,7 +6,10 @@ FileDescriptor::FileDescriptor()
 
 FileDescriptor::FileDescriptor(int fd) 
 : _fd(fd)
-{}
+{
+    if (fd < 0)
+        throw std::invalid_argument("File descriptor can't be negative!");
+}
 
 FileDescriptor::~FileDescriptor()
 {

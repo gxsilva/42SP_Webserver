@@ -42,6 +42,8 @@ void	EpollManager::modifyFd(int fd, unsigned int event)
 
 void	EpollManager::removeFd(int fd)
 {
+	if (fd < 0)
+        return;
 	epoll_ctl(_epollFd, EPOLL_CTL_DEL, fd, NULL);
 }
 
