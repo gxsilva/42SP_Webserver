@@ -5,20 +5,21 @@
 #include "../errors/ValidationError.hpp"
 #include <string>
 
+// TODO: fazer validação de mais coisas depois (ex: content-length, etc)
 class HttpRequestValidator {
-public:
-    HttpRequestValidator();
-    ~HttpRequestValidator();
+    public:
+        HttpRequestValidator();
+        ~HttpRequestValidator();
 
-    // Returns empty string if valid, error message if invalid
-    std::string validate(const HttpRequest &req) const;
+        std::string validate(const HttpRequest &req) const;
 
-private:
-    bool isValidMethod(const std::string &method) const;
-    bool isValidVersion(const std::string &version) const;
-    bool isValidUri(const std::string &uri) const;
-    bool hasRequiredHeaders(const HttpRequest &req) const;
-    bool isValidContentLength(const HttpRequest &req) const;
+    private:
+        std::string toUpperCase(const std::string &str) const;
+        bool isValidMethod(const std::string &method) const;
+        bool isValidVersion(const std::string &version) const;
+        bool isValidUri(const std::string &uri) const;
+        bool hasRequiredHeaders(const HttpRequest &req) const;
+        bool isValidContentLength(const HttpRequest &req) const;
 };
 
 #endif // HTTPREQUESTVALIDATOR_HPP

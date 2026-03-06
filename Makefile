@@ -17,7 +17,8 @@ CXX			= c++
 CXXSTD		= -std=c++98
 CXXWARN		= -Wall -Wextra -Werror -Wshadow
 CXXDEP		= -MMD -MP
-CXXFLAGS	= $(CXXSTD) $(CXXWARN) $(CXXDEP)
+CXXDEBUG	= -g -O0
+CXXFLAGS	= $(CXXSTD) $(CXXWARN) $(CXXDEP) $(CXXDEBUG)
 
 REQ_TOOLS	= clang-format clang-tidy bear
 

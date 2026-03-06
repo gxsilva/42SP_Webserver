@@ -81,7 +81,6 @@ class TestPostWithBody : public TestCase {
         }
 };
 
-// String literals colocadas lado a lado são concatenadas automaticamente.
 class TestMultipleHeaders : public TestCase {
     public:
         TestMultipleHeaders() : TestCase("Multiple headers parsing") {}

@@ -2,18 +2,24 @@
 #include <sstream>
 #include <cstdlib>
 
-// criar constantes ou entitidades para para valores que podemos receber (métodos, versões, etc)
-
 HttpRequestValidator::HttpRequestValidator() {}
 
 HttpRequestValidator::~HttpRequestValidator() {}
 
+std::string HttpRequestValidator::toUpperCase(const std::string &str) const {
+    std::string result = str;
+    for (size_t i = 0; i < result.length(); ++i) {
+        result[i] = std::toupper(result[i]);
+    }
+    return result;
+}
+
 std::string HttpRequestValidator::validate(const HttpRequest &req) const {
-    if (!isValidMethod(req.getMethod())) {
+    if (!isValidMethod(toUpperCase(req.getMethod()))) {
         return "Invalid HTTP method: " + req.getMethod();
     }
 
-    if (!isValidVersion(req.getVersion())) {
+    if (!isValidVersion(toUpperCase(req.getVersion()))) {
         return "Invalid HTTP version: " + req.getVersion() + ". Only HTTP/1.0 is supported.";
     }
 
@@ -32,12 +38,10 @@ std::string HttpRequestValidator::validate(const HttpRequest &req) const {
     return std::string();
 }
 
-// headers são case insensitive, faz sentido fazer a validação desse jeito?
 bool HttpRequestValidator::isValidMethod(const std::string &method) const {
     return (method == "GET" || method == "POST" || method == "DELETE");
 }
 
-// tratar case sensitive aqui
 bool HttpRequestValidator::isValidVersion(const std::string &version) const {
     return (version == "HTTP/1.0");
 }
@@ -47,19 +51,35 @@ bool HttpRequestValidator::isValidUri(const std::string &uri) const {
 }
 
 bool HttpRequestValidator::hasRequiredHeaders(const HttpRequest &req) const {
-    const std::map<std::string, std::string> &headers = req.getHeaders();
-    return headers.find("Host") != headers.end();
+    std::map<std::string, std::string>::const_iterator itBegin = req.getHeaders().begin();
+    std::map<std::string, std::string>::const_iterator itEnd = req.getHeaders().end();
+    
+    while (itBegin != itEnd) {
+         if (toUpperCase(itBegin->first) == "HOST") {
+             return true;
+         }
+         ++itBegin;
+    }
+    return false;
 }
 
 bool HttpRequestValidator::isValidContentLength(const HttpRequest &req) const {
-    const std::map<std::string, std::string> &headers = req.getHeaders();
-    std::map<std::string, std::string>::const_iterator it = headers.find("Content-Length");
+    std::map<std::string, std::string>::const_iterator itBegin = req.getHeaders().begin();
+    std::map<std::string, std::string>::const_iterator itEnd = req.getHeaders().end();
     
-    if (it == headers.end()) {
+    while (itBegin != itEnd) {
+        if (toUpperCase(itBegin->first) == "CONTENT-LENGTH") {
+            break;
+        }
+         ++itBegin;
+    }  
+
+    // Content-Length is optional
+    if (itBegin == itEnd) {
         return true;
     }
 
-    const std::string &contentLengthStr = it->second;
+    const std::string &contentLengthStr = itBegin->second;
     
     if (contentLengthStr.empty()) {
         return false;

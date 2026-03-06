@@ -6,235 +6,224 @@
 #include "../src/domain/services/HttpRequestValidator.hpp"
 
 class TestCase {
-public:
-    TestCase(const char *name) : name_(name), passed_(true) {}
-    
-    virtual ~TestCase() {}
-    
-    virtual void run() = 0;
-    
-    void assertEqual(const std::string &actual, const std::string &expected, const char *msg) {
-        if (actual != expected) {
-            std::cerr << "  FAIL: " << msg << std::endl;
-            std::cerr << "    Expected: \"" << expected << "\"" << std::endl;
-            std::cerr << "    Got:      \"" << actual << "\"" << std::endl;
-            passed_ = false;
+    public:
+        TestCase(const char *name) : name_(name), passed_(true) {}
+        
+        virtual ~TestCase() {}
+        
+        virtual void run() = 0;
+        
+        void assertEqual(const std::string &actual, const std::string &expected, const char *msg) {
+            if (actual != expected) {
+                std::cerr << "  FAIL: " << msg << std::endl;
+                std::cerr << "    Expected: \"" << expected << "\"" << std::endl;
+                std::cerr << "    Got:      \"" << actual << "\"" << std::endl;
+                passed_ = false;
+            }
         }
-    }
-    
-    void assertTrue(bool condition, const char *msg) {
-        if (!condition) {
-            std::cerr << "  FAIL: " << msg << std::endl;
-            passed_ = false;
+        
+        void assertTrue(bool condition, const char *msg) {
+            if (!condition) {
+                std::cerr << "  FAIL: " << msg << std::endl;
+                passed_ = false;
+            }
         }
-    }
-    
-    void assertFalse(bool condition, const char *msg) {
-        if (condition) {
-            std::cerr << "  FAIL: " << msg << std::endl;
-            passed_ = false;
+        
+        void assertFalse(bool condition, const char *msg) {
+            if (condition) {
+                std::cerr << "  FAIL: " << msg << std::endl;
+                passed_ = false;
+            }
         }
-    }
-    
-    void printResult() {
-        if (passed_) {
-            std::cout << "  [PASS] " << name_ << std::endl;
-        } else {
-            std::cout << "  [FAIL] " << name_ << std::endl;
+        
+        void printResult() {
+            if (passed_) {
+                std::cout << "  [PASS] " << name_ << std::endl;
+            } else {
+                std::cout << "  [FAIL] " << name_ << std::endl;
+            }
         }
-    }
-    
-    bool isPassed() const {
-        return passed_;
-    }
+        
+        bool isPassed() const {
+            return passed_;
+        }
 
-protected:
-    const char *name_;
-    bool passed_;
+    protected:
+        const char *name_;
+        bool passed_;
 };
 
-// Test: Valid GET request
 class TestValidGetRequest : public TestCase {
-public:
-    TestValidGetRequest() : TestCase("Valid GET request passes validation") {}
-    
-    void run() {
-        std::string raw = "GET /index.html HTTP/1.0\r\nHost: localhost\r\n\r\n";
-        HttpRequestParser parser;
-        HttpRequest req = parser.parse(raw);
-        HttpRequestValidator validator;
+    public:
+        TestValidGetRequest() : TestCase("Valid GET request passes validation") {}
         
-        std::string error = validator.validate(req);
-        assertEqual(error, "", "Valid GET request should produce no error");
-    }
+        void run() {
+            std::string raw = "GET /index.html HTTP/1.0\r\nHost: localhost\r\n\r\n";
+            HttpRequestParser parser;
+            HttpRequest req = parser.parse(raw);
+            HttpRequestValidator validator;
+            
+            std::string error = validator.validate(req);
+            assertEqual(error, "", "Valid GET request should produce no error");
+        }
 };
 
-// Test: Valid POST request with body
 class TestValidPostRequest : public TestCase {
-public:
-    TestValidPostRequest() : TestCase("Valid POST request with body passes validation") {}
-    
-    void run() {
-        std::string body = "data=value";
-        std::string raw = "POST /api/submit HTTP/1.0\r\nHost: example.com\r\nContent-Length: 10\r\n\r\n" + body;
-        HttpRequestParser parser;
-        HttpRequest req = parser.parse(raw);
-        HttpRequestValidator validator;
+    public:
+        TestValidPostRequest() : TestCase("Valid POST request with body passes validation") {}
         
-        std::string error = validator.validate(req);
-        assertEqual(error, "", "Valid POST request should produce no error");
-    }
+        void run() {
+            std::string body = "data=value";
+            std::string raw = "POST /api/submit HTTP/1.0\r\nHost: example.com\r\nContent-Length: 10\r\n\r\n" + body;
+            HttpRequestParser parser;
+            HttpRequest req = parser.parse(raw);
+            HttpRequestValidator validator;
+            
+            std::string error = validator.validate(req);
+            assertEqual(error, "", "Valid POST request should produce no error");
+        }
 };
 
-// Test: Valid DELETE request
 class TestValidDeleteRequest : public TestCase {
-public:
-    TestValidDeleteRequest() : TestCase("Valid DELETE request passes validation") {}
-    
-    void run() {
-        std::string raw = "DELETE /resource/123 HTTP/1.0\r\nHost: api.example.com\r\n\r\n";
-        HttpRequestParser parser;
-        HttpRequest req = parser.parse(raw);
-        HttpRequestValidator validator;
+    public:
+        TestValidDeleteRequest() : TestCase("Valid DELETE request passes validation") {}
         
-        std::string error = validator.validate(req);
-        assertEqual(error, "", "Valid DELETE request should produce no error");
-    }
+        void run() {
+            std::string raw = "DELETE /resource/123 HTTP/1.0\r\nHost: api.example.com\r\n\r\n";
+            HttpRequestParser parser;
+            HttpRequest req = parser.parse(raw);
+            HttpRequestValidator validator;
+            
+            std::string error = validator.validate(req);
+            assertEqual(error, "", "Valid DELETE request should produce no error");
+        }
 };
 
-// Test: Invalid method
 class TestInvalidMethod : public TestCase {
-public:
-    TestInvalidMethod() : TestCase("Invalid HTTP method is rejected") {}
-    
-    void run() {
-        std::string raw = "PUT /resource HTTP/1.0\r\nHost: localhost\r\n\r\n";
-        HttpRequestParser parser;
-        HttpRequest req = parser.parse(raw);
-        HttpRequestValidator validator;
+    public:
+        TestInvalidMethod() : TestCase("Invalid HTTP method is rejected") {}
         
-        std::string error = validator.validate(req);
-        assertTrue(!error.empty(), "Invalid method should produce error");
-        assertTrue(error.find("Invalid HTTP method") != std::string::npos, "Error should mention invalid method");
-    }
+        void run() {
+            std::string raw = "PUT /resource HTTP/1.0\r\nHost: localhost\r\n\r\n";
+            HttpRequestParser parser;
+            HttpRequest req = parser.parse(raw);
+            HttpRequestValidator validator;
+            
+            std::string error = validator.validate(req);
+            assertTrue(!error.empty(), "Invalid method should produce error");
+            assertTrue(error.find("Invalid HTTP method") != std::string::npos, "Error should mention invalid method");
+        }
 };
 
-// Test: Invalid version (HTTP/1.1)
 class TestInvalidVersion : public TestCase {
-public:
-    TestInvalidVersion() : TestCase("HTTP/1.1 version is rejected") {}
-    
-    void run() {
-        std::string raw = "GET / HTTP/1.1\r\nHost: localhost\r\n\r\n";
-        HttpRequestParser parser;
-        HttpRequest req = parser.parse(raw);
-        HttpRequestValidator validator;
+    public:
+        TestInvalidVersion() : TestCase("HTTP/1.1 version is rejected") {}
         
-        std::string error = validator.validate(req);
-        assertTrue(!error.empty(), "HTTP/1.1 should produce error");
-        assertTrue(error.find("Invalid HTTP version") != std::string::npos, "Error should mention invalid version");
-    }
+        void run() {
+            std::string raw = "GET / HTTP/1.1\r\nHost: localhost\r\n\r\n";
+            HttpRequestParser parser;
+            HttpRequest req = parser.parse(raw);
+            HttpRequestValidator validator;
+            
+            std::string error = validator.validate(req);
+            assertTrue(!error.empty(), "HTTP/1.1 should produce error");
+            assertTrue(error.find("Invalid HTTP version") != std::string::npos, "Error should mention invalid version");
+        }
 };
 
-// Test: Missing Host header
 class TestMissingHostHeader : public TestCase {
-public:
-    TestMissingHostHeader() : TestCase("Missing Host header is rejected") {}
-    
-    void run() {
-        std::string raw = "GET / HTTP/1.0\r\n\r\n";
-        HttpRequestParser parser;
-        HttpRequest req = parser.parse(raw);
-        HttpRequestValidator validator;
+    public:
+        TestMissingHostHeader() : TestCase("Missing Host header is rejected") {}
         
-        std::string error = validator.validate(req);
-        assertTrue(!error.empty(), "Missing Host header should produce error");
-        assertTrue(error.find("Host") != std::string::npos, "Error should mention Host header");
-    }
+        void run() {
+            std::string raw = "GET / HTTP/1.0\r\n\r\n";
+            HttpRequestParser parser;
+            HttpRequest req = parser.parse(raw);
+            HttpRequestValidator validator;
+            
+            std::string error = validator.validate(req);
+            assertTrue(!error.empty(), "Missing Host header should produce error");
+            assertTrue(error.find("Host") != std::string::npos, "Error should mention Host header");
+        }
 };
 
-// Test: Empty URI
 class TestEmptyUri : public TestCase {
-public:
-    TestEmptyUri() : TestCase("Empty URI is rejected") {}
-    
-    void run() {
-        std::string raw = "GET  HTTP/1.0\r\nHost: localhost\r\n\r\n";
-        HttpRequestParser parser;
-        HttpRequest req = parser.parse(raw);
-        HttpRequestValidator validator;
+    public:
+        TestEmptyUri() : TestCase("Empty URI is rejected") {}
         
-        std::string error = validator.validate(req);
-        assertTrue(!error.empty(), "Empty URI should produce error");
-        assertTrue(error.find("URI") != std::string::npos || error.find("Invalid") != std::string::npos, 
-                  "Error should mention URI");
-    }
+        void run() {
+            std::string raw = "GET  HTTP/1.0\r\nHost: localhost\r\n\r\n";
+            HttpRequestParser parser;
+            HttpRequest req = parser.parse(raw);
+            HttpRequestValidator validator;
+            
+            std::string error = validator.validate(req);
+            assertTrue(!error.empty(), "Empty URI should produce error");
+            assertTrue(error.find("URI") != std::string::npos || error.find("Invalid") != std::string::npos, 
+                    "Error should mention URI");
+        }
 };
 
-// Test: Invalid Content-Length (negative)
 class TestInvalidContentLengthNegative : public TestCase {
-public:
-    TestInvalidContentLengthNegative() : TestCase("Negative Content-Length is rejected") {}
-    
-    void run() {
-        std::string raw = "POST / HTTP/1.0\r\nHost: localhost\r\nContent-Length: -10\r\n\r\n";
-        HttpRequestParser parser;
-        HttpRequest req = parser.parse(raw);
-        HttpRequestValidator validator;
+    public:
+        TestInvalidContentLengthNegative() : TestCase("Negative Content-Length is rejected") {}
         
-        std::string error = validator.validate(req);
-        assertTrue(!error.empty(), "Negative Content-Length should produce error");
-        assertTrue(error.find("Content-Length") != std::string::npos, "Error should mention Content-Length");
-    }
+        void run() {
+            std::string raw = "POST / HTTP/1.0\r\nHost: localhost\r\nContent-Length: -10\r\n\r\n";
+            HttpRequestParser parser;
+            HttpRequest req = parser.parse(raw);
+            HttpRequestValidator validator;
+            
+            std::string error = validator.validate(req);
+            assertTrue(!error.empty(), "Negative Content-Length should produce error");
+            assertTrue(error.find("Content-Length") != std::string::npos, "Error should mention Content-Length");
+        }
 };
 
-// Test: Invalid Content-Length (non-numeric)
 class TestInvalidContentLengthNonNumeric : public TestCase {
-public:
-    TestInvalidContentLengthNonNumeric() : TestCase("Non-numeric Content-Length is rejected") {}
-    
-    void run() {
-        std::string raw = "POST / HTTP/1.0\r\nHost: localhost\r\nContent-Length: abc\r\n\r\n";
-        HttpRequestParser parser;
-        HttpRequest req = parser.parse(raw);
-        HttpRequestValidator validator;
+    public:
+        TestInvalidContentLengthNonNumeric() : TestCase("Non-numeric Content-Length is rejected") {}
         
-        std::string error = validator.validate(req);
-        assertTrue(!error.empty(), "Non-numeric Content-Length should produce error");
-        assertTrue(error.find("Content-Length") != std::string::npos, "Error should mention Content-Length");
-    }
+        void run() {
+            std::string raw = "POST / HTTP/1.0\r\nHost: localhost\r\nContent-Length: abc\r\n\r\n";
+            HttpRequestParser parser;
+            HttpRequest req = parser.parse(raw);
+            HttpRequestValidator validator;
+            
+            std::string error = validator.validate(req);
+            assertTrue(!error.empty(), "Non-numeric Content-Length should produce error");
+            assertTrue(error.find("Content-Length") != std::string::npos, "Error should mention Content-Length");
+        }
 };
 
-// Test: Valid Content-Length (zero)
 class TestValidContentLengthZero : public TestCase {
-public:
-    TestValidContentLengthZero() : TestCase("Zero Content-Length is valid") {}
-    
-    void run() {
-        std::string raw = "POST / HTTP/1.0\r\nHost: localhost\r\nContent-Length: 0\r\n\r\n";
-        HttpRequestParser parser;
-        HttpRequest req = parser.parse(raw);
-        HttpRequestValidator validator;
+    public:
+        TestValidContentLengthZero() : TestCase("Zero Content-Length is valid") {}
         
-        std::string error = validator.validate(req);
-        assertEqual(error, "", "Zero Content-Length should be valid");
-    }
+        void run() {
+            std::string raw = "POST / HTTP/1.0\r\nHost: localhost\r\nContent-Length: 0\r\n\r\n";
+            HttpRequestParser parser;
+            HttpRequest req = parser.parse(raw);
+            HttpRequestValidator validator;
+            
+            std::string error = validator.validate(req);
+            assertEqual(error, "", "Zero Content-Length should be valid");
+        }
 };
 
-// Test: Optional Content-Length (absent)
 class TestOptionalContentLength : public TestCase {
-public:
-    TestOptionalContentLength() : TestCase("Missing Content-Length is optional and valid") {}
-    
-    void run() {
-        std::string raw = "POST / HTTP/1.0\r\nHost: localhost\r\n\r\n";
-        HttpRequestParser parser;
-        HttpRequest req = parser.parse(raw);
-        HttpRequestValidator validator;
+    public:
+        TestOptionalContentLength() : TestCase("Missing Content-Length is optional and valid") {}
         
-        std::string error = validator.validate(req);
-        assertEqual(error, "", "Missing Content-Length should be optional");
-    }
+        void run() {
+            std::string raw = "POST / HTTP/1.0\r\nHost: localhost\r\n\r\n";
+            HttpRequestParser parser;
+            HttpRequest req = parser.parse(raw);
+            HttpRequestValidator validator;
+            
+            std::string error = validator.validate(req);
+            assertEqual(error, "", "Missing Content-Length should be optional");
+        }
 };
 
 int main() {
