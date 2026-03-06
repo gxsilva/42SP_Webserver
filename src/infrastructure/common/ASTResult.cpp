@@ -6,11 +6,19 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 00:27:49 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/04 00:27:49 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/06 00:01:52 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ASTResult.hpp"
+
+#include <cstddef>
+#include <stdexcept>
+#include <string>
+
+#include "../../domain/entities/ast/base/ASTNode.hpp"
+#include "../../domain/errors/ErrorList.hpp"
+#include "ResultBase.hpp"
 
 ASTResult::ASTResult(const ErrorList& error) : ResultBase(false), _astRoot(NULL), _errorList(error)
 {

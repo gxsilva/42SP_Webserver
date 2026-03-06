@@ -5,6 +5,8 @@ Checks: >
   performance-*,
   readability-*,
   portability-*,
+  misc-no-recursion-*,
+  readability-else-after-*,
   misc-*,
   readability-named-parameter-*,
   -modernize-*,

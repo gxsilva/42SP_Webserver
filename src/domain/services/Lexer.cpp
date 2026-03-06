@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 22:36:54 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 23:39:04 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/05 23:48:21 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,7 @@ TokenResult Lexer::tokenize()
 		if (isAtEnd())
 			break;
 
-		char c = peek();
+		const char c = peek();
 		if (c == '{')
 			tokens->push_back(scanSingle(LBRACE));
 		else if (c == '}')

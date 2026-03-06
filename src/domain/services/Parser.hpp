@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 21:24:34 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/04 00:29:46 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/06 00:08:30 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,19 +68,18 @@ class Parser
 
 		bool _match(TokenType expected);
 		bool _isAtEnd() const;
-		bool _isValueToken(TokenType type) const;
 		bool _check(TokenType expected) const;
 
-		void		 _synchronize();
-		ASTValueType _convertTokenTypeToAstValue(TokenType type) const;
+		void _synchronize();
 
 		void _addError(const CompilerError& error);
 
 		ASTValue* parseValue();
 		ASTNode*  parseStatement();
 		ASTRoot*  parseConfig();
-		// ASTDirective* parseDirective(const std::string& name, const SourceLocation& loc);
-		// ASTBlock* parseBlock(const std::string& name, const SourceLocation& loc);
+
+		static bool			_isValueToken(TokenType type);
+		static ASTValueType _convertTokenTypeToAstValue(TokenType type);
 
 	public:
 		Parser(std::vector<Token>* tokens);

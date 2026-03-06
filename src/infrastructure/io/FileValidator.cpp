@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 23:04:22 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 17:41:18 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/06 00:10:38 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ CompilerError* FileValidator::validateExists(const std::string& filepath)
 
 CompilerError* FileValidator::validateIsRegularFile(const std::string& filepath)
 {
-	struct stat fileStat;
+	struct stat fileStat = {};
 
 	if (stat(filepath.c_str(), &fileStat) != 0)
 		return new CompilerError(CompilerError::fileNotFoundError(filepath));
@@ -66,7 +66,7 @@ CompilerError* FileValidator::validateBinaryFile(const std::string& filepath)
 
 	char buffer[FileValidator::sampleSize];
 	file.read(buffer, static_cast<std::streamsize>(FileValidator::sampleSize));
-	std::streamsize bytesRead = file.gcount();
+	const std::streamsize bytesRead = file.gcount();
 	file.close();
 
 	std::size_t i = 0;

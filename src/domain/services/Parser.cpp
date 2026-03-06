@@ -6,17 +6,33 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 23:30:48 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/04 00:30:31 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/06 00:08:17 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Parser.hpp"
+
+#include <cstddef>
+#include <string>
+#include <vector>
+
+#include "../entities/SourceLocation.hpp"
+#include "../entities/Token.hpp"
+#include "../value_objects/TokenType.hpp"
+
+#include "../errors/CompilerError.hpp"
+#include "../errors/ErrorList.hpp"
+
 #include "../../infrastructure/common/ASTResult.hpp"
+
+#include "../entities/ast/base/ASTNode.hpp"
+#include "../entities/ast/node/ASTBlock.hpp"
 #include "../entities/ast/node/ASTDirective.hpp"
+#include "../entities/ast/node/ASTRoot.hpp"
 #include "../value_objects/ASTValueType.hpp"
 
 // ------------------------ OCCF ------------------------ //
-Parser::Parser(std::vector<Token>* tokens) : _tokens(tokens), _current(0) {}
+Parser::Parser(std::vector<Token>* tokens) : _tokens(tokens), _current(0), _astRoot() {}
 
 Parser::~Parser() {}
 
@@ -62,8 +78,8 @@ ASTValue* Parser::parseValue()
 			"Expected a value (identifier, number, string, or path)", _peek().location));
 		return (NULL);
 	}
-	Token		 valueToken = _advance();
-	ASTValueType valueType	= _convertTokenTypeToAstValue(valueToken.type);
+	const Token		   valueToken = _advance();
+	const ASTValueType valueType  = _convertTokenTypeToAstValue(valueToken.type);
 	return new ASTValue(valueType, valueToken.value, valueToken.location);
 }
 
@@ -78,16 +94,16 @@ ASTNode* Parser::parseStatement()
 		return (NULL);
 	}
 
-	Token		   identifierToken = _advance();
-	std::string	   directiveName   = identifierToken.value;
-	SourceLocation loc			   = identifierToken.location;
+	const Token			 identifierToken = _advance();
+	const std::string	 directiveName	 = identifierToken.value;
+	const SourceLocation loc			 = identifierToken.location;
 
 	std::vector<ASTValue*> parameters;
 
 	while (_isValueToken(_peek().type))
 	{
 		ASTValue* valueNode = parseValue();
-		if (valueNode)
+		if (valueNode != NULL)
 			parameters.push_back(valueNode);
 		else
 			_synchronize(); //?
@@ -107,7 +123,7 @@ ASTNode* Parser::parseStatement()
 		while (!_check(RBRACE) && !_isAtEnd())
 		{
 			ASTNode* child = parseStatement();
-			if (child)
+			if (child != NULL)
 				blockNode->addChild(child);
 			else
 				_synchronize();
@@ -117,8 +133,8 @@ ASTNode* Parser::parseStatement()
 			_advance(); // Consome o RBRACE
 		else
 		{
-			std::string	  expectedTokens = "'}' to close block";
-			CompilerError error =
+			const std::string	expectedTokens = "'}' to close block";
+			const CompilerError error =
 				CompilerError::expectedRightBraceError(expectedTokens, _peek().location);
 			_addError(error);
 			_synchronize();
@@ -126,25 +142,23 @@ ASTNode* Parser::parseStatement()
 
 		return blockNode;
 	}
-	else if (_check(SEMICOLON))
+	else if (!_check(SEMICOLON))
 	{
-		ASTDirective* directiveNode = new ASTDirective(directiveName, loc);
-
-		for (size_t i = 0; i < parameters.size(); ++i)
-			directiveNode->addValue(parameters[i]);
-
-		_advance(); // Consome o SEMICOLON
-		return directiveNode;
-	}
-	else
-	{
-		std::string	  expectedTokens = "'{' for block or ';' for directive";
-		CompilerError error = CompilerError::unepxectedTokenError(expectedTokens, _peek().location);
+		const std::string	expectedTokens = "'{' for block or ';' for directive";
+		const CompilerError error =
+			CompilerError::unepxectedTokenError(expectedTokens, _peek().location);
 		_addError(error);
 
 		_synchronize();
 		return (NULL);
 	}
+	ASTDirective* directiveNode = new ASTDirective(directiveName, loc);
+
+	for (size_t i = 0; i < parameters.size(); ++i)
+		directiveNode->addValue(parameters[i]);
+
+	_advance(); // Consome o SEMICOLON
+	return directiveNode;
 }
 
 // ------------------------  ------------------------ //
@@ -155,7 +169,7 @@ ASTRoot* Parser::parseConfig()
 	while (!_isAtEnd())
 	{
 		ASTNode* statement = parseStatement();
-		if (statement)
+		if (statement != NULL)
 			root->addStatement(statement);
 		else
 			_synchronize();
@@ -178,12 +192,12 @@ ASTResult Parser::parser()
 
 // ------------------------ UTILS ------------------------ //
 
-bool Parser::_isValueToken(TokenType type) const
+bool Parser::_isValueToken(TokenType type)
 {
 	return type == WORD || type == NUMBER || type == STRING || type == PATH;
 }
 
-ASTValueType Parser::_convertTokenTypeToAstValue(TokenType type) const
+ASTValueType Parser::_convertTokenTypeToAstValue(TokenType type)
 {
 	switch (type)
 	{
