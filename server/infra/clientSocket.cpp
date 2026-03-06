@@ -62,7 +62,7 @@ bool    ClientSocket::flushWriteBuffer()
         return (true);
 
     ssize_t sent = sendData(_writeBuffer.c_str(), _writeBuffer.size());
-    if (sent <= 0)
+    if (sent < 0)
         return (false);
 
     _writeBuffer.erase(0, static_cast<size_t>(sent));
