@@ -6,11 +6,15 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 20:20:10 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 22:30:45 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/05 23:28:34 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ASTNode.hpp"
+
+#include <string>
+
+#include "../../../value_objects/ASTNodeType.hpp"
 #include "../../SourceLocation.hpp"
 
 // ------------------------ OCCF ------------------------ //

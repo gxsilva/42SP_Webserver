@@ -6,13 +6,20 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 21:21:32 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 22:26:39 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/05 23:32:56 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ASTRoot.hpp"
 
+#include <cstddef>
 #include <sstream>
+#include <string>
+#include <vector>
+
+#include "../../../entities/SourceLocation.hpp"
+#include "../../../value_objects/ASTNodeType.hpp"
+#include "../base/ASTNode.hpp"
 
 ASTRoot::ASTRoot() : ASTNode(AST_NODETYPE_ROOT, SourceLocation()) {}
 

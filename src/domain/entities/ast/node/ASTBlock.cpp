@@ -6,17 +6,21 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 21:06:24 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 22:50:11 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/05 23:31:12 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ASTBlock.hpp"
 #include "ASTValue.hpp"
 
+#include <cstddef>
 #include <sstream>
+#include <string>
+#include <vector>
 
+#include "../../../entities/SourceLocation.hpp"
 #include "../../../value_objects/ASTNodeType.hpp"
-#include "../../../value_objects/ASTValueType.hpp"
+#include "../base/ASTNode.hpp"
 
 // ------------------------ OCCD ------------------------ //
 ASTBlock::ASTBlock(const std::string& name, const SourceLocation& loc)
@@ -46,7 +50,7 @@ const std::vector<ASTNode*>& ASTBlock::getChildren() const { return children_; }
 std::string ASTBlock::toString(int ident) const
 {
 	std::ostringstream oss;
-	std::string		   indent = ASTNode::indentString(ident);
+	const std::string  indent = ASTNode::indentString(ident);
 	oss << indent << "ASTBlock Name: " << name_ << "\n";
 	oss << indent << "ASTBlock Parameters:" << "\n";
 	for (size_t i = 0; i < parameters_.size(); ++i)

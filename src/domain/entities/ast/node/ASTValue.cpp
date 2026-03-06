@@ -6,13 +6,19 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 20:43:55 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 22:10:55 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/05 23:35:55 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ASTValue.hpp"
 
 #include <sstream>
+#include <string>
+
+#include "../../../entities/SourceLocation.hpp"
+#include "../../../value_objects/ASTNodeType.hpp"
+#include "../../../value_objects/ASTValueType.hpp"
+#include "../base/ASTNode.hpp"
 
 ASTValue::ASTValue(ASTValueType vtype, const std::string& value, const SourceLocation& loc)
 	: ASTNode(AST_NODETYPE_VALUE, loc), _valueType(vtype), _value(value)
