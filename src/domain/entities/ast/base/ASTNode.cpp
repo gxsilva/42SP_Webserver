@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 20:20:10 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 20:38:28 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/05 22:30:45 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,3 +26,14 @@ ASTNode::~ASTNode() {}
 ASTNodeType ASTNode::getType() const { return _type; }
 
 SourceLocation ASTNode::getLocation() const { return _location; }
+
+// ------------------------ STATIC METHODS ------------------------ //
+
+std::string ASTNode::indentString(int ident)
+{
+	std::string indent;
+
+	for (int i = 0; i < ident; ++i)
+		indent += "  ";
+	return indent;
+}

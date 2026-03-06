@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 20:44:43 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/04 00:36:45 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/05 22:16:53 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class ASTDirective : public ASTNode
 		const std::string&			  getName() const;
 		const std::vector<ASTValue*>& getValues() const;
 
-		std::string toString() const;
+		std::string toString(int ident) const;
 
 		void addValue(ASTValue* value);
 };

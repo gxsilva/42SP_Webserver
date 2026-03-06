@@ -6,12 +6,14 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 21:06:24 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/04 00:37:12 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/05 22:50:11 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ASTBlock.hpp"
 #include "ASTValue.hpp"
+
+#include <sstream>
 
 #include "../../../value_objects/ASTNodeType.hpp"
 #include "../../../value_objects/ASTValueType.hpp"
@@ -41,20 +43,22 @@ const std::vector<ASTValue*>& ASTBlock::getParameters() const { return parameter
 
 const std::vector<ASTNode*>& ASTBlock::getChildren() const { return children_; }
 
-std::string ASTBlock::toString() const
+std::string ASTBlock::toString(int ident) const
 {
-	std::string result = "Block: " + name_ + "\n";
-	result += "Parameters:\n";
+	std::ostringstream oss;
+	std::string		   indent = ASTNode::indentString(ident);
+	oss << indent << "ASTBlock Name: " << name_ << "\n";
+	oss << indent << "ASTBlock Parameters:" << "\n";
 	for (size_t i = 0; i < parameters_.size(); ++i)
 	{
-		result += "  - " + parameters_[i]->toString() + "\n";
+		oss << parameters_[i]->toString(ident + 1) + "\n";
 	}
-	result += "Children:\n";
+	oss << indent << "ASTBlock Children:\n";
 	for (size_t i = 0; i < children_.size(); ++i)
 	{
-		result += "  - " + children_[i]->toString() + "\n";
+		oss << " - " << children_[i]->toString(ident + 1) + "\n";
 	}
-	return result;
+	return oss.str();
 }
 
 void ASTBlock::addParameter(ASTValue* param) { parameters_.push_back(param); }
