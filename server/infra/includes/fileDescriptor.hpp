@@ -3,17 +3,8 @@
 
 #include <fcntl.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <iostream>
-#include <signal.h>
-#include <poll.h>
-#include <cstdlib>
-#include <cerrno>
-#include <string>
-#include <vector>
 
 class FileDescriptor
 {
