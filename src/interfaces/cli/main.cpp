@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 22:22:27 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/05 23:27:06 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,17 @@ class Debugger
 
 			std::cout << "---- End of tokens ----\n";
 		}
+
+		static void logAST(const ASTNode* node, int indent = 0)
+		{
+			if (!node)
+				return;
+			std::cout << "---- AST Node ----\n";
+
+			std::cout << std::string(indent * 2, ' ') << node->toString(indent);
+
+			std::cout << "---- End of AST Node ----\n";
+		}
 };
 
 int main(int argc, const char** argv)
@@ -68,6 +79,10 @@ int main(int argc, const char** argv)
 
 	std::vector<Token>* tokens = res.unwrap();
 
+	// ------------------------ DEVELOPMENT ------------------------ //
+	/// std::vector<Token>* tokens -> use_case -> parser -> ASTNode* astRoot -> validate AST ->
+	/// generate config object -> class Config
+
 	// Debugger::logTokens(*tokens);
 	ASTResult astRes = Parser(tokens).parser();
 
@@ -78,8 +93,11 @@ int main(int argc, const char** argv)
 		logger.log("Failed to parse tokens from source file: " + std::string(argv[1]), ERROR);
 		return (1);
 	}
+	logger.log("Successfully parsed tokens from source file: " + std::string(argv[1]), INFO);
 	ASTNode* astRoot = astRes.unwrap();
-	std::cout << astRoot->toString(0) << std::endl;
-
+	delete tokens;
+	// Debugger::logAST(astRoot);
+	(void)astRoot;
+	// delete astRoot;
 	return (0);
 }

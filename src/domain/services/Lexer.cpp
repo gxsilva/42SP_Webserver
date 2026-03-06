@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 22:36:54 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 18:07:18 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/05 23:39:04 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ Token Lexer::scanWord()
 
 	while (!isAtEnd() && (isAlpha(peek()) || isDigit(peek()) || peek() == '_'))
 		advance();
-	std::string value = _content.substr(start, _pos - start);
+	const std::string value = _content.substr(start, _pos - start);
 	return makeToken(WORD, loc, value);
 }
 
@@ -121,7 +121,7 @@ Token Lexer::scanNumber()
 
 	while (!isAtEnd() && isDigit(peek()))
 		advance();
-	std::string value = _content.substr(start, _pos - start);
+	const std::string value = _content.substr(start, _pos - start);
 	return makeToken(NUMBER, loc, value);
 }
 
@@ -157,7 +157,7 @@ Token Lexer::scanString()
 		addError(CompilerError::unterminatedStringError(currentLocation()));
 		return makeToken(UNKNOWN, loc, "");
 	}
-	std::string value = _content.substr(start, _pos - start);
+	const std::string value = _content.substr(start, _pos - start);
 	advance(); // Skip closing quote
 	return makeToken(STRING, loc, value);
 }
@@ -169,14 +169,14 @@ Token Lexer::scanPath()
 
 	while (!isAtEnd() && isPathChar(peek()))
 		advance();
-	std::string value = _content.substr(start, _pos - start);
+	const std::string value = _content.substr(start, _pos - start);
 	return makeToken(PATH, loc, value);
 }
 
 Token Lexer::scanSingle(TokenType type)
 {
 	const SourceLocation loc = currentLocation();
-	std::string			 value(1, peek());
+	const std::string	 value(1, peek());
 	advance();
 	return makeToken(type, loc, value);
 }
@@ -184,7 +184,7 @@ Token Lexer::scanSingle(TokenType type)
 Token Lexer::scanUnknown()
 {
 	const SourceLocation loc = currentLocation();
-	char				 c	 = peek();
+	const char			 c	 = peek();
 	addError(CompilerError::unregonizedCharacterError(loc, c));
 	advance();
 	return makeToken(UNKNOWN, loc, std::string(1, c));

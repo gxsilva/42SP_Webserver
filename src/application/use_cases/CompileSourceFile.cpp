@@ -6,16 +6,23 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 16:37:11 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 18:01:46 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/05 23:23:18 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CompileSourceFile.hpp"
 
+#include <cstddef>
+#include <string>
+
 #include "../../domain/errors/CompilerError.hpp"
+#include "../../domain/errors/ErrorList.hpp"
 #include "../../domain/services/Lexer.hpp"
+#include "../../infrastructure/common/LexerResult.hpp"
+#include "../../infrastructure/common/TokenResult.hpp"
 #include "../../infrastructure/io/FileReader.hpp"
 #include "../../infrastructure/io/FileValidator.hpp"
+#include "../ports/ILogger.hpp"
 
 // ------------------------ COMPILE_SOURCE_FILE.CPP ------------------------ //
 
@@ -30,13 +37,13 @@ LexerResult CompileSourceFile::loadSourceFile(const std::string& filepath)
 	CompilerError* validateErr = FileValidator::validateFile(filepath);
 	if (validateErr != NULL)
 	{
-		LexerResult result(*validateErr);
+		const LexerResult result(*validateErr);
 		delete validateErr;
 		return result;
 	}
 
 	std::string fileContent;
-	bool		readSuccess = FileReader::readFile(filepath, fileContent);
+	const bool	readSuccess = FileReader::readFile(filepath, fileContent);
 	if (!readSuccess)
 		return LexerResult(CompilerError::ioError(filepath));
 	Lexer* lexer = new Lexer(fileContent, filepath);
@@ -54,8 +61,8 @@ TokenResult CompileSourceFile::execute(const std::string& filePath, ILogger* log
 	}
 	Lexer* lexer = lexerRes.unwrap();
 	logger->log("Successfully loaded source file: " + filePath, INFO);
-	TokenResult tokenRes = lexer->tokenize();
-	lexer->internalTest();
+	const TokenResult tokenRes = lexer->tokenize();
+	//! DEBUG lexer->internalTest();
 	if (tokenRes.isErr())
 	{
 		const ErrorList& errors = tokenRes.error();
