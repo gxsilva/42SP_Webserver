@@ -30,6 +30,8 @@ void	EpollManager::addFd(int fd, short event)
 
 void	EpollManager::removeFd(int fd)
 {
+	if (fd < 0)
+        return;
 	epoll_ctl(_epollFd, EPOLL_CTL_DEL, fd, NULL);
 }
 
