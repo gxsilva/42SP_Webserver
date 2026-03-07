@@ -25,6 +25,9 @@ REQ_TOOLS	= clang-format clang-tidy bear
 SRCS_DIR			= src
 OBJ_DIR				= obj
 
+APPLICATION_DIR			= $(SRCS_DIR)/application
+SERVER_NET_DIR			= $(APPLICATION_DIR)/network
+
 DOMAIN_DIR				= $(SRCS_DIR)/domain
 D_ENTITIES_DIR			= $(DOMAIN_DIR)/entities
 D_ERRORS_DIR			= $(DOMAIN_DIR)/errors
@@ -39,6 +42,7 @@ CLI_DIR					= $(INTERFACES_DIR)/cli
 INFRA_DIR				= $(SRCS_DIR)/infrastructure
 I_COMMON_DIR			= $(INFRA_DIR)/common
 I_IO_DIR				= $(INFRA_DIR)/io
+I_NETWORK_DIR			= $(INFRA_DIR)/network
 
 # ---------------- PROVISÒRIO ----------------
 HDRS				= $(shell find . -name "*.hpp")
@@ -46,25 +50,35 @@ HDRS				= $(shell find . -name "*.hpp")
 
 # SOURCES
 
-DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
-					$(D_ENTITIES_DIR)/Token.cpp \
-					$(D_ERRORS_DIR)/CompilerError.cpp \
-					$(D_ERRORS_DIR)/ErrorList.cpp \
-					$(D_EVENTS_DIR)/epollEvents.cpp \
-					$(D_NETWORK_DIR)/ipAddr.cpp \
-					$(D_NETWORK_DIR)/port.cpp \
-					$(D_SERVICES_DIR)/Lexer.cpp 
+APPLICATION_SRCS	= $(SERVER_NET_DIR)/connectionManager.cpp \
+						$(SERVER_NET_DIR)/epollManager.cpp \
+						$(SERVER_NET_DIR)/server.cpp \
+						$(SERVER_NET_DIR)/serverHandlers.cpp
 
-INTERFACE_SRCS	= $(CLI_DIR)/main.cpp
+DOMAIN_SRCS			= $(D_ENTITIES_DIR)/SourceLocation.cpp \
+						$(D_ENTITIES_DIR)/Token.cpp \
+						$(D_ERRORS_DIR)/CompilerError.cpp \
+						$(D_ERRORS_DIR)/ErrorList.cpp \
+						$(D_EVENTS_DIR)/epollEvents.cpp \
+						$(D_NETWORK_DIR)/ipAddr.cpp \
+						$(D_NETWORK_DIR)/port.cpp \
+						$(D_SERVICES_DIR)/Lexer.cpp 
 
-INFRA_SRCS		= $(I_COMMON_DIR)/TokenResult.cpp \
-					$(I_COMMON_DIR)/LexerResult.cpp \
-					$(I_IO_DIR)/FileReader.cpp \
-					$(I_IO_DIR)/FileValidator.cpp \
-					$(INFRA_DIR)/logging/Logger.cpp
+INTERFACE_SRCS		= $(CLI_DIR)/main.cpp
+
+INFRA_SRCS			= $(I_COMMON_DIR)/TokenResult.cpp \
+						$(I_COMMON_DIR)/LexerResult.cpp \
+						$(I_IO_DIR)/FileReader.cpp \
+						$(I_IO_DIR)/FileValidator.cpp \
+						$(INFRA_DIR)/logging/Logger.cpp \
+						$(I_NETWORK_DIR)/clientSocket.cpp \
+						$(I_NETWORK_DIR)/serverSocket.cpp \
+						$(I_NETWORK_DIR)/fileDescriptor.cpp \
+						$(I_NETWORK_DIR)/testHttpResponse.cpp
 
 # EXPANSIONS
 SRC_SET				= $(INTERFACE_SRCS) \
+						$(APPLICATION_SRCS) \
 						$(DOMAIN_SRCS) \
 						$(INFRA_SRCS) \
 
