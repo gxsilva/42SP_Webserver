@@ -6,7 +6,7 @@
 #include <vector>
 #include <cstring>
 #include <stdexcept>
-#include "../../domain/includes/epollEvents.hpp"
+#include "../domain/epollEvents.hpp"
 
 class	EpollManager
 {

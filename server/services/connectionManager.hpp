@@ -1,16 +1,16 @@
 #ifndef	CONNECTIONMANAGER_HPP
 #define CONNECTIONMANAGER_HPP
 
-#include "../../infra/includes/serverSocket.hpp"
-#include "../../infra/includes/clientSocket.hpp"
-#include "../../domain/includes/epollEvents.hpp"
+#include "../infra/serverSocket.hpp"
+#include "../infra/clientSocket.hpp"
+#include "../domain/epollEvents.hpp"
 #include "epollManager.hpp"
 
 #include <vector>
 #include <poll.h>
 #include <unistd.h>
 #include <iostream>
-#include "../../infra/includes/testHttpResponse.hpp"
+#include "../infra/testHttpResponse.hpp"
 
 class	ConnectionManager
 {

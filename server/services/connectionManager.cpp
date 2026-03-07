@@ -1,4 +1,4 @@
-#include "includes/connectionManager.hpp"
+#include "connectionManager.hpp"
 
 ConnectionManager::ConnectionManager(EpollManager& epollManager, const PollCapacity& maxEvents)
 : _epollManager(epollManager),

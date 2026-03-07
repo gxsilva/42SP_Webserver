@@ -2,8 +2,8 @@
 #define SERVERSOCKET_HPP
 
 #include "fileDescriptor.hpp"
-#include "../../domain/includes/port.hpp"
-#include "../../domain/includes/ipAddr.hpp"
+#include "../domain/port.hpp"
+#include "../domain/ipAddr.hpp"
 
 class   ServerSocket
 {

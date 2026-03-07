@@ -1,4 +1,4 @@
-#include "includes/server.hpp"
+#include "server.hpp"
 
 bool    Server::handleError(const std::string& msg)
 {

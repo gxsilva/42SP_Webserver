@@ -7,12 +7,12 @@
 #include <cstddef>
 #include <sys/socket.h>
 #include <sys/epoll.h>
-#include "../../domain/includes/port.hpp"
-#include "../../domain/includes/ipAddr.hpp"
-#include "../../domain/includes/epollEvents.hpp"
-#include "../../infra/includes/fileDescriptor.hpp"
-#include "../../infra/includes/serverSocket.hpp"
-#include "../../infra/includes/clientSocket.hpp"
+#include "../domain/port.hpp"
+#include "../domain/ipAddr.hpp"
+#include "../domain/epollEvents.hpp"
+#include "../infra/fileDescriptor.hpp"
+#include "../infra/serverSocket.hpp"
+#include "../infra/clientSocket.hpp"
 #include "connectionManager.hpp"
 #include "epollManager.hpp"
 

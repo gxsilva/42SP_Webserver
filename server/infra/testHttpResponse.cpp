@@ -1,4 +1,4 @@
-#include "includes/testHttpResponse.hpp"
+#include "testHttpResponse.hpp"
 
 //por hora teste, mas depois possivelmente quando alterarmos coisas sera implementacao real
 void bufferTestHttpResponse(ClientSocket& client)
