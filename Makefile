@@ -28,6 +28,8 @@ OBJ_DIR				= obj
 DOMAIN_DIR				= $(SRCS_DIR)/domain
 D_ENTITIES_DIR			= $(DOMAIN_DIR)/entities
 D_ERRORS_DIR			= $(DOMAIN_DIR)/errors
+D_EVENTS_DIR			= $(DOMAIN_DIR)/events
+D_NETWORK_DIR			= $(DOMAIN_DIR)/network
 D_SERVICES_DIR			= $(DOMAIN_DIR)/services
 D_VALUE_OBJECTS_DIR		= $(DOMAIN_DIR)/value_objects
 
@@ -48,6 +50,9 @@ DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 					$(D_ENTITIES_DIR)/Token.cpp \
 					$(D_ERRORS_DIR)/CompilerError.cpp \
 					$(D_ERRORS_DIR)/ErrorList.cpp \
+					$(D_EVENTS_DIR)/epollEvents.cpp \
+					$(D_NETWORK_DIR)/ipAddr.cpp \
+					$(D_NETWORK_DIR)/port.cpp \
 					$(D_SERVICES_DIR)/Lexer.cpp 
 
 INTERFACE_SRCS	= $(CLI_DIR)/main.cpp
