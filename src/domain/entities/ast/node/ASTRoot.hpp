@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 21:08:07 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 22:14:26 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/09 19:12:25 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class ASTRoot : public ASTNode
 		std::vector<ASTNode*> getStatements() const;
 		void				  addStatement(ASTNode* statement);
 
-		std::string toString(int ident) const;
+		std::string toString(int indentation) const;
 };
 
 #endif /* ASTROOT_HPP */

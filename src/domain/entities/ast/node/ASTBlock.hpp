@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 20:57:47 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 22:17:38 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/09 19:12:25 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class ASTBlock : public ASTNode
 		const std::string&			  getName() const;
 		const std::vector<ASTValue*>& getParameters() const;
 		const std::vector<ASTNode*>&  getChildren() const;
-		std::string					  toString(int ident) const;
+		std::string					  toString(int indentation) const;
 		void						  addParameter(ASTValue* param);
 		void						  addChild(ASTNode* child);
 };

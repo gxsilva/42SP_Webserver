@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 21:06:24 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 23:31:12 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/09 19:12:25 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,20 +47,20 @@ const std::vector<ASTValue*>& ASTBlock::getParameters() const { return parameter
 
 const std::vector<ASTNode*>& ASTBlock::getChildren() const { return children_; }
 
-std::string ASTBlock::toString(int ident) const
+std::string ASTBlock::toString(int indentation) const
 {
 	std::ostringstream oss;
-	const std::string  indent = ASTNode::indentString(ident);
+	const std::string  indent = ASTNode::indentString(indentation);
 	oss << indent << "ASTBlock Name: " << name_ << "\n";
 	oss << indent << "ASTBlock Parameters:" << "\n";
 	for (size_t i = 0; i < parameters_.size(); ++i)
 	{
-		oss << parameters_[i]->toString(ident + 1) + "\n";
+		oss << parameters_[i]->toString(indentation + 1) + "\n";
 	}
 	oss << indent << "ASTBlock Children:\n";
 	for (size_t i = 0; i < children_.size(); ++i)
 	{
-		oss << " - " << children_[i]->toString(ident + 1) + "\n";
+		oss << " - " << children_[i]->toString(indentation + 1) + "\n";
 	}
 	return oss.str();
 }

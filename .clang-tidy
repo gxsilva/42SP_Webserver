@@ -17,4 +17,4 @@ Checks: >
   -readability-magic-numbers,
   -cppcoreguidelines-owning-memory,
   -bugprone-easily-swappable-parameters,
-  -readability-identifier-length
+  -readability-indentationifier-length

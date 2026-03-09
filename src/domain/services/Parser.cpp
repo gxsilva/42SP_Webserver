@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 23:30:48 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/06 00:08:17 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/09 19:12:25 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ ASTValue* Parser::parseValue()
 	if (!_isValueToken(_peek().type))
 	{
 		_addError(CompilerError::expectedValueError(
-			"Expected a value (identifier, number, string, or path)", _peek().location));
+			"Expected a value (indentationifier, number, string, or path)", _peek().location));
 		return (NULL);
 	}
 	const Token		   valueToken = _advance();
@@ -94,9 +94,9 @@ ASTNode* Parser::parseStatement()
 		return (NULL);
 	}
 
-	const Token			 identifierToken = _advance();
-	const std::string	 directiveName	 = identifierToken.value;
-	const SourceLocation loc			 = identifierToken.location;
+	const Token			 indentationifierToken = _advance();
+	const std::string	 directiveName		   = indentationifierToken.value;
+	const SourceLocation loc				   = indentationifierToken.location;
 
 	std::vector<ASTValue*> parameters;
 
@@ -202,7 +202,7 @@ ASTValueType Parser::_convertTokenTypeToAstValue(TokenType type)
 	switch (type)
 	{
 	case WORD:
-		return AST_VALUE_IDENTIFIER;
+		return AST_VALUE_indentationIFIER;
 	case NUMBER:
 		return AST_VALUE_NUMBER;
 	case STRING:
