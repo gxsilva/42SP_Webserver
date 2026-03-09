@@ -58,8 +58,8 @@ class TestSimpleGetRequest : public TestCase {
             assertEqual(req.getMethod(), "GET", "Method should be GET");
             assertEqual(req.getUri(), "/index.html", "URI should be /index.html");
             assertEqual(req.getVersion(), "HTTP/1.0", "Version should be HTTP/1.0");
-            assertTrue(req.getHeaders().find("Host") != req.getHeaders().end(), "Header 'Host' should exist");
-            assertEqual(req.getHeaders().at("Host"), "localhost", "Host header value should be localhost");
+            assertTrue(req.getHeaders().find("HOST") != req.getHeaders().end(), "Header 'Host' should exist");
+            assertEqual(req.getHeaders().at("HOST"), "localhost", "Host header value should be localhost");
             assertEqual(req.getBody(), "", "Body should be empty");
         }
 };
@@ -77,7 +77,7 @@ class TestPostWithBody : public TestCase {
             assertEqual(req.getMethod(), "POST", "Method should be POST");
             assertEqual(req.getUri(), "/login", "URI should be /login");
             assertEqual(req.getBody(), body, "Body should match");
-            assertTrue(req.getHeaders().find("Content-Length") != req.getHeaders().end(), "Content-Length header should exist");
+            assertTrue(req.getHeaders().find("CONTENT-LENGTH") != req.getHeaders().end(), "Content-Length header should exist");
         }
 };
 
@@ -94,10 +94,10 @@ class TestMultipleHeaders : public TestCase {
             HttpRequest req = parser.parse(raw);
             
             assertEqual(req.getMethod(), "GET", "Method should be GET");
-            assertTrue(req.getHeaders().find("Host") != req.getHeaders().end(), "Host header should exist");
-            assertTrue(req.getHeaders().find("User-Agent") != req.getHeaders().end(), "User-Agent header should exist");
-            assertTrue(req.getHeaders().find("Accept") != req.getHeaders().end(), "Accept header should exist");
-            assertEqual(req.getHeaders().at("User-Agent"), "Mozilla/5.0", "User-Agent should match");
+            assertTrue(req.getHeaders().find("HOST") != req.getHeaders().end(), "Host header should exist");
+            assertTrue(req.getHeaders().find("USER-AGENT") != req.getHeaders().end(), "User-Agent header should exist");
+            assertTrue(req.getHeaders().find("ACCEPT") != req.getHeaders().end(), "Accept header should exist");
+            assertEqual(req.getHeaders().at("USER-AGENT"), "Mozilla/5.0", "User-Agent should match");
         }
 };
 
@@ -110,8 +110,8 @@ class TestHeaderSpacesTrimming : public TestCase {
             HttpRequestParser parser;
             HttpRequest req = parser.parse(raw);
             
-            std::string hostValue = req.getHeaders().at("Host");
-            std::string customValue = req.getHeaders().at("X-Custom");
+            std::string hostValue = req.getHeaders().at("HOST");
+            std::string customValue = req.getHeaders().at("X-CUSTOM");
             
             assertEqual(hostValue, "example.com", "Host header should be trimmed");
             assertEqual(customValue, "value with spaces", "Custom header should be trimmed");
@@ -130,8 +130,8 @@ class TestLFOnlyLineEndings : public TestCase {
             
             assertEqual(req.getMethod(), "GET", "Method should be GET");
             assertEqual(req.getUri(), "/test", "URI should be /test");
-            assertTrue(req.getHeaders().find("Host") != req.getHeaders().end(), "Host header should exist");
-            assertTrue(req.getHeaders().find("Content-Type") != req.getHeaders().end(), "Content-Type header should exist");
+            assertTrue(req.getHeaders().find("HOST") != req.getHeaders().end(), "Host header should exist");
+            assertTrue(req.getHeaders().find("CONTENT-TYPE") != req.getHeaders().end(), "Content-Type header should exist");
         }
 };
 
@@ -147,8 +147,8 @@ class TestDeleteRequest : public TestCase {
             
             assertEqual(req.getMethod(), "DELETE", "Method should be DELETE");
             assertEqual(req.getUri(), "/resource/123", "URI should be /resource/123");
-            assertTrue(req.getHeaders().find("Authorization") != req.getHeaders().end(), "Authorization header should exist");
-            assertEqual(req.getHeaders().at("Authorization"), "Bearer token123", "Authorization value should match");
+            assertTrue(req.getHeaders().find("AUTHORIZATION") != req.getHeaders().end(), "Authorization header should exist");
+            assertEqual(req.getHeaders().at("AUTHORIZATION"), "Bearer token123", "Authorization value should match");
         }
 };
 
@@ -196,7 +196,6 @@ class TestHttpRequestConstructor : public TestCase {
         }
 };
 
-// TODO: fazer validação depois se o body bate com o content-length (não no parser)
 class TestPostWithJsonBody : public TestCase {
     public:
         TestPostWithJsonBody() : TestCase("POST with JSON body") {}
@@ -212,9 +211,8 @@ class TestPostWithJsonBody : public TestCase {
             assertEqual(req.getMethod(), "POST", "Method should be POST");
             assertEqual(req.getUri(), "/api/users", "URI should be /api/users");
             assertEqual(req.getBody(), jsonBody, "Body should contain JSON");
-            assertTrue(req.getHeaders().find("Content-Type") != req.getHeaders().end(), "Content-Type header should exist");
-            // TODO: isso aqui pode ser uma validação de regra de negócio depois
-            assertEqual(req.getHeaders().at("Content-Type"), "application/json", "Content-Type should be application/json");
+            assertTrue(req.getHeaders().find("CONTENT-TYPE") != req.getHeaders().end(), "Content-Type header should exist");
+            assertEqual(req.getHeaders().at("CONTENT-TYPE"), "application/json", "Content-Type should be application/json");
         }
 
     private:

@@ -50,9 +50,12 @@ HDRS				= $(shell find . -name "*.hpp")
 
 DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 					$(D_ENTITIES_DIR)/Token.cpp \
+					$(D_ENTITIES_DIR)/HttpRequest.cpp \
 					$(D_ERRORS_DIR)/CompilerError.cpp \
 					$(D_ERRORS_DIR)/ErrorList.cpp \
-					$(D_SERVICES_DIR)/Lexer.cpp 
+					$(D_ERRORS_DIR)/ValidationError.cpp \
+					$(D_SERVICES_DIR)/Lexer.cpp \
+					$(D_SERVICES_DIR)/HttpRequestValidator.cpp
 
 INTERFACE_SRCS	= $(CLI_DIR)/main.cpp
 
@@ -61,14 +64,6 @@ INFRA_SRCS		= $(I_COMMON_DIR)/TokenResult.cpp \
 					$(I_IO_DIR)/FileReader.cpp \
 					$(I_IO_DIR)/FileValidator.cpp \
 					$(I_IO_DIR)/HttpRequestParser.cpp \
-					$(D_ENTITIES_DIR)/HttpRequest.cpp \
-					$(D_ENTITIES_DIR)/SourceLocation.cpp \
-					$(D_ENTITIES_DIR)/Token.cpp \
-					$(D_ERRORS_DIR)/CompilerError.cpp \
-					$(D_ERRORS_DIR)/ErrorList.cpp \
-					$(D_ERRORS_DIR)/ValidationError.cpp \
-					$(D_SERVICES_DIR)/Lexer.cpp \
-					$(D_SERVICES_DIR)/HttpRequestValidator.cpp \
 					$(INFRA_DIR)/logging/Logger.cpp
 
 APP_SRCS		= $(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp

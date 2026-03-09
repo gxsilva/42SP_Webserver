@@ -1,4 +1,5 @@
 #include "HttpRequest.hpp"
+#include <cctype>
 
 HttpRequest::HttpRequest() {}
 
@@ -37,9 +38,17 @@ void HttpRequest::setVersion(const std::string &version) {
 }
 
 void HttpRequest::setHeader(const std::string &name, const std::string &value) {
-    _headers[name] = value;
+    _headers[normalizeHeaderName(name)] = value;
 }
 
 void HttpRequest::setBody(const std::string &body) {
     _body = body;
+}
+
+std::string HttpRequest::normalizeHeaderName(const std::string &name) const {
+    std::string normalized = name;
+    for (size_t i = 0; i < normalized.length(); ++i) {
+        normalized[i] = std::toupper(normalized[i]);
+    }
+    return normalized;
 }

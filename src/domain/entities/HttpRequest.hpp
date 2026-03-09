@@ -20,6 +20,7 @@ public:
     void setVersion(const std::string &version);
     void setHeader(const std::string &name, const std::string &value);
     void setBody(const std::string &body);
+    std::string getHeader(const std::string &name) const;
 
 private:
     std::string _method;
@@ -27,6 +28,8 @@ private:
     std::string _version;
     std::map<std::string, std::string> _headers;
     std::string _body;
+
+    std::string normalizeHeaderName(const std::string &name) const;
 };
 
 #endif // HTTPREQUEST_HPP

@@ -2,6 +2,8 @@
 #include <sstream>
 #include <cstdlib>
 
+const size_t HttpRequestValidator::MAX_CONTENT_LENGTH;
+
 HttpRequestValidator::HttpRequestValidator() {}
 
 HttpRequestValidator::~HttpRequestValidator() {}
@@ -31,8 +33,16 @@ std::string HttpRequestValidator::validate(const HttpRequest &req) const {
         return "Missing required header: Host is required.";
     }
 
+    if (isPostWithoutContentLength(req)) {
+        return "400 Bad Request: POST requires Content-Length header";
+    }
+
     if (!isValidContentLength(req)) {
         return "Invalid Content-Length header value.";
+    }
+
+    if (!isBodyLengthValid(req)) {
+        return "400 Bad Request: Content-Length mismatch with actual body size";
     }
 
     return std::string();
@@ -63,34 +73,54 @@ bool HttpRequestValidator::hasRequiredHeaders(const HttpRequest &req) const {
     return false;
 }
 
-bool HttpRequestValidator::isValidContentLength(const HttpRequest &req) const {
-    std::map<std::string, std::string>::const_iterator itBegin = req.getHeaders().begin();
-    std::map<std::string, std::string>::const_iterator itEnd = req.getHeaders().end();
-    
-    while (itBegin != itEnd) {
-        if (toUpperCase(itBegin->first) == "CONTENT-LENGTH") {
-            break;
-        }
-         ++itBegin;
-    }  
+bool HttpRequestValidator::hasContentLengthHeader(const HttpRequest &req) const {
+    const std::map<std::string, std::string>& headers = req.getHeaders();
+    return headers.find("CONTENT-LENGTH") != headers.end();
+}
 
-    // Content-Length is optional
-    if (itBegin == itEnd) {
+bool HttpRequestValidator::isPostWithoutContentLength(const HttpRequest &req) const {
+    return req.getMethod() == "POST" && !hasContentLengthHeader(req);
+}
+
+long HttpRequestValidator::getContentLengthValue(const HttpRequest &req) const {
+    std::map<std::string, std::string>::const_iterator it = req.getHeaders().find("CONTENT-LENGTH");
+    if (it == req.getHeaders().end())
+        return -1;
+
+    char *endPtr = NULL;
+    long value = strtol(it->second.c_str(), &endPtr, 10);
+
+    if (*endPtr != '\0')
+        return -2;
+
+    return value;
+}
+
+bool HttpRequestValidator::isValidContentLength(const HttpRequest &req) const {
+    if (!hasContentLengthHeader(req)) {
         return true;
     }
 
-    const std::string &contentLengthStr = itBegin->second;
+    long contentLength = getContentLengthValue(req);
     
-    if (contentLengthStr.empty()) {
+    if (contentLength < 0) {
         return false;
     }
 
-    char *endPtr = NULL;
-    long contentLength = strtol(contentLengthStr.c_str(), &endPtr, 10);
-    
-    if (*endPtr != '\0' || contentLength < 0) {
+    if (static_cast<size_t>(contentLength) > MAX_CONTENT_LENGTH) {
         return false;
     }
 
     return true;
+}
+
+bool HttpRequestValidator::isBodyLengthValid(const HttpRequest &req) const {
+    if (!hasContentLengthHeader(req)) {
+        return true;
+    }
+
+    long expectedLength = getContentLengthValue(req);
+    size_t actualLength = req.getBody().length();
+    
+    return actualLength == static_cast<size_t>(expectedLength);
 }

@@ -5,8 +5,10 @@
 #include "../errors/ValidationError.hpp"
 #include <string>
 
-// TODO: fazer validação de mais coisas depois (ex: content-length, etc)
 class HttpRequestValidator {
+    private:
+        static const size_t MAX_CONTENT_LENGTH = 1048576; // 1MB
+
     public:
         HttpRequestValidator();
         ~HttpRequestValidator();
@@ -20,6 +22,10 @@ class HttpRequestValidator {
         bool isValidUri(const std::string &uri) const;
         bool hasRequiredHeaders(const HttpRequest &req) const;
         bool isValidContentLength(const HttpRequest &req) const;
+        bool hasContentLengthHeader(const HttpRequest &req) const;
+        bool isPostWithoutContentLength(const HttpRequest &req) const;
+        bool isBodyLengthValid(const HttpRequest &req) const;
+        long getContentLengthValue(const HttpRequest &req) const;
 };
 
 #endif // HTTPREQUESTVALIDATOR_HPP

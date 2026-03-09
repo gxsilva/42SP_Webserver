@@ -213,7 +213,7 @@ class TestValidContentLengthZero : public TestCase {
 
 class TestOptionalContentLength : public TestCase {
     public:
-        TestOptionalContentLength() : TestCase("Missing Content-Length is optional and valid") {}
+        TestOptionalContentLength() : TestCase("POST without Content-Length is rejected") {}
         
         void run() {
             std::string raw = "POST / HTTP/1.0\r\nHost: localhost\r\n\r\n";
@@ -222,7 +222,9 @@ class TestOptionalContentLength : public TestCase {
             HttpRequestValidator validator;
             
             std::string error = validator.validate(req);
-            assertEqual(error, "", "Missing Content-Length should be optional");
+            assertTrue(!error.empty(), "POST without Content-Length should produce error");
+            assertTrue(error.find("Content-Length") != std::string::npos || error.find("400") != std::string::npos, 
+                    "Error should mention Content-Length or 400");
         }
 };
 
