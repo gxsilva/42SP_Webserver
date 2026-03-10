@@ -62,7 +62,8 @@ DOMAIN_SRCS			= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 						$(D_EVENTS_DIR)/epollEvents.cpp \
 						$(D_NETWORK_DIR)/ipAddr.cpp \
 						$(D_NETWORK_DIR)/port.cpp \
-						$(D_SERVICES_DIR)/Lexer.cpp 
+						$(D_SERVICES_DIR)/Lexer.cpp \
+						$(D_SERVICES_DIR)/statusCodeResponse.cpp
 
 INTERFACE_SRCS		= $(CLI_DIR)/main.cpp
 
