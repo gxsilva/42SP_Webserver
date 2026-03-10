@@ -13,7 +13,7 @@ StatusCodeResponse::StatusCodeResponse()
     messages[FORBIDDEN] = "Forbidden";
     messages[NOT_FOUND] = "Not found";
     messages[CONTENT_TOO_LARGE] = "Content too large";
-    messages[URI_TOO_LONG] = "URI too large";
+    messages[URI_TOO_LONG] = "URI too long";
     messages[TOO_MANY_REQUESTS] = "Too many requests";
     messages[INTERNAL_SERVER_ERROR] = "Internal server error";
     messages[NOT_IMPLEMENTED] = "Not implemented";
