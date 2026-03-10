@@ -14,7 +14,7 @@ public:
         return 
             "<html>\r\n"
             "<head><title>" + fullStatus + "</title></head>\r\n"
-            "<body>\r\n"  // <--- Adiciona isto aqui!
+            "<body>\r\n"
             "<center><h1>" + fullStatus + "</h1></center>\r\n"
             "<hr><center>42_Webserver/1.0</center>\r\n"
             "</body>\r\n"
