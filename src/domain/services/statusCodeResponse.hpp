@@ -3,6 +3,7 @@
 
 #include "../value_objects/HttpStatusCode.hpp"
 #include <string>
+#include <sstream>
 #include <map>
 
 class StatusCodeResponse
