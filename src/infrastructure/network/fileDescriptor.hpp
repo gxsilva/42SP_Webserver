@@ -1,34 +1,33 @@
 #ifndef FILE_DESCRIPTOR_HPP
 #define FILE_DESCRIPTOR_HPP
 
-#include <fcntl.h>
-#include <unistd.h>
 #include <arpa/inet.h>
+#include <fcntl.h>
 #include <iostream>
+#include <unistd.h>
 
 class FileDescriptor
 {
-    private:
-        int _fd;
+	private:
+		int _fd;
 
-        FileDescriptor(const FileDescriptor&);
-        FileDescriptor& operator=(const FileDescriptor&);
+		FileDescriptor(const FileDescriptor&);
+		FileDescriptor& operator=(const FileDescriptor&);
 
-    public:
-        FileDescriptor();
-        explicit FileDescriptor(int fd);
+	public:
+		FileDescriptor();
+		explicit FileDescriptor(int fd);
 		~FileDescriptor();
 
-        bool    isValid() const;
-        void    invalidate();
+		bool isValid() const;
+		void invalidate();
 
-        bool    setNonBlocking();
+		bool setNonBlocking();
 
-        int     get() const;
+		int get() const;
 
-        bool    operator==(const FileDescriptor& other) const;
-        bool    operator<(const FileDescriptor& other) const;
-        
+		bool operator==(const FileDescriptor& other) const;
+		bool operator<(const FileDescriptor& other) const;
 };
 
 #endif

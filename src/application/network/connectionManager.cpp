@@ -1,9 +1,9 @@
 #include "connectionManager.hpp"
 
 ConnectionManager::ConnectionManager(EpollManager& epollManager, const PollCapacity& maxEvents)
-: _epollManager(epollManager),
-_clients(maxEvents.getAmount(), (ClientSocket*)NULL)
-{}
+	: _epollManager(epollManager), _clients(maxEvents.getAmount(), (ClientSocket*)NULL)
+{
+}
 
 ConnectionManager::~ConnectionManager()
 {
@@ -14,13 +14,13 @@ ConnectionManager::~ConnectionManager()
 	_clients.clear();
 }
 
-void	ConnectionManager::acceptNewClient(ServerSocket& serverSocket)
+void ConnectionManager::acceptNewClient(ServerSocket& serverSocket)
 {
 	int newClient = serverSocket.setAccept();
 
 	if (newClient < 0)
 		return;
-	
+
 	ClientSocket* client = new ClientSocket(newClient);
 	if (!client->isValid())
 	{
@@ -28,17 +28,17 @@ void	ConnectionManager::acceptNewClient(ServerSocket& serverSocket)
 		close(newClient);
 		return;
 	}
-	
+
 	_epollManager.addFd(newClient, POLLIN);
 	if (static_cast<size_t>(newClient) >= _clients.size())
-        _clients.resize(newClient + 128, (ClientSocket*)NULL);
+		_clients.resize(newClient + 128, (ClientSocket*)NULL);
 
-    _clients[newClient] = client;
-	
+	_clients[newClient] = client;
+
 	std::cout << "New client connected: fd " << newClient << std::endl;
 }
 
-void	ConnectionManager::disconnectClient(int fd)
+void ConnectionManager::disconnectClient(int fd)
 {
 	_epollManager.removeFd(fd);
 	delete _clients[fd];
@@ -47,43 +47,43 @@ void	ConnectionManager::disconnectClient(int fd)
 
 void ConnectionManager::handleClientRead(int fd)
 {
-    ClientSocket* client = _clients[fd];
-    
-    if (client == NULL)
-        return;
+	ClientSocket* client = _clients[fd];
 
-    char buffer[4096];
-    memset(buffer, 0, sizeof(buffer));
-    ssize_t bytesRead = client->receiveData(buffer, sizeof(buffer) - 1);
-    
-    if (bytesRead <= 0)
-    {
-        disconnectClient(fd);
-        return;
-    }
+	if (client == NULL)
+		return;
 
-    std::cout << "Data from fd " << fd << ": " << buffer << std::endl;
-    
-    bufferTestHttpResponse(*client);
-    _epollManager.modifyFd(fd, EPOLLOUT);
+	char buffer[4096];
+	memset(buffer, 0, sizeof(buffer));
+	ssize_t bytesRead = client->receiveData(buffer, sizeof(buffer) - 1);
+
+	if (bytesRead <= 0)
+	{
+		disconnectClient(fd);
+		return;
+	}
+
+	std::cout << "Data from fd " << fd << ": " << buffer << std::endl;
+
+	bufferTestHttpResponse(*client);
+	_epollManager.modifyFd(fd, EPOLLOUT);
 }
 
 void ConnectionManager::handleClientWrite(int fd)
 {
-    ClientSocket* client = _clients[fd];
-    
-    if (client == NULL)
-        return;
+	ClientSocket* client = _clients[fd];
 
-    if (!client->flushWriteBuffer())
-    {
-        disconnectClient(fd);
-        return;
-    }
+	if (client == NULL)
+		return;
 
-    if (!client->hasDataToSend())
-    {
-        std::cout << "Response sent to fd " << fd << std::endl;
-        disconnectClient(fd);
-    }
+	if (!client->flushWriteBuffer())
+	{
+		disconnectClient(fd);
+		return;
+	}
+
+	if (!client->hasDataToSend())
+	{
+		std::cout << "Response sent to fd " << fd << std::endl;
+		disconnectClient(fd);
+	}
 }

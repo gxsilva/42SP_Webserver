@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 03:11:50 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/27 04:31:35 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/06 00:11:30 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,8 @@ std::string Logger::_currentTime()
 
 std::string Logger::_genUniqueLogFileName()
 {
-	std::time_t now = std::time(NULL);
-	char		buf[32];
+	const std::time_t now = std::time(NULL);
+	char			  buf[32];
 	std::strftime(buf, sizeof(buf), "log_%Y%m%d_%H%M%S.txt", std::localtime(&now));
 	return std::string(buf);
 }
@@ -107,17 +107,18 @@ void Logger::log(const std::string& msg, LogLevel lvl)
 	if (lvl < _filterLevel)
 		return;
 
-	std::string timestamp = _currentTime();
-	std::string label	  = _levelToString(lvl);
+	const std::string timestamp = _currentTime();
+	std::string		  label		= _levelToString(lvl);
 
 	// Console output with color
-	std::cout << BOLD << _levelToColor(lvl) << "[" << timestamp << "] " << "[" << label << "] "
-			  << RESET << msg << "\n";
+	std::cout << BOLD << _levelToColor(lvl) << "[" << timestamp << "] "
+			  << "[" << label << "] " << RESET << msg << "\n";
 
 	// File output (plain, no ANSI codes)
 	if (_fileLoggingEnabled && _fdOutput.is_open())
 	{
-		_fdOutput << "[" << timestamp << "] " << "[" << label << "] " << msg << "\n";
+		_fdOutput << "[" << timestamp << "] "
+				  << "[" << label << "] " << msg << "\n";
 		_fdOutput.flush();
 	}
 }
@@ -138,7 +139,7 @@ void Logger::enableFileLogging()
 
 	_fileLoggingEnabled = true;
 
-	std::string location = _logFileName;
+	const std::string location = _logFileName;
 	log("Logger: file logging enabled, writing to '" + location + "'", INFO);
 }
 

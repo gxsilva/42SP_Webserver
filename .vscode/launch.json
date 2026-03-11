@@ -2,13 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug Server",
+            "name": "Debug: ParseAndValidateHttpRequestUseCase Test",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/server/server",
+            "program": "${workspaceFolder}/test_parse_validate_usecase",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/server",
+            "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -19,7 +19,53 @@
                     "ignoreFailures": true
                 }
             ],
-            "miDebuggerPath": "/usr/bin/gdb"
+            "preLaunchTask": "Build Test: ParseAndValidateHttpRequestUseCase",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "sourceLanguages": ["cpp"]
+        },
+        {
+            "name": "Debug: HttpRequest Test",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/test_http_request",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Build Test: HttpRequest",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "sourceLanguages": ["cpp"]
+        },
+        {
+            "name": "Debug: HttpRequestValidation Test",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/test_http_validation",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Build Test: HttpRequestValidation",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "sourceLanguages": ["cpp"]
         }
     ]
 }
