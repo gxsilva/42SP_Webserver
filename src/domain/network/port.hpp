@@ -3,17 +3,17 @@
 
 #include <stdexcept>
 
-class	Port
+class Port
 {
 	private:
-		int	_value;
+		int _value;
 
 	public:
 		Port();
 		explicit Port(int value);
 		~Port();
-		
-		int	getValue() const;
+
+		int getValue() const;
 };
 
 #endif

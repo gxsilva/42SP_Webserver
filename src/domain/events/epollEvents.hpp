@@ -1,17 +1,17 @@
 #ifndef EPOLLEVENTS_HPP
-#define	EPOLLEVENTS_HPP
+#define EPOLLEVENTS_HPP
 
 #include <stdexcept>
 
 class PollCapacity
 {
 	private:
-	    int _amount;
+		int _amount;
 
 	public:
-	    explicit PollCapacity(int amount);
+		explicit PollCapacity(int amount);
 
-	    int getAmount() const;
+		int getAmount() const;
 };
 
 #endif
