@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 21:08:40 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/26 23:04:27 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/03 17:40:54 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,13 @@
 
 struct FileValidator
 {
+		static const int sampleSize = 1024;
+
 		static CompilerError* validateFile(const std::string& filePath);
 		static CompilerError* validateReadPermission(const std::string& filepath);
 		static CompilerError* validateExists(const std::string& filepath);
+		static CompilerError* validateIsRegularFile(const std::string& filepath);
+		static CompilerError* validateBinaryFile(const std::string& filepath);
 };
 
 #endif /* FILEVALIDATOR_HPP */

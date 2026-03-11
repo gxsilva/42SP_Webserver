@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 22:29:41 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/27 02:37:03 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/03 23:49:11 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ std::string CompilerError::_errorCodeToString(ErrorCode code)
 		return "ERROR_UNTERMINATED_STRING_LITERAL";
 	case ERROR_UNRECOGNIZED_CHARACTER:
 		return "ERROR_UNRECOGNIZED_CHARACTER";
+	case ERROR_EXPECTED_NAME:
+		return "ERROR_EXPECTED_NAME";
 	default:
 		return "Error not registered in the system.";
 	}
@@ -147,6 +149,83 @@ CompilerError CompilerError::unregonizedCharacterError(const SourceLocation& loc
 	err.code		 = ERROR_UNRECOGNIZED_CHARACTER;
 	err.severity	 = SEVERITY_ERROR;
 	err.message		 = "Unrecognized character: '" + std::string(1, c) + "'";
+	err.has_location = true;
+	err.location	 = location;
+	err.has_hint	 = false;
+	return err;
+}
+
+CompilerError CompilerError::notARegularFileError(const std::string& filename)
+{
+	CompilerError err;
+	err.code		 = ERROR_FILE_NOT_FOUND;
+	err.severity	 = SEVERITY_FATAL;
+	err.message		 = "Not a regular file: " + filename;
+	err.has_location = false;
+	err.has_hint	 = true;
+	err.hint = "Ensure that the path points to a regular file and not a directory or special file.";
+	return err;
+}
+
+CompilerError CompilerError::invalidBinaryFileError(const std::string& filename)
+{
+	CompilerError err;
+	err.code		 = ERROR_IO_ERROR;
+	err.severity	 = SEVERITY_FATAL;
+	err.message		 = "Invalid binary file: " + filename;
+	err.has_location = false;
+	err.has_hint	 = true;
+	err.hint = "The file appears to be a binary file. Ensure that you are providing a valid source "
+			   "code file.";
+	return err;
+}
+
+CompilerError CompilerError::expectedNameError(const std::string&	 message,
+											   const SourceLocation& location)
+{
+	CompilerError err;
+	err.code		 = ERROR_EXPECTED_NAME;
+	err.severity	 = SEVERITY_ERROR;
+	err.message		 = message;
+	err.has_location = true;
+	err.location	 = location;
+	err.has_hint	 = false;
+	return err;
+}
+
+CompilerError CompilerError::expectedValueError(const std::string&	  message,
+												const SourceLocation& location)
+{
+	CompilerError err;
+	err.code		 = ERROR_EXPECTED_VALUE;
+	err.severity	 = SEVERITY_ERROR;
+	err.message		 = message;
+	err.has_location = true;
+	err.location	 = location;
+	err.has_hint	 = false;
+	return err;
+}
+
+CompilerError CompilerError::expectedRightBraceError(const std::string&	   message,
+													 const SourceLocation& location)
+{
+	CompilerError err;
+	err.code		 = ERROR_EXPECTED_LEFT_BRACE;
+	err.severity	 = SEVERITY_ERROR;
+	err.message		 = message;
+	err.has_location = true;
+	err.location	 = location;
+	err.has_hint	 = false;
+	return err;
+}
+
+CompilerError CompilerError::unepxectedTokenError(const std::string&	message,
+												  const SourceLocation& location)
+{
+	CompilerError err;
+	err.code		 = ERROR_UNEXPECTED_TOKEN;
+	err.severity	 = SEVERITY_ERROR;
+	err.message		 = message;
 	err.has_location = true;
 	err.location	 = location;
 	err.has_hint	 = false;

@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:10:43 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/25 01:41:10 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/03 18:08:47 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ TokenResult::TokenResult(const ErrorList& error)
 
 TokenResult::~TokenResult()
 {
-	if (_is_ok && _tokens != NULL)
-		delete _tokens;
+	// if (_is_ok && _tokens != NULL)
+	// 	delete _tokens;
 }
 
 std::vector<Token>* TokenResult::unwrap()

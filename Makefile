@@ -28,6 +28,7 @@ OBJ_DIR				= obj
 
 DOMAIN_DIR				= $(SRCS_DIR)/domain
 D_ENTITIES_DIR			= $(DOMAIN_DIR)/entities
+D_AST_DIR				= $(D_ENTITIES_DIR)/ast
 D_ERRORS_DIR			= $(DOMAIN_DIR)/errors
 D_SERVICES_DIR			= $(DOMAIN_DIR)/services
 D_VALUE_OBJECTS_DIR		= $(DOMAIN_DIR)/value_objects
@@ -42,6 +43,9 @@ INFRA_DIR				= $(SRCS_DIR)/infrastructure
 I_COMMON_DIR			= $(INFRA_DIR)/common
 I_IO_DIR				= $(INFRA_DIR)/io
 
+APPLICATION_DIR			= $(SRCS_DIR)/application
+USE_CASES_DIR			= $(APPLICATION_DIR)/use_cases
+
 # ---------------- PROVISÒRIO ----------------
 HDRS				= $(shell find . -name "*.hpp")
 # -------------------------------
@@ -53,19 +57,28 @@ DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 					$(D_ENTITIES_DIR)/HttpRequest.cpp \
 					$(D_ERRORS_DIR)/CompilerError.cpp \
 					$(D_ERRORS_DIR)/ErrorList.cpp \
-					$(D_ERRORS_DIR)/ValidationError.cpp \
 					$(D_SERVICES_DIR)/Lexer.cpp \
+					$(D_SERVICES_DIR)/Parser.cpp \
+					$(D_AST_DIR)/base/ASTNode.cpp \
+					$(D_AST_DIR)/node/ASTValue.cpp \
+					$(D_AST_DIR)/node/ASTDirective.cpp \
+					$(D_AST_DIR)/node/ASTBlock.cpp \
+					$(D_AST_DIR)/node/ASTRoot.cpp 
+					$(D_ERRORS_DIR)/ValidationError.cpp \
 					$(D_SERVICES_DIR)/HttpRequestValidator.cpp
 
 INTERFACE_SRCS	= $(CLI_DIR)/main.cpp
 
 INFRA_SRCS		= $(I_COMMON_DIR)/TokenResult.cpp \
 					$(I_COMMON_DIR)/LexerResult.cpp \
+					$(I_COMMON_DIR)/ASTResult.cpp \
 					$(I_IO_DIR)/FileReader.cpp \
 					$(I_IO_DIR)/FileValidator.cpp \
 					$(I_IO_DIR)/HttpRequestParser.cpp \
 					$(INFRA_DIR)/logging/Logger.cpp
 
+
+APPLICATION_SRCS	= $(USE_CASES_DIR)/CompileSourceFile.cpp
 APP_SRCS		= $(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp
 
 # TEST DEFINITIONS
@@ -82,6 +95,7 @@ TEST_OBJS		= $(OBJ_DIR)/test/HttpRequest.o \
 SRC_SET				= $(INTERFACE_SRCS) \
 						$(DOMAIN_SRCS) \
 						$(INFRA_SRCS) \
+						$(APPLICATION_SRCS)
 						$(APP_SRCS) \
 
 OBJ					= $(patsubst $(SRCS_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_SET))

@@ -1,30 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ErrorCode.hpp                                      :+:      :+:    :+:   */
+/*   ASTNodeType.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/24 22:23:52 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 23:49:04 by lsilva-x         ###   ########.fr       */
+/*   Created: 2026/03/03 20:06:20 by lsilva-x          #+#    #+#             */
+/*   Updated: 2026/03/03 21:29:08 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ERRORCODE_HPP
-#define ERRORCODE_HPP
+#ifndef ASTNODETYPE_HPP
+#define ASTNODETYPE_HPP
 
-enum ErrorCode
+enum ASTNodeType
 {
-	ERROR_UNKNOWN = 0,
-	ERROR_FILE_NOT_FOUND,
-	ERROR_PERMISSION_DENIED,
-	ERROR_IO_ERROR,
-	ERROR_UNTERMINATED_STRING_LITERAL,
-	ERROR_UNRECOGNIZED_CHARACTER,
-	ERROR_EXPECTED_NAME,
-	ERROR_EXPECTED_VALUE,
-	ERROR_EXPECTED_LEFT_BRACE,
-	ERROR_UNEXPECTED_TOKEN,
+	AST_NODETYPE_VALUE = 0,
+	AST_NODETYPE_DIRECTIVE,
+	AST_NODETYPE_BLOCK,
+	AST_NODETYPE_ROOT,
 };
 
-#endif /* ERRORCODE_HPP */
+#endif /* ASTNODETYPE_HPP */
