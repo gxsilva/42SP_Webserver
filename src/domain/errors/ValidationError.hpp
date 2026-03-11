@@ -3,15 +3,16 @@
 
 #include <string>
 
-class ValidationError {
-public:
-    ValidationError(const std::string &message);
-    ~ValidationError();
+class ValidationError
+{
+	public:
+		ValidationError(const std::string& message);
+		~ValidationError();
 
-    const std::string &getMessage() const;
+		const std::string& getMessage() const;
 
-private:
-    std::string _message;
+	private:
+		std::string _message;
 };
 
 #endif // VALIDATIONERROR_HPP

@@ -1,8 +1,6 @@
-#include "includes/port.hpp"
+#include "port.hpp"
 
-Port::Port()
-: _value(8080)
-{}
+Port::Port() : _value(8080) {}
 
 Port::Port(int v)
 {
@@ -13,7 +11,4 @@ Port::Port(int v)
 
 Port::~Port() {}
 
-int	Port::getValue() const
-{
-	return (_value);
-}
+int Port::getValue() const { return (_value); }

@@ -52,7 +52,8 @@ std::string ASTBlock::toString(int ident) const
 	std::ostringstream oss;
 	const std::string  indent = ASTNode::indentString(ident);
 	oss << indent << "ASTBlock Name: " << name_ << "\n";
-	oss << indent << "ASTBlock Parameters:" << "\n";
+	oss << indent << "ASTBlock Parameters:"
+		<< "\n";
 	for (size_t i = 0; i < parameters_.size(); ++i)
 	{
 		oss << parameters_[i]->toString(ident + 1) + "\n";

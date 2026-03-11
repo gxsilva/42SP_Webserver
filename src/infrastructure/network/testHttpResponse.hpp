@@ -2,7 +2,8 @@
 #define TESTHTTPRESPONSE_HPP
 
 #include "clientSocket.hpp"
+#include <cstring>
 
-bool sendTestHttpResponse(ClientSocket& client);
+void bufferTestHttpResponse(ClientSocket& client);
 
 #endif
