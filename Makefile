@@ -17,7 +17,8 @@ CXX			= c++
 CXXSTD		= -std=c++98
 CXXWARN		= -Wall -Wextra -Werror -Wshadow
 CXXDEP		= -MMD -MP
-CXXFLAGS	= $(CXXSTD) $(CXXWARN) $(CXXDEP)
+CXXDEBUG	= -g -O0
+CXXFLAGS	= $(CXXSTD) $(CXXWARN) $(CXXDEP) $(CXXDEBUG)
 
 REQ_TOOLS	= clang-format clang-tidy bear
 
@@ -31,6 +32,9 @@ D_AST_DIR				= $(D_ENTITIES_DIR)/ast
 D_ERRORS_DIR			= $(DOMAIN_DIR)/errors
 D_SERVICES_DIR			= $(DOMAIN_DIR)/services
 D_VALUE_OBJECTS_DIR		= $(DOMAIN_DIR)/value_objects
+
+APP_DIR					= $(SRCS_DIR)/application
+APP_USECASES_DIR		= $(APP_DIR)/use_cases
 
 INTERFACES_DIR			= $(SRCS_DIR)/interfaces
 CLI_DIR					= $(INTERFACES_DIR)/cli
@@ -50,6 +54,7 @@ HDRS				= $(shell find . -name "*.hpp")
 
 DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 					$(D_ENTITIES_DIR)/Token.cpp \
+					$(D_ENTITIES_DIR)/HttpRequest.cpp \
 					$(D_ERRORS_DIR)/CompilerError.cpp \
 					$(D_ERRORS_DIR)/ErrorList.cpp \
 					$(D_SERVICES_DIR)/Lexer.cpp \
@@ -59,6 +64,8 @@ DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 					$(D_AST_DIR)/node/ASTDirective.cpp \
 					$(D_AST_DIR)/node/ASTBlock.cpp \
 					$(D_AST_DIR)/node/ASTRoot.cpp 
+					$(D_ERRORS_DIR)/ValidationError.cpp \
+					$(D_SERVICES_DIR)/HttpRequestValidator.cpp
 
 INTERFACE_SRCS	= $(CLI_DIR)/main.cpp
 
@@ -67,15 +74,29 @@ INFRA_SRCS		= $(I_COMMON_DIR)/TokenResult.cpp \
 					$(I_COMMON_DIR)/ASTResult.cpp \
 					$(I_IO_DIR)/FileReader.cpp \
 					$(I_IO_DIR)/FileValidator.cpp \
+					$(I_IO_DIR)/HttpRequestParser.cpp \
 					$(INFRA_DIR)/logging/Logger.cpp
 
+
 APPLICATION_SRCS	= $(USE_CASES_DIR)/CompileSourceFile.cpp
+APP_SRCS		= $(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp
+
+# TEST DEFINITIONS
+TEST_NAME		= test_http_request
+TEST_SRC		= test/HttpRequestTest.cpp
+TEST_VALIDATION_NAME	= test_http_validation
+TEST_VALIDATION_SRC	= test/HttpRequestValidationTest.cpp
+TEST_USECASE_NAME	= test_parse_validate_usecase
+TEST_USECASE_SRC	= test/ParseAndValidateHttpRequestUseCaseTest.cpp
+TEST_OBJS		= $(OBJ_DIR)/test/HttpRequest.o \
+					$(OBJ_DIR)/test/HttpRequestParser.o
 
 # EXPANSIONS
 SRC_SET				= $(INTERFACE_SRCS) \
 						$(DOMAIN_SRCS) \
 						$(INFRA_SRCS) \
 						$(APPLICATION_SRCS)
+						$(APP_SRCS) \
 
 OBJ					= $(patsubst $(SRCS_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_SET))
 DEPS				= $(OBJ:.o=.d)
@@ -102,8 +123,34 @@ clean:
 fclean: clean
 	@echo "🧹 Removing binary..."
 	@rm -f $(NAME)
+	@rm -f $(TEST_NAME) $(TEST_VALIDATION_NAME) $(TEST_USECASE_NAME)
 
 re: fclean all
+
+test: $(TEST_NAME) $(TEST_VALIDATION_NAME) $(TEST_USECASE_NAME)
+	@echo "🧪 Running parser tests..."
+	@./$(TEST_NAME)
+	@echo ""
+	@echo "🧪 Running validation tests..."
+	@./$(TEST_VALIDATION_NAME)
+	@echo ""
+	@echo "🧪 Running use case tests..."
+	@./$(TEST_USECASE_NAME)
+
+$(TEST_NAME): $(TEST_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp | $(OBJ_DIR)
+	@echo "🛠️  Building parser test..."
+	@mkdir -p $(OBJ_DIR)/test
+	$(CXX) $(CXXFLAGS) -o $@ $(TEST_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp
+
+$(TEST_VALIDATION_NAME): $(TEST_VALIDATION_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp $(D_SERVICES_DIR)/HttpRequestValidator.cpp $(D_ERRORS_DIR)/ValidationError.cpp | $(OBJ_DIR)
+	@echo "🛠️  Building validation test..."
+	@mkdir -p $(OBJ_DIR)/test
+	$(CXX) $(CXXFLAGS) -o $@ $(TEST_VALIDATION_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp $(D_SERVICES_DIR)/HttpRequestValidator.cpp $(D_ERRORS_DIR)/ValidationError.cpp
+
+$(TEST_USECASE_NAME): $(TEST_USECASE_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp $(D_SERVICES_DIR)/HttpRequestValidator.cpp $(D_ERRORS_DIR)/ValidationError.cpp $(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp | $(OBJ_DIR)
+	@echo "🛠️  Building use case test..."
+	@mkdir -p $(OBJ_DIR)/test
+	$(CXX) $(CXXFLAGS) -o $@ $(TEST_USECASE_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp $(D_SERVICES_DIR)/HttpRequestValidator.cpp $(D_ERRORS_DIR)/ValidationError.cpp $(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp
 
 # $$ -> to be treat as normal $ in bash
 # -n -> not empty
@@ -154,6 +201,6 @@ clean_logs:
 	@rm -f log/log_*
 	@rm -f log_*
 
-.PHONY: all clean fclean re format check-tools tidy compile_commands_json clean_logs
+.PHONY: all clean fclean re format check-tools tidy compile_commands_json clean_logs test
 
 -include $(DEPS)
