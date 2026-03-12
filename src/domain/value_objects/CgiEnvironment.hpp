@@ -15,12 +15,20 @@ class CgiEnvironment
         CgiEnvironment(const HttpRequest& request, const std::string& scriptPath, const std::string& serverName, int Port);
         ~CgiEnvironment();
 
+        char** toEnvArray() const;
+        void freeEnvArray(char** envp);
+
     private:
         std::vector<std::string>    _var;
 
         CgiEnvironment();
+        CgiEnvironment(const CgiEnvironment&);
+        CgiEnvironment& operator=(const CgiEnvironment&);
+
+
         void addVariable(const std::string& key, const std::string& value);
-       
+        void buildFromRequest(const HttpRequest& request, const std::string& scriptPath, const std::string& serverName, int Port);
+
 };
 
 #endif
