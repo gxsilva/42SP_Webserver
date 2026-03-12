@@ -13,15 +13,12 @@ bool CgiHandler::startCgi(const HttpRequest& request)
                        _config.serverName,
                        _config.serverPort);
 
-    return _gateway.start(_config.scriptPath,
-                          _config.interpreterPath,
-                          env,
-                          request.getBody());
+    return (_gateway.start(_config.scriptPath, _config.interpreterPath, env, request.getBody()));
 }
 
 InitCgiGateway& CgiHandler::getGateway()
 {
-    return _gateway;
+    return (_gateway);
 }
 
 HttpResponse CgiHandler::buildResponse()
@@ -37,5 +34,5 @@ HttpResponse CgiHandler::buildResponse()
 
     response.setBody(cgiResp.getBody());
 
-    return response;
+    return (response);
 }
