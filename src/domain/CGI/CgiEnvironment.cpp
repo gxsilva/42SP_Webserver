@@ -1,4 +1,5 @@
 #include "../value_objects/CgiEnvironment.hpp"
+#include "../entities/HttpRequest.hpp"
 
 CgiEnvironment::CgiEnvironment(const HttpRequest& request, const std::string& scriptPath, const std::string& serverName, int Port)
 {
@@ -25,9 +26,9 @@ void CgiEnvironment::buildFromRequest(const HttpRequest& request, const std::str
     //addVariable("PATH_INFO", request.getPathInfo());
     addVariable("SERVER_NAME", serverName);
     addVariable("SERVER_PORT", PortConv.str());
-    //addVariable("SERVER_PROTOCOL", "HTTP/1.1");
-    //addVariable("GATEWAY_INTERFACE", "CGI/1.1");
-    //addVariable("REDIRECT_STATUS", "200");
+    addVariable("SERVER_PROTOCOL", "HTTP/1.0");
+    addVariable("GATEWAY_INTERFACE", "CGI/1.1");
+    addVariable("REDIRECT_STATUS", "200");
 
      std::vector<std::pair<std::string, std::string> > headers = request.getHeaders();
      for (std::size_t i = 0; i < headers.size(); ++i)

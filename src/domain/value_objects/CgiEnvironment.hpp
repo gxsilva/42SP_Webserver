@@ -7,7 +7,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <sstream>
-#include "../entities/HttpRequest.hpp"
+
+class HttpRequest;
 
 class CgiEnvironment
 {
@@ -16,7 +17,7 @@ class CgiEnvironment
         ~CgiEnvironment();
 
         char** toEnvArray() const;
-        void freeEnvArray(char** envp);
+        static void freeEnvArray(char** envp);
 
     private:
         std::vector<std::string>    _var;

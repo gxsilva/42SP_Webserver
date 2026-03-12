@@ -1,7 +1,7 @@
 #ifndef CGI_PROCESS_EXECUTOR_HPP
 #define CGI_PROCESS_EXECUTOR_HPP
 
-#include "../../interfaces/port/InitCgiGateway.hpp"
+#include "InitCgiGateway.hpp"
 #include <string>
 #include <sys/types.h>
 #include <ctime>
