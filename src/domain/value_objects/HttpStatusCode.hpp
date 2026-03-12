@@ -59,9 +59,7 @@ enum    HttpStatusCode
    */
     INTERNAL_SERVER_ERROR       = 500, //O "erro genérico". Algo quebrou no código do servidor e ele não sabe explicar exatamente o quê.
     NOT_IMPLEMENTED             = 501, //O servidor não suporta a funcionalidade necessária para completar a requisição.
-    //BAD_GATEWAY                 = 502, //O servidor, agindo como um intermediário, recebeu uma resposta inválida de outro servidor acima dele.
     SERVICE_UNAVAILABLE         = 503, //O servidor está sobrecarregado ou em manutenção. Tente novamente mais tarde.
-    GATEWAY_TIMEOUT             = 504, //O servidor demorou demais para responder. O intermediário desistiu de esperar.
     HTTP_VERSION_NOT_SUPPORTED  = 505  //O servidor não suporta a versão do protocolo HTTP que você usou na requisição.
     
 };
