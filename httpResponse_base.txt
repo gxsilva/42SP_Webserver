@@ -1,0 +1,20 @@
+// ...existing code...
+#include "../../domain/value_objects/CgiResponse.hpp"
+
+class CgiHandler
+{
+public:
+    CgiHandler(InitCgiGateway& gateway, const CgiRouteConfig& config);
+    ~CgiHandler();
+
+    bool startCgi(const HttpRequest& request);
+    InitCgiGateway& getGateway();
+
+    CgiResponse buildCgiResponse(); // <- sem HttpResponse por enquanto
+
+private:
+    InitCgiGateway& _gateway;
+    CgiRouteConfig _config;
+};
+
+/************/
