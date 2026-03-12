@@ -6,6 +6,12 @@ CgiResponse::~CgiResponse() {}
 
 bool CgiResponse::parse(const std::string& rawOutput)
 {
+    /*for test*/
+    _headers.clear();
+    _body.clear();
+    _statusCode = 200;
+    /*for test*/
+    
     std::string::size_type separator = rawOutput.find("\r\n\r\n");
     std::string::size_type separationLen = 4;
 
