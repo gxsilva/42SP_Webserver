@@ -31,7 +31,7 @@ void CgiEnvironment::buildFromRequest(const HttpRequest& request, const std::str
     addVariable("PATH_INFO", pathInfo);
     addVariable("SERVER_NAME", serverName);
     addVariable("SERVER_PORT", PortConv.str());
-    addVariable("SERVER_PROTOCOL", "HTTP/1.1");
+    addVariable("SERVER_PROTOCOL", request.getVersion());
     addVariable("GATEWAY_INTERFACE", "CGI/1.1");
     addVariable("REDIRECT_STATUS", "200");
 
