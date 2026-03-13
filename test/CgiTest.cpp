@@ -111,7 +111,7 @@ class TestEnvPostRequest : public TestCase {
             req.setVersion("HTTP/1.1");
             req.setHeader("Host", "example.com");
             req.setHeader("Content-Type", "application/x-www-form-urlencoded");
-            req.setHeader("Content-Length", "27");
+            req.setHeader("Content-Length", "28");
             req.setBody("username=admin&password=1234");
 
             CgiEnvironment env(req, "/cgi-bin/form.py", "example.com", 80);
@@ -119,7 +119,7 @@ class TestEnvPostRequest : public TestCase {
 
             assertEqual(findEnvVar(envp, "REQUEST_METHOD"), "POST", "REQUEST_METHOD should be POST");
             assertEqual(findEnvVar(envp, "CONTENT_TYPE"), "application/x-www-form-urlencoded", "CONTENT_TYPE should match");
-            assertEqual(findEnvVar(envp, "CONTENT_LENGTH"), "27", "CONTENT_LENGTH should be 27");
+            assertEqual(findEnvVar(envp, "CONTENT_LENGTH"), "28", "CONTENT_LENGTH should be 28");
             assertEqual(findEnvVar(envp, "QUERY_STRING"), "", "QUERY_STRING should be empty for POST without query");
 
             CgiEnvironment::freeEnvArray(envp);
