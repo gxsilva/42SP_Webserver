@@ -82,7 +82,7 @@ void ConflictRuleService::apply(const ASTNode& node, const std::string& context,
 	std::vector< ASTNode* >							  children;
 	std::map< std::string, SourceLocation >			  locations;
 	std::set< std::pair< std::string, std::string > > emitted;
-	const std::string contextName = resolveContextName(node, context);
+	const std::string								  contextName = resolveContextName(node, context);
 
 	collectChildren(node, children);
 	for (size_t i = 0; i < children.size(); ++i)
@@ -93,14 +93,13 @@ void ConflictRuleService::apply(const ASTNode& node, const std::string& context,
 		if (locations.find(childName) == locations.end())
 			locations[childName] = children[i]->getLocation();
 	}
-	for (std::map< std::string, SourceLocation >::const_iterator it = locations.begin();
-		 it != locations.end(); ++it)
+	for (std::map< std::string, SourceLocation >::const_iterator it = locations.begin(); it != locations.end(); ++it)
 	{
 		std::set< std::string > conflicts;
 		if (!this->_table.getConflicts(it->first, conflicts))
 			continue;
-		for (std::set< std::string >::const_iterator conflictIt = conflicts.begin();
-			 conflictIt != conflicts.end(); ++conflictIt)
+		for (std::set< std::string >::const_iterator conflictIt = conflicts.begin(); conflictIt != conflicts.end();
+			 ++conflictIt)
 		{
 			std::pair< std::string, std::string > key(it->first, *conflictIt);
 			if (locations.find(*conflictIt) == locations.end())
@@ -108,8 +107,7 @@ void ConflictRuleService::apply(const ASTNode& node, const std::string& context,
 			if (emitted.find(key) != emitted.end())
 				continue;
 			emitted.insert(key);
-			errors.addError(CompilerError::directiveConflictError(it->first, *conflictIt,
-																  contextName, it->second));
+			errors.addError(CompilerError::directiveConflictError(it->first, *conflictIt, contextName, it->second));
 		}
 	}
 }

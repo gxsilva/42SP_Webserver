@@ -111,8 +111,7 @@ void Logger::log(const std::string& msg, LogLevel lvl)
 	std::string		  label		= _levelToString(lvl);
 
 	// Console output with color
-	std::cout << BOLD << _levelToColor(lvl) << "[" << timestamp << "] " << "[" << label << "] "
-			  << RESET << msg << "\n";
+	std::cout << BOLD << _levelToColor(lvl) << "[" << timestamp << "] " << "[" << label << "] " << RESET << msg << "\n";
 
 	// File output (plain, no ANSI codes)
 	if (_fileLoggingEnabled && _fdOutput.is_open())

@@ -23,8 +23,7 @@
 #include "../base/ASTNode.hpp"
 
 // ------------------------ OCCD ------------------------ //
-ASTBlock::ASTBlock(const std::string& name, const SourceLocation& loc)
-	: ASTNode(AST_NODETYPE_BLOCK, loc), name_(name)
+ASTBlock::ASTBlock(const std::string& name, const SourceLocation& loc) : ASTNode(AST_NODETYPE_BLOCK, loc), name_(name)
 {
 }
 

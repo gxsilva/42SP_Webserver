@@ -21,8 +21,7 @@
 
 // ------------------------ OCCF ------------------------ //
 
-CompilerError::CompilerError()
-	: code(ERROR_UNKNOWN), severity(SEVERITY_UNKNOWN), has_location(false), has_hint(false)
+CompilerError::CompilerError() : code(ERROR_UNKNOWN), severity(SEVERITY_UNKNOWN), has_location(false), has_hint(false)
 {
 }
 
@@ -118,8 +117,7 @@ CompilerError CompilerError::permissionDeniedError(const std::string& filename)
 	err.message		 = "no read permission on the file: " + filename;
 	err.has_location = false;
 	err.has_hint	 = true;
-	err.hint =
-		"Check the read permissions on the file and ensure that the compiler has access to it.";
+	err.hint		 = "Check the read permissions on the file and ensure that the compiler has access to it.";
 	return err;
 }
 
@@ -179,7 +177,7 @@ CompilerError CompilerError::notARegularFileError(const std::string& filename)
 	err.message		 = "Not a regular file: " + filename;
 	err.has_location = false;
 	err.has_hint	 = true;
-	err.hint = "Ensure that the path points to a regular file and not a directory or special file.";
+	err.hint		 = "Ensure that the path points to a regular file and not a directory or special file.";
 	return err;
 }
 
@@ -191,13 +189,12 @@ CompilerError CompilerError::invalidBinaryFileError(const std::string& filename)
 	err.message		 = "Invalid binary file: " + filename;
 	err.has_location = false;
 	err.has_hint	 = true;
-	err.hint = "The file appears to be a binary file. Ensure that you are providing a valid source "
-			   "code file.";
+	err.hint		 = "The file appears to be a binary file. Ensure that you are providing a valid source "
+					   "code file.";
 	return err;
 }
 
-CompilerError CompilerError::expectedNameError(const std::string&	 message,
-											   const SourceLocation& location)
+CompilerError CompilerError::expectedNameError(const std::string& message, const SourceLocation& location)
 {
 	CompilerError err;
 	err.code		 = ERROR_EXPECTED_NAME;
@@ -209,8 +206,7 @@ CompilerError CompilerError::expectedNameError(const std::string&	 message,
 	return err;
 }
 
-CompilerError CompilerError::expectedValueError(const std::string&	  message,
-												const SourceLocation& location)
+CompilerError CompilerError::expectedValueError(const std::string& message, const SourceLocation& location)
 {
 	CompilerError err;
 	err.code		 = ERROR_EXPECTED_VALUE;
@@ -222,8 +218,7 @@ CompilerError CompilerError::expectedValueError(const std::string&	  message,
 	return err;
 }
 
-CompilerError CompilerError::expectedRightBraceError(const std::string&	   message,
-													 const SourceLocation& location)
+CompilerError CompilerError::expectedRightBraceError(const std::string& message, const SourceLocation& location)
 {
 	CompilerError err;
 	err.code		 = ERROR_EXPECTED_LEFT_BRACE;
@@ -235,8 +230,7 @@ CompilerError CompilerError::expectedRightBraceError(const std::string&	   messa
 	return err;
 }
 
-CompilerError CompilerError::unepxectedTokenError(const std::string&	message,
-												  const SourceLocation& location)
+CompilerError CompilerError::unepxectedTokenError(const std::string& message, const SourceLocation& location)
 {
 	CompilerError err;
 	err.code		 = ERROR_UNEXPECTED_TOKEN;
@@ -248,8 +242,7 @@ CompilerError CompilerError::unepxectedTokenError(const std::string&	message,
 	return err;
 }
 
-CompilerError CompilerError::directiveNotAllowedInContextError(const std::string&	 directive,
-															   const std::string&	 context,
+CompilerError CompilerError::directiveNotAllowedInContextError(const std::string& directive, const std::string& context,
 															   const SourceLocation& location)
 {
 	CompilerError err;
@@ -262,17 +255,15 @@ CompilerError CompilerError::directiveNotAllowedInContextError(const std::string
 	return err;
 }
 
-CompilerError CompilerError::directiveCardinalityError(const std::string& directive,
-													   const std::string& context, int min, int max,
-													   int count, const SourceLocation& location)
+CompilerError CompilerError::directiveCardinalityError(const std::string& directive, const std::string& context,
+													   int min, int max, int count, const SourceLocation& location)
 {
 	CompilerError	  err;
 	std::stringstream ss;
 
 	err.code	 = ERROR_DIRECTIVE_CARDINALITY_VIOLATION;
 	err.severity = SEVERITY_ERROR;
-	ss << "Directive '" << directive << "' appears " << count << " time(s) in context '" << context
-	   << "'";
+	ss << "Directive '" << directive << "' appears " << count << " time(s) in context '" << context << "'";
 	if (min >= 0 && max >= 0)
 		ss << ", expected between " << min << " and " << max;
 	else if (min >= 0)
@@ -286,42 +277,37 @@ CompilerError CompilerError::directiveCardinalityError(const std::string& direct
 	return err;
 }
 
-CompilerError CompilerError::directiveConflictError(const std::string&	  directive,
-													const std::string&	  conflictingDirective,
-													const std::string&	  context,
+CompilerError CompilerError::directiveConflictError(const std::string& directive,
+													const std::string& conflictingDirective, const std::string& context,
 													const SourceLocation& location)
 {
 	CompilerError err;
 	err.code	 = ERROR_DIRECTIVE_CONFLICT;
 	err.severity = SEVERITY_ERROR;
-	err.message	 = "Directive '" + directive + "' conflicts with '" + conflictingDirective +
-		"' in context '" + context + "'";
+	err.message =
+		"Directive '" + directive + "' conflicts with '" + conflictingDirective + "' in context '" + context + "'";
 	err.has_location = true;
 	err.location	 = location;
 	err.has_hint	 = false;
 	return err;
 }
 
-CompilerError CompilerError::directiveDependencyError(const std::string&	directive,
-													  const std::string&	requiredDirective,
-													  const std::string&	context,
+CompilerError CompilerError::directiveDependencyError(const std::string& directive,
+													  const std::string& requiredDirective, const std::string& context,
 													  const SourceLocation& location)
 {
 	CompilerError err;
 	err.code	 = ERROR_DIRECTIVE_DEPENDENCY_MISSING;
 	err.severity = SEVERITY_ERROR;
-	err.message	 = "Directive '" + directive + "' requires '" + requiredDirective +
-		"' in context '" + context + "'";
+	err.message	 = "Directive '" + directive + "' requires '" + requiredDirective + "' in context '" + context + "'";
 	err.has_location = true;
 	err.location	 = location;
 	err.has_hint	 = false;
 	return err;
 }
 
-CompilerError CompilerError::directiveInvalidValueError(const std::string&	  directive,
-														const std::string&	  value,
-														const std::string&	  reason,
-														const SourceLocation& location)
+CompilerError CompilerError::directiveInvalidValueError(const std::string& directive, const std::string& value,
+														const std::string& reason, const SourceLocation& location)
 {
 	CompilerError err;
 	err.code		 = ERROR_DIRECTIVE_INVALID_VALUE;

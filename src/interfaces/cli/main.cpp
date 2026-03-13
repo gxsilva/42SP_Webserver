@@ -109,8 +109,7 @@ int main(int argc, const char** argv)
 
 	RuleRegistry		   ruleRegistry;
 	ContextRuleService	   contextRule(ruleRegistry.getContextTable());
-	CardinalityRuleService cardinalityRule(ruleRegistry.getCardinalityTable(),
-										   ruleRegistry.getContextTable());
+	CardinalityRuleService cardinalityRule(ruleRegistry.getCardinalityTable(), ruleRegistry.getContextTable());
 	ConflictRuleService	   conflictRule(ruleRegistry.getConflictTable());
 	DependencyRuleService  dependencyRule(ruleRegistry.getDependencyTable());
 	ValueRuleService	   valueRule;

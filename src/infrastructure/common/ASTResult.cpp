@@ -20,9 +20,7 @@
 #include "../../domain/errors/ErrorList.hpp"
 #include "ResultBase.hpp"
 
-ASTResult::ASTResult(const ErrorList& error) : ResultBase(false), _astRoot(NULL), _errorList(error)
-{
-}
+ASTResult::ASTResult(const ErrorList& error) : ResultBase(false), _astRoot(NULL), _errorList(error) {}
 
 ASTResult::ASTResult(ASTNode* astRoot) : ResultBase(true), _astRoot(astRoot) {}
 

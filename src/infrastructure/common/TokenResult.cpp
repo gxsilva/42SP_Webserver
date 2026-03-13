@@ -23,10 +23,7 @@
 
 TokenResult::TokenResult(std::vector< Token >* toks) : ResultBase(true), _tokens(toks) {}
 
-TokenResult::TokenResult(const ErrorList& error)
-	: ResultBase(false), _tokens(NULL), _errorList(error)
-{
-}
+TokenResult::TokenResult(const ErrorList& error) : ResultBase(false), _tokens(NULL), _errorList(error) {}
 
 TokenResult::~TokenResult()
 {
@@ -41,7 +38,7 @@ std::vector< Token >* TokenResult::unwrap()
 
 	// transferencia de ownership do ponteiro para o chamador
 	std::vector< Token >* tmp = _tokens;
-	_tokens = NULL; // evita que o destrutor delete o ponteiro após a transferência
+	_tokens					  = NULL; // evita que o destrutor delete o ponteiro após a transferência
 	return tmp;
 }
 

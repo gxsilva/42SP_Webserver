@@ -27,8 +27,7 @@ SemanticAnalyzer::~SemanticAnalyzer() {}
 
 // ------------------------ PRIVATE ------------------------ //
 
-void SemanticAnalyzer::_visit(const ASTNode& node, const std::string& context,
-							  ErrorList& errors) const
+void SemanticAnalyzer::_visit(const ASTNode& node, const std::string& context, ErrorList& errors) const
 {
 	for (size_t i = 0; i < _rules.size(); ++i)
 		_rules[i]->apply(node, context, errors);
@@ -53,7 +52,4 @@ void SemanticAnalyzer::_visit(const ASTNode& node, const std::string& context,
 
 // ------------------------ PUBLIC ------------------------ //
 
-void SemanticAnalyzer::analyze(const ASTNode& root, ErrorList& errors) const
-{
-	_visit(root, "", errors);
-}
+void SemanticAnalyzer::analyze(const ASTNode& root, ErrorList& errors) const { _visit(root, "", errors); }

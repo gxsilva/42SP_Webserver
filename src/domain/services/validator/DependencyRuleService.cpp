@@ -76,8 +76,7 @@ DependencyRuleService::DependencyRuleService(const RuleTable& table) : _table(ta
 
 DependencyRuleService::~DependencyRuleService() {}
 
-void DependencyRuleService::apply(const ASTNode& node, const std::string& context,
-								  ErrorList& errors)
+void DependencyRuleService::apply(const ASTNode& node, const std::string& context, ErrorList& errors)
 {
 	if (node.getType() != AST_NODETYPE_BLOCK && node.getType() != AST_NODETYPE_ROOT)
 		return;
@@ -95,19 +94,16 @@ void DependencyRuleService::apply(const ASTNode& node, const std::string& contex
 		if (locations.find(childName) == locations.end())
 			locations[childName] = children[i]->getLocation();
 	}
-	for (std::map< std::string, SourceLocation >::const_iterator it = locations.begin();
-		 it != locations.end(); ++it)
+	for (std::map< std::string, SourceLocation >::const_iterator it = locations.begin(); it != locations.end(); ++it)
 	{
 		std::set< std::string > requirements;
 		if (!this->_table.getRequirements(it->first, requirements))
 			continue;
-		for (std::set< std::string >::const_iterator reqIt = requirements.begin();
-			 reqIt != requirements.end(); ++reqIt)
+		for (std::set< std::string >::const_iterator reqIt = requirements.begin(); reqIt != requirements.end(); ++reqIt)
 		{
 			if (locations.find(*reqIt) != locations.end())
 				continue;
-			errors.addError(CompilerError::directiveDependencyError(it->first, *reqIt, contextName,
-																	it->second));
+			errors.addError(CompilerError::directiveDependencyError(it->first, *reqIt, contextName, it->second));
 		}
 	}
 }

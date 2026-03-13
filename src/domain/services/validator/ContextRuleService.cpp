@@ -27,8 +27,8 @@ void ContextRuleService::apply(const ASTNode& node, const std::string& context, 
 		ASTBlock& blockNode = static_cast< ASTBlock& >(const_cast< ASTNode& >(node));
 		if (!this->_table.isAllowedInContext(blockNode.getName(), context))
 		{
-			errors.addError(CompilerError::directiveNotAllowedInContextError(
-				blockNode.getName(), context, blockNode.getLocation()));
+			errors.addError(CompilerError::directiveNotAllowedInContextError(blockNode.getName(), context,
+																			 blockNode.getLocation()));
 		}
 	}
 	else if (node.getType() == AST_NODETYPE_DIRECTIVE)
@@ -36,8 +36,8 @@ void ContextRuleService::apply(const ASTNode& node, const std::string& context, 
 		ASTDirective& directiveNode = static_cast< ASTDirective& >(const_cast< ASTNode& >(node));
 		if (!this->_table.isAllowedInContext(directiveNode.getName(), context))
 		{
-			errors.addError(CompilerError::directiveNotAllowedInContextError(
-				directiveNode.getName(), context, directiveNode.getLocation()));
+			errors.addError(CompilerError::directiveNotAllowedInContextError(directiveNode.getName(), context,
+																			 directiveNode.getLocation()));
 		}
 	}
 	else

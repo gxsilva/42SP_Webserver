@@ -97,10 +97,7 @@ Example of valid paths:
 - -images
 - _assets
 */
-bool Lexer::isPathChar(char c)
-{
-	return isAlpha(c) || isDigit(c) || c == '/' || c == '.' || c == '-' || c == '_';
-}
+bool Lexer::isPathChar(char c) { return isAlpha(c) || isDigit(c) || c == '/' || c == '.' || c == '-' || c == '_'; }
 
 // ----------------------- SCANNERS --------------------------- //
 Token Lexer::scanWord()
@@ -249,10 +246,7 @@ TokenResult Lexer::tokenize()
 }
 
 // ------------------------ arrumar algum dia ------------------------ //
-SourceLocation Lexer::currentLocation() const
-{
-	return SourceLocation(_filePath, _line, _column, 1);
-}
+SourceLocation Lexer::currentLocation() const { return SourceLocation(_filePath, _line, _column, 1); }
 
 void Lexer::internalTest()
 {

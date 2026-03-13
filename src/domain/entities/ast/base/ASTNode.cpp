@@ -19,10 +19,7 @@
 
 // ------------------------ OCCF ------------------------ //
 
-ASTNode::ASTNode(ASTNodeType type, const SourceLocation& location)
-	: _type(type), _location(location)
-{
-}
+ASTNode::ASTNode(ASTNodeType type, const SourceLocation& location) : _type(type), _location(location) {}
 ASTNode::~ASTNode() {}
 
 // ------------------------ METHODS ------------------------ //

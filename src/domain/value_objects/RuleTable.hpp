@@ -31,13 +31,12 @@ class RuleTable
 
 		// CONTEXT
 		void addContext(const std::string& ruleName, const std::set< std::string >& contexts);
-		bool isAllowedInContext(const std::string& ruleName,
-								const std::string& currentContext) const;
+		bool isAllowedInContext(const std::string& ruleName, const std::string& currentContext) const;
 
 		// CARDINALITY
-		void setCardinality(const std::string& ruleName, int min, int max);
-		bool checkCardinality(const std::string& ruleName, int count) const;
-		bool getCardinality(const std::string& ruleName, int& min, int& max) const;
+		void					setCardinality(const std::string& ruleName, int min, int max);
+		bool					checkCardinality(const std::string& ruleName, int count) const;
+		bool					getCardinality(const std::string& ruleName, int& min, int& max) const;
 		std::set< std::string > getCardinalityRuleNames() const;
 
 		// CONFLICTS
@@ -46,12 +45,9 @@ class RuleTable
 		bool getConflicts(const std::string& ruleName, std::set< std::string >& conflicts) const;
 
 		// REQUIRES
-		void addRequirement(const std::string&			   ruleName,
-							const std::set< std::string >& requirements);
-		bool checkRequirements(const std::string& ruleName,
-							   const std::string& currentContext) const;
-		bool getRequirements(const std::string&		  ruleName,
-							 std::set< std::string >& requirements) const;
+		void addRequirement(const std::string& ruleName, const std::set< std::string >& requirements);
+		bool checkRequirements(const std::string& ruleName, const std::string& currentContext) const;
+		bool getRequirements(const std::string& ruleName, std::set< std::string >& requirements) const;
 };
 
 #endif /* RULETABLE_HPP */

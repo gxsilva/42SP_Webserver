@@ -72,16 +72,14 @@ namespace
 	}
 } // namespace
 
-CardinalityRuleService::CardinalityRuleService(const RuleTable& table,
-											   const RuleTable& contextTable)
+CardinalityRuleService::CardinalityRuleService(const RuleTable& table, const RuleTable& contextTable)
 	: _table(table), _contextTable(contextTable)
 {
 }
 
 CardinalityRuleService::~CardinalityRuleService() {}
 
-void CardinalityRuleService::apply(const ASTNode& node, const std::string& context,
-								   ErrorList& errors)
+void CardinalityRuleService::apply(const ASTNode& node, const std::string& context, ErrorList& errors)
 {
 	if (node.getType() != AST_NODETYPE_BLOCK && node.getType() != AST_NODETYPE_ROOT)
 		return;
@@ -103,8 +101,7 @@ void CardinalityRuleService::apply(const ASTNode& node, const std::string& conte
 		if (firstLocations.find(childName) == firstLocations.end())
 			firstLocations[childName] = children[i]->getLocation();
 	}
-	for (std::set< std::string >::const_iterator it = ruleNames.begin(); it != ruleNames.end();
-		 ++it)
+	for (std::set< std::string >::const_iterator it = ruleNames.begin(); it != ruleNames.end(); ++it)
 	{
 		std::map< std::string, int >::const_iterator countIt  = counts.find(*it);
 		int											 count	  = 0;
@@ -122,8 +119,7 @@ void CardinalityRuleService::apply(const ASTNode& node, const std::string& conte
 			location = firstLocations[*it];
 		if (!this->_table.checkCardinality(*it, count))
 		{
-			errors.addError(CompilerError::directiveCardinalityError(*it, contextName, min, max,
-																	 count, location));
+			errors.addError(CompilerError::directiveCardinalityError(*it, contextName, min, max, count, location));
 		}
 	}
 }

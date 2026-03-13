@@ -109,8 +109,7 @@ namespace
 		if (value.size() < 2)
 			return false;
 		const char suffix = value[value.size() - 1];
-		if (suffix != 'k' && suffix != 'K' && suffix != 'm' && suffix != 'M' && suffix != 'g' &&
-			suffix != 'G')
+		if (suffix != 'k' && suffix != 'K' && suffix != 'm' && suffix != 'M' && suffix != 'g' && suffix != 'G')
 			return false;
 		return isDigitsOnly(value.substr(0, value.size() - 1));
 	}
@@ -165,11 +164,11 @@ namespace
 		return values[0]->getLocation();
 	}
 
-	void addInvalidValueError(ErrorList& errors, const ASTDirective& directive,
-							  const std::string& value, const std::string& reason)
+	void addInvalidValueError(ErrorList& errors, const ASTDirective& directive, const std::string& value,
+							  const std::string& reason)
 	{
-		errors.addError(CompilerError::directiveInvalidValueError(
-			directive.getName(), value, reason, getFirstValueLocationOrDirective(directive)));
+		errors.addError(CompilerError::directiveInvalidValueError(directive.getName(), value, reason,
+																  getFirstValueLocationOrDirective(directive)));
 	}
 } // namespace
 
@@ -186,15 +185,13 @@ void ValueRuleService::apply(const ASTNode& node, const std::string& context, Er
 		if (params.size() != 1)
 		{
 			errors.addError(CompilerError::directiveInvalidValueError(
-				"location", "", "location block requires exactly one URL parameter",
-				block.getLocation()));
+				"location", "", "location block requires exactly one URL parameter", block.getLocation()));
 			return;
 		}
 		if (!isLocationPath(params[0]->getValue()))
 		{
 			errors.addError(CompilerError::directiveInvalidValueError(
-				"location", params[0]->getValue(), "location URL must start with '/'",
-				params[0]->getLocation()));
+				"location", params[0]->getValue(), "location URL must start with '/'", params[0]->getLocation()));
 		}
 		return;
 	}
@@ -221,8 +218,7 @@ void ValueRuleService::apply(const ASTNode& node, const std::string& context, Er
 		{
 			const std::string host = values[0]->getValue();
 			if (host != "localhost" && !isValidIpv4(host))
-				addInvalidValueError(errors, directive, host,
-									 "host must be a valid IPv4 address or 'localhost'");
+				addInvalidValueError(errors, directive, host, "host must be a valid IPv4 address or 'localhost'");
 		}
 	}
 	else if (name == "server_name")
@@ -240,8 +236,7 @@ void ValueRuleService::apply(const ASTNode& node, const std::string& context, Er
 	else if (name == "root" || name == "index" || name == "upload_path")
 	{
 		if (values.size() != 1 || !isPathLike(getFirstValueOrEmpty(values)))
-			addInvalidValueError(errors, directive, getFirstValueOrEmpty(values),
-								 name + " expects one non-empty path");
+			addInvalidValueError(errors, directive, getFirstValueOrEmpty(values), name + " expects one non-empty path");
 	}
 	else if (name == "error_page")
 	{
@@ -255,9 +250,8 @@ void ValueRuleService::apply(const ASTNode& node, const std::string& context, Er
 		{
 			if (!isValidStatusCode(values[i]->getValue()))
 			{
-				addInvalidValueError(
-					errors, directive, values[i]->getValue(),
-					"error_page status code must be a 3-digit code between 300 and 599");
+				addInvalidValueError(errors, directive, values[i]->getValue(),
+									 "error_page status code must be a 3-digit code between 300 and 599");
 				return;
 			}
 		}
@@ -271,8 +265,7 @@ void ValueRuleService::apply(const ASTNode& node, const std::string& context, Er
 	{
 		if (values.empty())
 		{
-			addInvalidValueError(errors, directive, "",
-								 "allow_methods expects one or more HTTP methods");
+			addInvalidValueError(errors, directive, "", "allow_methods expects one or more HTTP methods");
 			return;
 		}
 		for (size_t i = 0; i < values.size(); ++i)
@@ -288,8 +281,7 @@ void ValueRuleService::apply(const ASTNode& node, const std::string& context, Er
 	else if (name == "autoindex")
 	{
 		if (values.size() != 1 || (values[0]->getValue() != "on" && values[0]->getValue() != "off"))
-			addInvalidValueError(errors, directive, getFirstValueOrEmpty(values),
-								 "autoindex expects 'on' or 'off'");
+			addInvalidValueError(errors, directive, getFirstValueOrEmpty(values), "autoindex expects 'on' or 'off'");
 	}
 	else if (name == "return")
 	{
@@ -302,23 +294,20 @@ void ValueRuleService::apply(const ASTNode& node, const std::string& context, Er
 		if (values.size() == 1)
 		{
 			if (!isPathLike(values[0]->getValue()))
-				addInvalidValueError(errors, directive, values[0]->getValue(),
-									 "return URL must be non-empty");
+				addInvalidValueError(errors, directive, values[0]->getValue(), "return URL must be non-empty");
 			return;
 		}
 		if (!isValidStatusCode(values[0]->getValue()))
 			addInvalidValueError(errors, directive, values[0]->getValue(),
 								 "return status code must be a 3-digit code between 300 and 599");
 		if (!isPathLike(values[1]->getValue()))
-			addInvalidValueError(errors, directive, values[1]->getValue(),
-								 "return URL must be non-empty");
+			addInvalidValueError(errors, directive, values[1]->getValue(), "return URL must be non-empty");
 	}
 	else if (name == "cgi_path")
 	{
 		if (values.empty())
 		{
-			addInvalidValueError(errors, directive, "",
-								 "cgi_path expects one or more executable paths");
+			addInvalidValueError(errors, directive, "", "cgi_path expects one or more executable paths");
 			return;
 		}
 		for (size_t i = 0; i < values.size(); ++i)

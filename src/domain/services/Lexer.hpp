@@ -57,8 +57,7 @@ class Lexer
 		SourceLocation currentLocation() const;
 		void		   addError(const CompilerError& error);
 
-		static Token makeToken(TokenType type, const SourceLocation& location,
-							   const std::string& value);
+		static Token makeToken(TokenType type, const SourceLocation& location, const std::string& value);
 
 	public:
 		Lexer(const std::string& fileContent, const std::string& path);
