@@ -210,10 +210,25 @@ void CgiProcessExecutor::closeFdIfOpen(int& fd)
 
 void CgiProcessExecutor::killChildIfAlive()
 {
-    if (_childPid > 0)
+    if (_childPid <= 0)
+        return;
+    
+    pid_t   pid = _childPid;
+    if (kill(pid, SIGKILL) == -1)
     {
-        kill(_childPid, SIGKILL);
-        waitpid(_childPid, NULL, WNOHANG);
-        _childPid = -1;
+        if (errno == ESRCH)
+            _childPid = -1;
+        return;
     }
+
+    int   status = 0;
+    pid_t result = -1;
+    do
+    {
+        result = waitpid(pid, &status, 0);
+    }
+    while (result == -1 && errno == EINTR);
+
+    if (result == pid || (result == -1 && errno == ECHILD))
+        _childPid = -1;
 }
