@@ -58,7 +58,8 @@ DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 					$(D_AST_DIR)/node/ASTValue.cpp \
 					$(D_AST_DIR)/node/ASTDirective.cpp \
 					$(D_AST_DIR)/node/ASTBlock.cpp \
-					$(D_AST_DIR)/node/ASTRoot.cpp 
+					$(D_AST_DIR)/node/ASTRoot.cpp \
+					$(D_VALUE_OBJECTS_DIR)/RuleTable.cpp
 
 INTERFACE_SRCS	= $(CLI_DIR)/main.cpp
 
@@ -67,7 +68,9 @@ INFRA_SRCS		= $(I_COMMON_DIR)/TokenResult.cpp \
 					$(I_COMMON_DIR)/ASTResult.cpp \
 					$(I_IO_DIR)/FileReader.cpp \
 					$(I_IO_DIR)/FileValidator.cpp \
-					$(INFRA_DIR)/logging/Logger.cpp
+					$(INFRA_DIR)/logging/Logger.cpp \
+					$(I_COMMON_DIR)/RuleRegistry.cpp
+
 
 APPLICATION_SRCS	= $(USE_CASES_DIR)/CompileSourceFile.cpp
 

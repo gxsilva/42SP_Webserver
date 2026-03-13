@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/06 00:11:38 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/12 21:01:34 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ int main(int argc, const char** argv)
 	{
 		const ErrorList& errors = astRes.error();
 		errors.formatAllErrors();
+		delete tokens;
 		logger.log("Failed to parse tokens from source file: " + std::string(argv[1]), ERROR);
 		return (1);
 	}
@@ -96,7 +97,14 @@ int main(int argc, const char** argv)
 	ASTNode* astRoot = astRes.unwrap();
 	delete tokens;
 	// Debugger::logAST(astRoot);
-	(void)astRoot;
+
+	/*
+	Main idea
+
+		SemanticAnalyzer analyzer(rules) ;
+		Validator validator(analyzer);
+		ValidatorResult = validator.validateAST(astRoot) ou astRes.unwrap();
+	*/
 	// delete astRoot;
 	return (0);
 }
