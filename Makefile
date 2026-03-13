@@ -39,6 +39,7 @@ CLI_DIR					= $(INTERFACES_DIR)/cli
 INFRA_DIR				= $(SRCS_DIR)/infrastructure
 I_COMMON_DIR			= $(INFRA_DIR)/common
 I_IO_DIR				= $(INFRA_DIR)/io
+BUILDER_DIR				= $(I_COMMON_DIR)/builder
 
 APPLICATION_DIR			= $(SRCS_DIR)/application
 USE_CASES_DIR			= $(APPLICATION_DIR)/use_cases
@@ -78,9 +79,8 @@ INFRA_SRCS		= $(I_COMMON_DIR)/TokenResult.cpp \
 					$(I_IO_DIR)/SemanticAnalyzer.cpp \
 					$(INFRA_DIR)/logging/Logger.cpp \
 					$(I_COMMON_DIR)/RuleRegistry.cpp \
-					$(I_COMMON_DIR)/ValidatorResult.cpp
-
-
+					$(I_COMMON_DIR)/ValidatorResult.cpp \
+					$(BUILDER_DIR)/ConfigBuilder.cpp
 
 APPLICATION_SRCS	= $(USE_CASES_DIR)/CompileSourceFile.cpp
 
