@@ -213,7 +213,7 @@ void CgiProcessExecutor::killChildIfAlive()
     if (_childPid > 0)
     {
         kill(_childPid, SIGKILL);
-        waitpid(_childPid, NULL, 0);
+        waitpid(_childPid, NULL, WNOHANG);
         _childPid = -1;
     }
 }
