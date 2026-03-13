@@ -59,6 +59,7 @@ DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 					$(D_VALIDATOR_DIR)/CardinalityRuleService.cpp \
 					$(D_VALIDATOR_DIR)/ConflictRuleService.cpp \
 					$(D_VALIDATOR_DIR)/DependencyRuleService.cpp \
+					$(D_VALIDATOR_DIR)/ValueService.cpp \
 					$(D_AST_DIR)/base/ASTNode.cpp \
 					$(D_AST_DIR)/node/ASTValue.cpp \
 					$(D_AST_DIR)/node/ASTDirective.cpp \

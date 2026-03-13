@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 22:29:41 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/13 01:14:13 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 02:43:44 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ std::string CompilerError::_errorCodeToString(ErrorCode code)
 		return "ERROR_DIRECTIVE_CONFLICT";
 	case ERROR_DIRECTIVE_DEPENDENCY_MISSING:
 		return "ERROR_DIRECTIVE_DEPENDENCY_MISSING";
+	case ERROR_DIRECTIVE_INVALID_VALUE:
+		return "ERROR_DIRECTIVE_INVALID_VALUE";
 	default:
 		return "Error not registered in the system.";
 	}
@@ -310,6 +312,21 @@ CompilerError CompilerError::directiveDependencyError(const std::string&	directi
 	err.severity = SEVERITY_ERROR;
 	err.message	 = "Directive '" + directive + "' requires '" + requiredDirective +
 		"' in context '" + context + "'";
+	err.has_location = true;
+	err.location	 = location;
+	err.has_hint	 = false;
+	return err;
+}
+
+CompilerError CompilerError::directiveInvalidValueError(const std::string&	  directive,
+														const std::string&	  value,
+														const std::string&	  reason,
+														const SourceLocation& location)
+{
+	CompilerError err;
+	err.code		 = ERROR_DIRECTIVE_INVALID_VALUE;
+	err.severity	 = SEVERITY_ERROR;
+	err.message		 = "Directive '" + directive + "' has invalid value '" + value + "': " + reason;
 	err.has_location = true;
 	err.location	 = location;
 	err.has_hint	 = false;

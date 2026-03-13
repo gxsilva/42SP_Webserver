@@ -84,6 +84,10 @@ class CompilerError
 													  const std::string&	requiredDirective,
 													  const std::string&	context,
 													  const SourceLocation& location);
+		static CompilerError directiveInvalidValueError(const std::string&	  directive,
+														const std::string&	  value,
+														const std::string&	  reason,
+														const SourceLocation& location);
 };
 
 #endif /* COMPILERERROR_HPP */
