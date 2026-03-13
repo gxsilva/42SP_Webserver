@@ -116,15 +116,11 @@ bool CgiProcessExecutor::onWriteReady()
                             _requestBody.c_str() + _bodyBytesSent,
                             remaining);
     if (written > 0)
-        _bodyBytesSent += static_cast<std::size_t>(written);
-    if (written <= 0)
     {
-        closeFdIfOpen(_pipeToChild[1]);
-        return (true);
+        _bodyBytesSent += static_cast<std::size_t>(written);
+        if (_bodyBytesSent >= _requestBody.size())
+             closeFdIfOpen(_pipeToChild[1]);
     }
-    if (_bodyBytesSent >= _requestBody.size())
-        closeFdIfOpen(_pipeToChild[1]);
-
     return (true);
 }
 
