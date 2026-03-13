@@ -38,15 +38,20 @@ void CgiEnvironment::buildFromRequest(const HttpRequest& request, const std::str
 	addVariable("REDIRECT_STATUS", "200");
 
 	const std::map<std::string, std::string>& headers = request.getHeaders();
-	for (std::map<std::string, std::string>::const_iterator it = headers.begin();
-		 it != headers.end(); ++it)
+	for (std::map<std::string, std::string>::const_iterator it = headers.begin(); it != headers.end(); ++it)
 	{
-		std::string key = "HTTP_";
-		for (std::size_t j = 0; j < it->first.size(); ++j)
-		{
-			char c = it->first[j];
-			if (c == '-')
-				key += '_';
+		std::string headerName = it->first;
+        std::string lowerName;
+        for (std::size_t j = 0; j < headerName.size(); ++j)
+            lowerName += static_cast<char>(std::tolower(headerName[j]));
+        if (lowerName == "content-type" || lowerName == "content-length")
+            continue;
+        std::string key = "HTTP_";
+        for (std::size_t j = 0; j < headerName.size(); ++j)
+        {
+            char c = headerName[j];
+            if (c == '-')
+                key += '_';
 			else
 				key += static_cast<char>(std::toupper(c));
 		}
