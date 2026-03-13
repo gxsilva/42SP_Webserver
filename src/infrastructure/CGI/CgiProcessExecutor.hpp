@@ -2,55 +2,53 @@
 #define CGI_PROCESS_EXECUTOR_HPP
 
 #include "../../interfaces/port/InitCgiGateway.hpp"
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <errno.h>
+#include <fcntl.h>
+#include <signal.h>
 #include <string>
 #include <sys/types.h>
-#include <errno.h>
-#include <ctime>
-#include <unistd.h>
 #include <sys/wait.h>
-#include <signal.h>
-#include <cstring>
-#include <cstdlib>
-#include <fcntl.h>
+#include <unistd.h>
 
 class CgiProcessExecutor : public InitCgiGateway
 {
-    public:
-        explicit CgiProcessExecutor(std::size_t timeoutSeconds);
-        ~CgiProcessExecutor();
+	public:
+		explicit CgiProcessExecutor(std::size_t timeoutSeconds);
+		~CgiProcessExecutor();
 
-        bool start(const std::string& scriptPath,
-                   const std::string& interpreterPath,
-                   const CgiEnvironment& env,
-                   const std::string& requestBody);
+		bool start(const std::string& scriptPath, const std::string& interpreterPath,
+				   const CgiEnvironment& env, const std::string& requestBody);
 
-        int getReadFd() const;
-        int getWriteFd() const;
+		int getReadFd() const;
+		int getWriteFd() const;
 
-        bool onWriteReady();
-        bool onReadReady();
+		bool onWriteReady();
+		bool onReadReady();
 
-        CgiProcessState checkState();
-        CgiResponse     getResponse();
-        void            cleanup();
+		CgiProcessState checkState();
+		CgiResponse		getResponse();
+		void			cleanup();
 
-    private:
-        CgiProcessExecutor();
-        CgiProcessExecutor(const CgiProcessExecutor&);
-        CgiProcessExecutor& operator=(const CgiProcessExecutor&);
+	private:
+		CgiProcessExecutor();
+		CgiProcessExecutor(const CgiProcessExecutor&);
+		CgiProcessExecutor& operator=(const CgiProcessExecutor&);
 
-        void closeFdIfOpen(int& fd);
-        void killChildIfAlive();
+		void closeFdIfOpen(int& fd);
+		void killChildIfAlive();
 
-        pid_t       _childPid;
-        int         _pipeToChild[2];
-        int         _pipeFromChild[2];
-        std::string _requestBody;
-        std::size_t _bodyBytesSent;
-        std::string _outputBuffer;
-        std::time_t _startTime;
-        std::size_t _timeoutSeconds;
-        bool        _finished;
+		pid_t		_childPid;
+		int			_pipeToChild[2];
+		int			_pipeFromChild[2];
+		std::string _requestBody;
+		std::size_t _bodyBytesSent;
+		std::string _outputBuffer;
+		std::time_t _startTime;
+		std::size_t _timeoutSeconds;
+		bool		_finished;
 };
 
 #endif

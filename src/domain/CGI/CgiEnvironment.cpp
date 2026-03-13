@@ -1,73 +1,76 @@
 #include "../value_objects/CgiEnvironment.hpp"
 #include "../entities/HttpRequest.hpp"
 
-CgiEnvironment::CgiEnvironment(const HttpRequest& request, const std::string& scriptPath, const std::string& serverName, int Port)
+CgiEnvironment::CgiEnvironment(const HttpRequest& request, const std::string& scriptPath,
+							   const std::string& serverName, int Port)
 {
-    buildFromRequest(request, scriptPath, serverName, Port);
+	buildFromRequest(request, scriptPath, serverName, Port);
 }
 
 CgiEnvironment::~CgiEnvironment() {}
 
 void CgiEnvironment::addVariable(const std::string& key, const std::string& value)
 {
-    _var.push_back(key + "=" + value);
+	_var.push_back(key + "=" + value);
 }
 
-void CgiEnvironment::buildFromRequest(const HttpRequest& request, const std::string& scriptPath, const std::string& serverName, int Port)
+void CgiEnvironment::buildFromRequest(const HttpRequest& request, const std::string& scriptPath,
+									  const std::string& serverName, int Port)
 {
-    std::ostringstream  PortConv;
-    PortConv << Port;
+	std::ostringstream PortConv;
+	PortConv << Port;
 
-    std::string uri = request.getUri();
-    std::string::size_type qPos = uri.find('?');
-    std::string queryString = (qPos != std::string::npos) ? uri.substr(qPos + 1) : "";
-    std::string pathInfo = (qPos != std::string::npos) ? uri.substr(0, qPos) : uri;
+	std::string			   uri		   = request.getUri();
+	std::string::size_type qPos		   = uri.find('?');
+	std::string			   queryString = (qPos != std::string::npos) ? uri.substr(qPos + 1) : "";
+	std::string			   pathInfo	   = (qPos != std::string::npos) ? uri.substr(0, qPos) : uri;
 
-    addVariable("REQUEST_METHOD", request.getMethod());
-    addVariable("QUERY_STRING", queryString);
-    addVariable("CONTENT_TYPE", request.getHeader("Content-Type"));
-    addVariable("CONTENT_LENGTH", request.getHeader("Content-Length"));
-    addVariable("SCRIPT_NAME", scriptPath);
-    addVariable("PATH_INFO", pathInfo);
-    addVariable("SERVER_NAME", serverName);
-    addVariable("SERVER_PORT", PortConv.str());
-    addVariable("SERVER_PROTOCOL", request.getVersion());
-    addVariable("GATEWAY_INTERFACE", "CGI/1.1");
-    addVariable("REDIRECT_STATUS", "200");
+	addVariable("REQUEST_METHOD", request.getMethod());
+	addVariable("QUERY_STRING", queryString);
+	addVariable("CONTENT_TYPE", request.getHeader("Content-Type"));
+	addVariable("CONTENT_LENGTH", request.getHeader("Content-Length"));
+	addVariable("SCRIPT_NAME", scriptPath);
+	addVariable("PATH_INFO", pathInfo);
+	addVariable("SERVER_NAME", serverName);
+	addVariable("SERVER_PORT", PortConv.str());
+	addVariable("SERVER_PROTOCOL", request.getVersion());
+	addVariable("GATEWAY_INTERFACE", "CGI/1.1");
+	addVariable("REDIRECT_STATUS", "200");
 
-    const std::map<std::string, std::string>& headers = request.getHeaders();
-    for (std::map<std::string, std::string>::const_iterator it = headers.begin(); it != headers.end(); ++it)
-    {
-        std::string key = "HTTP_";
-        for (std::size_t j = 0; j < it->first.size(); ++j)
-        {
-            char c = it->first[j];
-            if (c == '-')
-                key += '_';
-            else
-                key += static_cast<char>(std::toupper(c));
-        }
-        addVariable(key, it->second);
-    }
+	const std::map<std::string, std::string>& headers = request.getHeaders();
+	for (std::map<std::string, std::string>::const_iterator it = headers.begin();
+		 it != headers.end(); ++it)
+	{
+		std::string key = "HTTP_";
+		for (std::size_t j = 0; j < it->first.size(); ++j)
+		{
+			char c = it->first[j];
+			if (c == '-')
+				key += '_';
+			else
+				key += static_cast<char>(std::toupper(c));
+		}
+		addVariable(key, it->second);
+	}
 }
 
 char** CgiEnvironment::toEnvArray() const
 {
-    char** envp = new char*[_var.size() + 1];
-    for (std::size_t i = 0; i < _var.size(); ++i)
-    {
-        envp[i] = new char[_var[i].size() + 1];
-        std::strcpy(envp[i], _var[i].c_str());
-    }
-    envp[_var.size()] = NULL;
-    return (envp);
+	char** envp = new char*[_var.size() + 1];
+	for (std::size_t i = 0; i < _var.size(); ++i)
+	{
+		envp[i] = new char[_var[i].size() + 1];
+		std::strcpy(envp[i], _var[i].c_str());
+	}
+	envp[_var.size()] = NULL;
+	return (envp);
 }
 
 void CgiEnvironment::freeEnvArray(char** envp)
 {
-    if (!envp)
-        return;
-    for (std::size_t i = 0; envp[i] != NULL; ++i)
-        delete[] envp[i];
-    delete[] envp;
+	if (!envp)
+		return;
+	for (std::size_t i = 0; envp[i] != NULL; ++i)
+		delete[] envp[i];
+	delete[] envp;
 }
