@@ -64,7 +64,12 @@ void ConnectionManager::handleClientRead(int fd)
 
 	std::cout << "Data from fd " << fd << ": " << buffer << std::endl;
 
-	bufferTestHttpResponse(*client);
+	HttpResponse resp;
+	resp.setStatusCode(200);
+	resp.setHeader("Content-Type", "text/plain");
+	resp.setHeader("Connection", "close");
+	resp.setBody("Hello, World!");
+	bufferTestHttpResponse(*client, resp);
 	_epollManager.modifyFd(fd, EPOLLOUT);
 }
 

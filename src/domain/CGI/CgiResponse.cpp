@@ -6,11 +6,9 @@ CgiResponse::~CgiResponse() {}
 
 bool CgiResponse::parse(const std::string& rawOutput)
 {
-    /*for test*/
     _headers.clear();
     _body.clear();
     _statusCode = 200;
-    /*for test*/
     
     std::string::size_type separator = rawOutput.find("\r\n\r\n");
     std::string::size_type separationLen = 4;
@@ -52,7 +50,8 @@ void CgiResponse::parseStatusFromHeaders()
     {
         if (_headers[i].first == "Status")
         {
-            _statusCode = std::atoi(_headers[i].second.c_str());
+            int code = std::atoi(_headers[i].second.c_str());
+            _statusCode = (code >= 100 && code <= 599) ? code : 500;
             _headers.erase(_headers.begin() + static_cast<long>(i));
             return;
         }

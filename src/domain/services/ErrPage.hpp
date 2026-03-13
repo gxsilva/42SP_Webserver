@@ -9,8 +9,8 @@ public:
     // Recebe o código e uma referência para o helper de mensagens
     static std::string generate(HttpStatusCode code, StatusCodeResponse& helper) {
         std::string fullStatus = helper.statusReturn(code);
-        std::string msg = helper.findMsg(code);
-
+        //std::string msg = helper.findMsg(code);
+        //(void)msg;
         return 
             "<html>\r\n"
             "<head><title>" + fullStatus + "</title></head>\r\n"

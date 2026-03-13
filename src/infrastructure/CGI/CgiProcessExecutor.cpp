@@ -39,9 +39,13 @@ bool CgiProcessExecutor::start(const std::string& scriptPath,
         return (false);
     }
 
-    fcntl(_pipeToChild[1], F_SETFL, O_NONBLOCK);
-    fcntl(_pipeFromChild[0], F_SETFL, O_NONBLOCK);
-
+    int flagsToChild = fcntl(_pipeToChild[1], F_GETFL, 0);
+    if (flagsToChild != -1)
+        fcntl(_pipeToChild[1], F_SETFL, flagsToChild | O_NONBLOCK);
+    
+    int flagsFromChild = fcntl(_pipeFromChild[0], F_GETFL, 0);
+    if (flagsFromChild != -1)
+        fcntl(_pipeFromChild[0], F_SETFL, flagsFromChild | O_NONBLOCK);
     char** envp = env.toEnvArray();
 
     _childPid = fork();
@@ -116,15 +120,11 @@ bool CgiProcessExecutor::onWriteReady()
                             _requestBody.c_str() + _bodyBytesSent,
                             remaining);
     if (written > 0)
-        _bodyBytesSent += static_cast<std::size_t>(written);
-    if (written <= 0)
     {
-        closeFdIfOpen(_pipeToChild[1]);
-        return (true);
+        _bodyBytesSent += static_cast<std::size_t>(written);
+        if (_bodyBytesSent >= _requestBody.size())
+             closeFdIfOpen(_pipeToChild[1]);
     }
-    if (_bodyBytesSent >= _requestBody.size())
-        closeFdIfOpen(_pipeToChild[1]);
-
     return (true);
 }
 
@@ -210,10 +210,25 @@ void CgiProcessExecutor::closeFdIfOpen(int& fd)
 
 void CgiProcessExecutor::killChildIfAlive()
 {
-    if (_childPid > 0)
+    if (_childPid <= 0)
+        return;
+    
+    pid_t   pid = _childPid;
+    if (kill(pid, SIGKILL) == -1)
     {
-        kill(_childPid, SIGKILL);
-        waitpid(_childPid, NULL, 0);
-        _childPid = -1;
+        if (errno == ESRCH)
+            _childPid = -1;
+        return;
     }
+
+    int   status = 0;
+    pid_t result = -1;
+    do
+    {
+        result = waitpid(pid, &status, 0);
+    }
+    while (result == -1 && errno == EINTR);
+
+    if (result == pid || (result == -1 && errno == ECHILD))
+        _childPid = -1;
 }
