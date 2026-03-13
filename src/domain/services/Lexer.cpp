@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 22:36:54 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 23:48:21 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 03:32:36 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,8 +121,13 @@ Token Lexer::scanNumber()
 
 	while (!isAtEnd() && isDigit(peek()))
 		advance();
-	const std::string value = _content.substr(start, _pos - start);
-	return makeToken(NUMBER, loc, value);
+	if (!isAtEnd() && isPathChar(peek()))
+	{
+		while (!isAtEnd() && isPathChar(peek()))
+			advance();
+		return makeToken(PATH, loc, _content.substr(start, _pos - start));
+	}
+	return makeToken(NUMBER, loc, _content.substr(start, _pos - start));
 }
 
 /*
