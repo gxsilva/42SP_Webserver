@@ -37,6 +37,7 @@ D_EVENTS_DIR			= $(DOMAIN_DIR)/events
 D_NETWORK_DIR			= $(DOMAIN_DIR)/network
 D_SERVICES_DIR			= $(DOMAIN_DIR)/services
 D_VALUE_OBJECTS_DIR		= $(DOMAIN_DIR)/value_objects
+D_CGI_DIR				= $(DOMAIN_DIR)/CGI
 
 APP_DIR					= $(SRCS_DIR)/application
 APP_USECASES_DIR		= $(APP_DIR)/use_cases
@@ -109,6 +110,8 @@ TEST_USECASE_NAME	= test_parse_validate_usecase
 TEST_USECASE_SRC	= test/ParseAndValidateHttpRequestUseCaseTest.cpp
 TEST_OBJS		= $(OBJ_DIR)/test/HttpRequest.o \
 					$(OBJ_DIR)/test/HttpRequestParser.o
+TEST_CGI_NAME	= test_cgi
+TEST_CGI_SRC	= test/CgiTest.cpp
 
 # EXPANSIONS
 SRC_SET				= $(INTERFACE_SRCS) \
@@ -142,11 +145,11 @@ clean:
 fclean: clean
 	@echo "🧹 Removing binary..."
 	@rm -f $(NAME)
-	@rm -f $(TEST_NAME) $(TEST_VALIDATION_NAME) $(TEST_USECASE_NAME)
+	@rm -f $(TEST_NAME) $(TEST_VALIDATION_NAME) $(TEST_USECASE_NAME) $(TEST_CGI_NAME)
 
 re: fclean all
 
-test: $(TEST_NAME) $(TEST_VALIDATION_NAME) $(TEST_USECASE_NAME)
+test: $(TEST_NAME) $(TEST_VALIDATION_NAME) $(TEST_USECASE_NAME) $(TEST_CGI_NAME)
 	@echo "🧪 Running parser tests..."
 	@./$(TEST_NAME)
 	@echo ""
@@ -155,6 +158,9 @@ test: $(TEST_NAME) $(TEST_VALIDATION_NAME) $(TEST_USECASE_NAME)
 	@echo ""
 	@echo "🧪 Running use case tests..."
 	@./$(TEST_USECASE_NAME)
+	@echo ""
+	@echo "🧪 Running CGI tests..."
+	@./$(TEST_CGI_NAME)
 
 $(TEST_NAME): $(TEST_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp | $(OBJ_DIR)
 	@echo "🛠️  Building parser test..."
@@ -170,6 +176,11 @@ $(TEST_USECASE_NAME): $(TEST_USECASE_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_
 	@echo "🛠️  Building use case test..."
 	@mkdir -p $(OBJ_DIR)/test
 	$(CXX) $(CXXFLAGS) -o $@ $(TEST_USECASE_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp $(D_SERVICES_DIR)/HttpRequestValidator.cpp $(D_ERRORS_DIR)/ValidationError.cpp $(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp
+
+$(TEST_CGI_NAME): $(TEST_CGI_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(D_CGI_DIR)/CgiEnvironment.cpp $(D_CGI_DIR)/CgiResponse.cpp | $(OBJ_DIR)
+	@echo "🛠️  Building CGI test..."
+	@mkdir -p $(OBJ_DIR)/test
+	$(CXX) $(CXXFLAGS) -o $@ $(TEST_CGI_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(D_CGI_DIR)/CgiEnvironment.cpp $(D_CGI_DIR)/CgiResponse.cpp
 
 # $$ -> to be treat as normal $ in bash
 # -n -> not empty
