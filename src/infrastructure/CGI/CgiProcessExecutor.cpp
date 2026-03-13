@@ -114,6 +114,8 @@ bool CgiProcessExecutor::onWriteReady()
 	}
 	if (written == 0)
 		return (true);
+	if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
+        return (true);
 	closeFdIfOpen(_pipeToChild[1]);
 	_finished = true;
 	return (false);
