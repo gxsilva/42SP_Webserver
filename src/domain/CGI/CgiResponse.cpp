@@ -79,6 +79,14 @@ int CgiResponse::getStatusCode() const
     return (_statusCode);
 }
 
+void CgiResponse::setStatusCode(int code)
+{
+    if (code >= 100 && code <= 599)
+        _statusCode = code;
+    else
+        _statusCode = 500;
+}
+
 const std::vector<std::pair<std::string, std::string> >& CgiResponse::getHeaders() const
 {
     return (_headers);
