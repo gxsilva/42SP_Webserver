@@ -138,8 +138,6 @@ bool CgiProcessExecutor::onReadReady()
 		closeFdIfOpen(_pipeFromChild[0]);
 		return (false);
 	}
-	if (errno == EAGAIN || errno == EWOULDBLOCK)
-		return (true);
 	_finished = true;
 	closeFdIfOpen(_pipeFromChild[0]);
 	return (false);
@@ -220,8 +218,9 @@ void CgiProcessExecutor::killChildIfAlive()
 	pid_t result = -1;
 	do
 	{
-		result = waitpid(pid, &status, 0);
-	} while (result == -1 && errno == EINTR);
+		result = waitpid(pid, &status, WNOHANG);
+	} 
+	while (result == -1 && errno == EINTR);
 
 	if (result == pid || (result == -1 && errno == ECHILD))
 		_childPid = -1;
