@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 22:50:49 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/12 22:51:21 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 01:14:11 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,29 @@ bool RuleTable::checkCardinality(const std::string& ruleName, int count) const
 		return false;
 
 	const std::pair<int, int>& cardinality = it->second;
-	return (count >= cardinality.first && count <= cardinality.second);
+	const bool				   meetsMin	   = (cardinality.first < 0 || count >= cardinality.first);
+	const bool				   meetsMax = (cardinality.second < 0 || count <= cardinality.second);
+	return (meetsMin && meetsMax);
+}
+
+bool RuleTable::getCardinality(const std::string& ruleName, int& min, int& max) const
+{
+	std::map<std::string, std::pair<int, int>>::const_iterator it =
+		this->_cardinalityMap.find(ruleName);
+	if (it == this->_cardinalityMap.end())
+		return false;
+	min = it->second.first;
+	max = it->second.second;
+	return true;
+}
+
+std::set<std::string> RuleTable::getCardinalityRuleNames() const
+{
+	std::set<std::string>									   ruleNames;
+	std::map<std::string, std::pair<int, int>>::const_iterator it = this->_cardinalityMap.begin();
+	for (; it != this->_cardinalityMap.end(); ++it)
+		ruleNames.insert(it->first);
+	return ruleNames;
 }
 
 // ------------------------ CONFLICT METHODS ------------------------ //
@@ -89,6 +111,16 @@ bool RuleTable::hasConflict(const std::string& ruleName, const std::string& curr
 	return false;
 }
 
+bool RuleTable::getConflicts(const std::string& ruleName, std::set<std::string>& conflicts) const
+{
+	std::map<std::string, std::set<std::string>>::const_iterator it =
+		this->_conflictMap.find(ruleName);
+	if (it == this->_conflictMap.end())
+		return false;
+	conflicts = it->second;
+	return true;
+}
+
 // ------------------------ REQUIREMENT METHODS ------------------------ //
 void RuleTable::addRequirement(const std::string&			ruleName,
 							   const std::set<std::string>& requirements)
@@ -112,4 +144,15 @@ bool RuleTable::checkRequirements(const std::string& ruleName,
 			return true;
 	}
 	return false;
+}
+
+bool RuleTable::getRequirements(const std::string&	   ruleName,
+								std::set<std::string>& requirements) const
+{
+	std::map<std::string, std::set<std::string>>::const_iterator it =
+		this->_requiresMap.find(ruleName);
+	if (it == this->_requiresMap.end())
+		return false;
+	requirements = it->second;
+	return true;
 }

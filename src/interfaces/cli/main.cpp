@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/12 21:01:34 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/12 23:48:03 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ int main(int argc, const char** argv)
 	logger.log("Successfully parsed tokens from source file: " + std::string(argv[1]), INFO);
 	ASTNode* astRoot = astRes.unwrap();
 	delete tokens;
+	(void)astRoot;
 	// Debugger::logAST(astRoot);
 
 	/*

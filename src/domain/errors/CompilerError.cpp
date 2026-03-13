@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 22:29:41 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 23:49:11 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 01:14:13 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,20 @@ std::string CompilerError::_errorCodeToString(ErrorCode code)
 		return "ERROR_UNRECOGNIZED_CHARACTER";
 	case ERROR_EXPECTED_NAME:
 		return "ERROR_EXPECTED_NAME";
+	case ERROR_EXPECTED_VALUE:
+		return "ERROR_EXPECTED_VALUE";
+	case ERROR_EXPECTED_LEFT_BRACE:
+		return "ERROR_EXPECTED_LEFT_BRACE";
+	case ERROR_UNEXPECTED_TOKEN:
+		return "ERROR_UNEXPECTED_TOKEN";
+	case ERROR_DIRECTIVE_NOT_ALLOWED_IN_CONTEXT:
+		return "ERROR_DIRECTIVE_NOT_ALLOWED_IN_CONTEXT";
+	case ERROR_DIRECTIVE_CARDINALITY_VIOLATION:
+		return "ERROR_DIRECTIVE_CARDINALITY_VIOLATION";
+	case ERROR_DIRECTIVE_CONFLICT:
+		return "ERROR_DIRECTIVE_CONFLICT";
+	case ERROR_DIRECTIVE_DEPENDENCY_MISSING:
+		return "ERROR_DIRECTIVE_DEPENDENCY_MISSING";
 	default:
 		return "Error not registered in the system.";
 	}
@@ -226,6 +240,76 @@ CompilerError CompilerError::unepxectedTokenError(const std::string&	message,
 	err.code		 = ERROR_UNEXPECTED_TOKEN;
 	err.severity	 = SEVERITY_ERROR;
 	err.message		 = message;
+	err.has_location = true;
+	err.location	 = location;
+	err.has_hint	 = false;
+	return err;
+}
+
+CompilerError CompilerError::directiveNotAllowedInContextError(const std::string&	 directive,
+															   const std::string&	 context,
+															   const SourceLocation& location)
+{
+	CompilerError err;
+	err.code		 = ERROR_DIRECTIVE_NOT_ALLOWED_IN_CONTEXT;
+	err.severity	 = SEVERITY_ERROR;
+	err.message		 = "Directive '" + directive + "' is not allowed in context '" + context + "'";
+	err.has_location = true;
+	err.location	 = location;
+	err.has_hint	 = false;
+	return err;
+}
+
+CompilerError CompilerError::directiveCardinalityError(const std::string& directive,
+													   const std::string& context, int min, int max,
+													   int count, const SourceLocation& location)
+{
+	CompilerError	  err;
+	std::stringstream ss;
+
+	err.code	 = ERROR_DIRECTIVE_CARDINALITY_VIOLATION;
+	err.severity = SEVERITY_ERROR;
+	ss << "Directive '" << directive << "' appears " << count << " time(s) in context '" << context
+	   << "'";
+	if (min >= 0 && max >= 0)
+		ss << ", expected between " << min << " and " << max;
+	else if (min >= 0)
+		ss << ", expected at least " << min;
+	else if (max >= 0)
+		ss << ", expected at most " << max;
+	err.message		 = ss.str();
+	err.has_location = true;
+	err.location	 = location;
+	err.has_hint	 = false;
+	return err;
+}
+
+CompilerError CompilerError::directiveConflictError(const std::string&	  directive,
+													const std::string&	  conflictingDirective,
+													const std::string&	  context,
+													const SourceLocation& location)
+{
+	CompilerError err;
+	err.code	 = ERROR_DIRECTIVE_CONFLICT;
+	err.severity = SEVERITY_ERROR;
+	err.message	 = "Directive '" + directive + "' conflicts with '" + conflictingDirective +
+		"' in context '" + context + "'";
+	err.has_location = true;
+	err.location	 = location;
+	err.has_hint	 = false;
+	return err;
+}
+
+CompilerError CompilerError::directiveDependencyError(const std::string&	directive,
+													  const std::string&	requiredDirective,
+													  const std::string&	context,
+													  const SourceLocation& location)
+{
+	CompilerError err;
+	err.code	 = ERROR_DIRECTIVE_DEPENDENCY_MISSING;
+	err.severity = SEVERITY_ERROR;
+	err.message	 = "Directive '" + directive + "' requires '" + requiredDirective +
+		"' in context '" + context + "'";
 	err.has_location = true;
 	err.location	 = location;
 	err.has_hint	 = false;

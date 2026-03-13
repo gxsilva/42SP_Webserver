@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 23:27:53 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/12 23:35:42 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 01:14:09 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 class ISemanticRule
 {
 	public:
-		virtual ~ISemanticRule() = default;
+		virtual ~ISemanticRule() {}
 
 		virtual void apply(const ASTNode& node, const std::string& context, ErrorList& errors) = 0;
 };

@@ -30,6 +30,7 @@ D_ENTITIES_DIR			= $(DOMAIN_DIR)/entities
 D_AST_DIR				= $(D_ENTITIES_DIR)/ast
 D_ERRORS_DIR			= $(DOMAIN_DIR)/errors
 D_SERVICES_DIR			= $(DOMAIN_DIR)/services
+D_VALIDATOR_DIR			= $(D_SERVICES_DIR)/validator
 D_VALUE_OBJECTS_DIR		= $(DOMAIN_DIR)/value_objects
 
 INTERFACES_DIR			= $(SRCS_DIR)/interfaces
@@ -54,6 +55,10 @@ DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 					$(D_ERRORS_DIR)/ErrorList.cpp \
 					$(D_SERVICES_DIR)/Lexer.cpp \
 					$(D_SERVICES_DIR)/Parser.cpp \
+					$(D_VALIDATOR_DIR)/ContexRuleService.cpp \
+					$(D_VALIDATOR_DIR)/CardinalityRuleService.cpp \
+					$(D_VALIDATOR_DIR)/ConflictRuleService.cpp \
+					$(D_VALIDATOR_DIR)/DependencyRuleService.cpp \
 					$(D_AST_DIR)/base/ASTNode.cpp \
 					$(D_AST_DIR)/node/ASTValue.cpp \
 					$(D_AST_DIR)/node/ASTDirective.cpp \
