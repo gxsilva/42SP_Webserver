@@ -55,6 +55,7 @@ DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 					$(D_ERRORS_DIR)/ErrorList.cpp \
 					$(D_SERVICES_DIR)/Lexer.cpp \
 					$(D_SERVICES_DIR)/Parser.cpp \
+					$(D_SERVICES_DIR)/Validator.cpp \
 					$(D_VALIDATOR_DIR)/ContextRuleService.cpp \
 					$(D_VALIDATOR_DIR)/CardinalityRuleService.cpp \
 					$(D_VALIDATOR_DIR)/ConflictRuleService.cpp \
@@ -76,7 +77,9 @@ INFRA_SRCS		= $(I_COMMON_DIR)/TokenResult.cpp \
 					$(I_IO_DIR)/FileValidator.cpp \
 					$(I_IO_DIR)/SemanticAnalyzer.cpp \
 					$(INFRA_DIR)/logging/Logger.cpp \
-					$(I_COMMON_DIR)/RuleRegistry.cpp
+					$(I_COMMON_DIR)/RuleRegistry.cpp \
+					$(I_COMMON_DIR)/ValidatorResult.cpp
+
 
 
 APPLICATION_SRCS	= $(USE_CASES_DIR)/CompileSourceFile.cpp

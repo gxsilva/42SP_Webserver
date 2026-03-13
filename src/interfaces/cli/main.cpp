@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/13 03:36:09 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 04:31:13 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,12 @@
 #include "../../domain/services/Parser.hpp"
 #include "../../infrastructure/common/ASTResult.hpp"
 #include "../../infrastructure/common/TokenResult.hpp"
+#include "../../infrastructure/common/ValidatorResult.hpp"
 #include "../../infrastructure/logging/Logger.hpp"
 
 #include "../../infrastructure/common/RuleRegistry.hpp"
+
+#include "../../domain/services/Validator.hpp"
 
 #include "../../domain/services/validator/CardinalityRuleService.hpp"
 #include "../../domain/services/validator/ConflictRuleService.hpp"
@@ -122,15 +125,18 @@ int main(int argc, const char** argv)
 	rules.push_back(&valueRule);
 
 	SemanticAnalyzer analyzer(rules);
-	ErrorList		 semanticErrors;
-	analyzer.analyze(*astRoot, semanticErrors);
-	delete astRoot;
-	if (semanticErrors.hasErrors())
+	Validator		 validator(analyzer);
+	ValidatorResult	 validationResult = validator.validate(*astRoot);
+	if (validationResult.isErr())
 	{
-		semanticErrors.formatAllErrors();
-		logger.log("Semantic errors found in: " + std::string(argv[1]), ERROR);
+		const ErrorList& errors = validationResult.error();
+		errors.formatAllErrors();
+		delete astRoot;
+		logger.log("Validation failed for AST from source file: " + std::string(argv[1]), ERROR);
 		return (1);
 	}
-	logger.log("Semantic analysis passed for: " + std::string(argv[1]), INFO);
+	logger.log("Successfully validated AST from source file: " + std::string(argv[1]), INFO);
+	delete astRoot;
+
 	return (0);
 }
