@@ -2,9 +2,9 @@
 #include "../entities/HttpRequest.hpp"
 
 CgiEnvironment::CgiEnvironment(const HttpRequest& request, const std::string& scriptPath,
-							   const std::string& serverName, int Port)
+							   const std::string& serverName, int port)
 {
-	buildFromRequest(request, scriptPath, serverName, Port);
+	buildFromRequest(request, scriptPath, serverName, port);
 }
 
 CgiEnvironment::~CgiEnvironment() {}
@@ -15,10 +15,10 @@ void CgiEnvironment::addVariable(const std::string& key, const std::string& valu
 }
 
 void CgiEnvironment::buildFromRequest(const HttpRequest& request, const std::string& scriptPath,
-									  const std::string& serverName, int Port)
+									  const std::string& serverName, int port)
 {
 	std::ostringstream PortConv;
-	PortConv << Port;
+	PortConv << port;
 
 	std::string			   uri		   = request.getUri();
 	std::string::size_type qPos		   = uri.find('?');

@@ -15,7 +15,7 @@ class CgiEnvironment
 {
 	public:
 		CgiEnvironment(const HttpRequest& request, const std::string& scriptPath,
-					   const std::string& serverName, int Port);
+					   const std::string& serverName, int port);
 		~CgiEnvironment();
 
 		char**		toEnvArray() const;
@@ -30,7 +30,7 @@ class CgiEnvironment
 
 		void addVariable(const std::string& key, const std::string& value);
 		void buildFromRequest(const HttpRequest& request, const std::string& scriptPath,
-							  const std::string& serverName, int Port);
+							  const std::string& serverName, int port);
 };
 
 #endif
