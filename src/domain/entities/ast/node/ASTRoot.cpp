@@ -29,7 +29,7 @@ ASTRoot::~ASTRoot()
 		delete _statements[i];
 }
 
-std::vector<ASTNode*> ASTRoot::getStatements() const { return _statements; }
+std::vector< ASTNode* > ASTRoot::getStatements() const { return _statements; }
 
 void ASTRoot::addStatement(ASTNode* statement) { _statements.push_back(statement); }
 

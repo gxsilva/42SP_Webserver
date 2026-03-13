@@ -26,16 +26,16 @@ class Token;
 class TokenResult : public ResultBase
 {
 	private:
-		std::vector<Token>* _tokens;
-		ErrorList			_errorList;
+		std::vector< Token >* _tokens;
+		ErrorList			  _errorList;
 
 	public:
-		TokenResult(std::vector<Token>* toks);
+		TokenResult(std::vector< Token >* toks);
 		TokenResult(const ErrorList& error);
 		~TokenResult();
 
-		std::vector<Token>* unwrap();
-		const ErrorList&	error() const;
+		std::vector< Token >* unwrap();
+		const ErrorList&	  error() const;
 
 		// DISABLE_COPY(TokenResult);
 };

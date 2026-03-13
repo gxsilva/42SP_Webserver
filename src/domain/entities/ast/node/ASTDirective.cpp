@@ -37,7 +37,7 @@ ASTDirective::~ASTDirective()
 
 const std::string& ASTDirective::getName() const { return _name; }
 
-const std::vector<ASTValue*>& ASTDirective::getValues() const { return _values; }
+const std::vector< ASTValue* >& ASTDirective::getValues() const { return _values; }
 
 std::string ASTDirective::toString(int indentation) const
 {

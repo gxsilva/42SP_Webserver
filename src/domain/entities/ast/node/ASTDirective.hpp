@@ -24,15 +24,15 @@ class ASTValue;
 class ASTDirective : public ASTNode
 {
 	private:
-		std::string			   _name;	// "listen", "server_name"
-		std::vector<ASTValue*> _values; // [8080], [example.com, www.example.com]
+		std::string				 _name;	  // "listen", "server_name"
+		std::vector< ASTValue* > _values; // [8080], [example.com, www.example.com]
 
 	public:
 		ASTDirective(const std::string& name, const SourceLocation& loc);
 		~ASTDirective();
 
-		const std::string&			  getName() const;
-		const std::vector<ASTValue*>& getValues() const;
+		const std::string&				getName() const;
+		const std::vector< ASTValue* >& getValues() const;
 
 		std::string toString(int indentation) const;
 

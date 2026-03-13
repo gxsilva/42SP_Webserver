@@ -21,7 +21,7 @@ bool FileReader::readFile(const std::string& filepath, std::string& content)
 	if (file.good())
 	{
 		std::string line;
-		while (static_cast<bool>(std::getline(file, line)))
+		while (static_cast< bool >(std::getline(file, line)))
 		{
 			content += line + '\n';
 		}

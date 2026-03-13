@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ValueService.cpp                                   :+:      :+:    :+:   */
+/*   ValueRuleService.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ValueService.hpp"
+#include "ValueRuleService.hpp"
 
 #include <cctype>
 #include <cstdlib>
@@ -32,7 +32,7 @@ namespace
 			return false;
 		for (size_t i = 0; i < value.size(); ++i)
 		{
-			if (!std::isdigit(static_cast<unsigned char>(value[i])))
+			if (!std::isdigit(static_cast< unsigned char >(value[i])))
 				return false;
 		}
 		return true;
@@ -91,7 +91,7 @@ namespace
 		for (size_t i = 0; i < value.size(); ++i)
 		{
 			const char c = value[i];
-			if (std::isalnum(static_cast<unsigned char>(c)))
+			if (std::isalnum(static_cast< unsigned char >(c)))
 				continue;
 			if (c == '-' || c == '_' || c == '.' || c == '*')
 				continue;
@@ -144,13 +144,13 @@ namespace
 			return false;
 		for (size_t i = 1; i < value.size(); ++i)
 		{
-			if (!std::isalnum(static_cast<unsigned char>(value[i])) && value[i] != '_')
+			if (!std::isalnum(static_cast< unsigned char >(value[i])) && value[i] != '_')
 				return false;
 		}
 		return true;
 	}
 
-	std::string getFirstValueOrEmpty(const std::vector<ASTValue*>& values)
+	std::string getFirstValueOrEmpty(const std::vector< ASTValue* >& values)
 	{
 		if (values.empty())
 			return "";
@@ -159,7 +159,7 @@ namespace
 
 	SourceLocation getFirstValueLocationOrDirective(const ASTDirective& directive)
 	{
-		const std::vector<ASTValue*>& values = directive.getValues();
+		const std::vector< ASTValue* >& values = directive.getValues();
 		if (values.empty())
 			return directive.getLocation();
 		return values[0]->getLocation();
@@ -173,16 +173,16 @@ namespace
 	}
 } // namespace
 
-void ValueService::apply(const ASTNode& node, const std::string& context, ErrorList& errors)
+void ValueRuleService::apply(const ASTNode& node, const std::string& context, ErrorList& errors)
 {
 	(void)context;
-	if (node.getType() == ASTNodeType::AST_NODETYPE_BLOCK)
+	if (node.getType() == AST_NODETYPE_BLOCK)
 	{
-		const ASTBlock& block = static_cast<const ASTBlock&>(node);
+		const ASTBlock& block = static_cast< const ASTBlock& >(node);
 		if (block.getName() != "location")
 			return;
 
-		const std::vector<ASTValue*>& params = block.getParameters();
+		const std::vector< ASTValue* >& params = block.getParameters();
 		if (params.size() != 1)
 		{
 			errors.addError(CompilerError::directiveInvalidValueError(
@@ -199,12 +199,12 @@ void ValueService::apply(const ASTNode& node, const std::string& context, ErrorL
 		return;
 	}
 
-	if (node.getType() != ASTNodeType::AST_NODETYPE_DIRECTIVE)
+	if (node.getType() != AST_NODETYPE_DIRECTIVE)
 		return;
 
-	const ASTDirective&			  directive = static_cast<const ASTDirective&>(node);
-	const std::string&			  name		= directive.getName();
-	const std::vector<ASTValue*>& values	= directive.getValues();
+	const ASTDirective&				directive = static_cast< const ASTDirective& >(node);
+	const std::string&				name	  = directive.getName();
+	const std::vector< ASTValue* >& values	  = directive.getValues();
 
 	if (name == "listen")
 	{

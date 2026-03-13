@@ -34,7 +34,7 @@ class CompilerError
 		SourceLocation location;
 		bool		   has_location;
 
-		std::vector<std::string> notes;
+		std::vector< std::string > notes;
 
 		bool		has_hint;
 		std::string hint;

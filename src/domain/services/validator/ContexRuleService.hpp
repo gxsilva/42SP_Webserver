@@ -10,22 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ContexRuleServiceSERVICE_HPP
-#define ContexRuleServiceSERVICE_HPP
+#ifndef CONTEXRULESERVICE_HPP
+#define CONTEXRULESERVICE_HPP
 
 #include "../../ports/ISemanticRule.hpp"
 #include "../../value_objects/RuleTable.hpp"
 
-class ContextRule : public ISemanticRule
+class ContexRuleService : public ISemanticRule
 {
 	private:
 		const RuleTable& _table;
 
 	public:
-		ContextRule(const RuleTable& table);
-		virtual ~ContextRule();
+		ContexRuleService(const RuleTable& table);
+		virtual ~ContexRuleService();
 
 		void apply(const ASTNode& node, const std::string& context, ErrorList& errors);
 };
 
-#endif /* ContexRuleServiceSERVICE_HPP */
+#endif /* CONTEXRULESERVICE_HPP */

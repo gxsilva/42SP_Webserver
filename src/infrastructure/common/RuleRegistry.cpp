@@ -6,17 +6,20 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 22:55:20 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/12 23:24:04 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 02:58:32 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RuleRegistry.hpp"
 
+#include <set>
+#include <string>
+
 // ------------------------ OCCF ------------------------ //
 
 RuleRegistry::RuleRegistry()
 {
-	this->_registerContextRules();
+	this->_registerContexRuleServices();
 	this->_registerCardinalityRules();
 	this->_registerConflictRules();
 	this->_registerDependencyRules();
@@ -36,7 +39,7 @@ const RuleTable& RuleRegistry::getDependencyTable() const { return this->_depend
 // ------------------------ REGISTER RULES ------------------------ //
 
 /*
-void _registerContextRules();
+void _registerContexRuleServices();
 		void _registerCardinalityRules();
 		void _registerConflictRules();
 		void _registerDependencyRules();
@@ -52,24 +55,34 @@ void _registerContextRules();
 		{-1, -1} - any number
 */
 
-void RuleRegistry::_registerContextRules()
+void RuleRegistry::_registerContexRuleServices()
 {
-	_context.addContext("server_name", {"server"});
-	_context.addContext("listen", {"server"});
-	_context.addContext("host", {"server"});
-	_context.addContext("client_max_body_size", {"server"});
-	_context.addContext("location", {"server"});
+	std::set< std::string > server;
+	server.insert("server");
 
-	_context.addContext("root", {"server", "location"});
-	_context.addContext("index", {"server", "location"});
-	_context.addContext("error_page", {"server", "location"});
+	std::set< std::string > server_location;
+	server_location.insert("server");
+	server_location.insert("location");
 
-	_context.addContext("allow_methods", {"location"});
-	_context.addContext("autoindex", {"server", "location"});
-	_context.addContext("return", {"location"});
-	_context.addContext("cgi_path", {"location"});
-	_context.addContext("cgi_ext", {"location"});
-	_context.addContext("upload_path", {"location"});
+	std::set< std::string > location;
+	location.insert("location");
+
+	_context.addContext("server_name", server);
+	_context.addContext("listen", server);
+	_context.addContext("host", server);
+	_context.addContext("client_max_body_size", server);
+	_context.addContext("location", server);
+
+	_context.addContext("root", server_location);
+	_context.addContext("index", server_location);
+	_context.addContext("error_page", server_location);
+
+	_context.addContext("allow_methods", location);
+	_context.addContext("autoindex", server_location);
+	_context.addContext("return", location);
+	_context.addContext("cgi_path", location);
+	_context.addContext("cgi_ext", location);
+	_context.addContext("upload_path", location);
 }
 
 void RuleRegistry::_registerCardinalityRules()
@@ -93,6 +106,11 @@ void RuleRegistry::_registerCardinalityRules()
 	_cardinality.setCardinality("upload_path", 0, 1);
 }
 
-void RuleRegistry::_registerConflictRules() { _conflict.addConflict("root", {"alias"}); }
+void RuleRegistry::_registerConflictRules()
+{
+	std::set< std::string > aliasSet;
+	aliasSet.insert("alias");
+	_conflict.addConflict("root", aliasSet);
+}
 
 void RuleRegistry::_registerDependencyRules() {}

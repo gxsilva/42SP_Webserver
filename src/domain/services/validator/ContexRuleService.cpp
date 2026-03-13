@@ -16,24 +16,24 @@
 #include "../../entities/ast/node/ASTDirective.hpp"
 #include "../../value_objects/ASTNodeType.hpp"
 
-ContextRule::ContextRule(const RuleTable& table) : _table(table) {}
+ContexRuleService::ContexRuleService(const RuleTable& table) : _table(table) {}
 
-ContextRule::~ContextRule() {}
+ContexRuleService::~ContexRuleService() {}
 
-void ContextRule::apply(const ASTNode& node, const std::string& context, ErrorList& errors)
+void ContexRuleService::apply(const ASTNode& node, const std::string& context, ErrorList& errors)
 {
-	if (node.getType() == ASTNodeType::AST_NODETYPE_BLOCK)
+	if (node.getType() == AST_NODETYPE_BLOCK)
 	{
-		ASTBlock& blockNode = static_cast<ASTBlock&>(const_cast<ASTNode&>(node));
+		ASTBlock& blockNode = static_cast< ASTBlock& >(const_cast< ASTNode& >(node));
 		if (!this->_table.isAllowedInContext(blockNode.getName(), context))
 		{
 			errors.addError(CompilerError::directiveNotAllowedInContextError(
 				blockNode.getName(), context, blockNode.getLocation()));
 		}
 	}
-	else if (node.getType() == ASTNodeType::AST_NODETYPE_DIRECTIVE)
+	else if (node.getType() == AST_NODETYPE_DIRECTIVE)
 	{
-		ASTDirective& directiveNode = static_cast<ASTDirective&>(const_cast<ASTNode&>(node));
+		ASTDirective& directiveNode = static_cast< ASTDirective& >(const_cast< ASTNode& >(node));
 		if (!this->_table.isAllowedInContext(directiveNode.getName(), context))
 		{
 			errors.addError(CompilerError::directiveNotAllowedInContextError(

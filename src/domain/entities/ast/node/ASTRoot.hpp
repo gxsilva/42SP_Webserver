@@ -23,14 +23,14 @@
 class ASTRoot : public ASTNode
 {
 	private:
-		std::vector<ASTNode*> _statements;
+		std::vector< ASTNode* > _statements;
 
 	public:
 		ASTRoot();
 		~ASTRoot();
 
-		std::vector<ASTNode*> getStatements() const;
-		void				  addStatement(ASTNode* statement);
+		std::vector< ASTNode* > getStatements() const;
+		void					addStatement(ASTNode* statement);
 
 		std::string toString(int indentation) const;
 };

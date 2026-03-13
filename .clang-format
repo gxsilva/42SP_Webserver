@@ -31,3 +31,4 @@ ReflowComments: true
 AlwaysBreakTemplateDeclarations: Yes
 
 InsertNewlineAtEOF: true
+SpacesInAngles: true

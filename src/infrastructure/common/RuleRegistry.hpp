@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 22:52:31 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/12 22:55:28 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 02:48:42 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class RuleRegistry
 		RuleTable _conflict;
 		RuleTable _dependency;
 
-		void _registerContextRules();
+		void _registerContexRuleServices();
 		void _registerCardinalityRules();
 		void _registerConflictRules();
 		void _registerDependencyRules();

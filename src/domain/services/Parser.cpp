@@ -32,7 +32,7 @@
 #include "../value_objects/ASTValueType.hpp"
 
 // ------------------------ OCCF ------------------------ //
-Parser::Parser(std::vector<Token>* tokens) : _tokens(tokens), _current(0), _astRoot() {}
+Parser::Parser(std::vector< Token >* tokens) : _tokens(tokens), _current(0), _astRoot() {}
 
 Parser::~Parser() {}
 
@@ -98,7 +98,7 @@ ASTNode* Parser::parseStatement()
 	const std::string	 directiveName		   = indentationifierToken.value;
 	const SourceLocation loc				   = indentationifierToken.location;
 
-	std::vector<ASTValue*> parameters;
+	std::vector< ASTValue* > parameters;
 
 	while (_isValueToken(_peek().type))
 	{

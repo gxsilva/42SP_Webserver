@@ -201,7 +201,7 @@ void Lexer::addError(const CompilerError& error) { _errorList.addError(error); }
 // ---------------------- PUBLIC METHODS ---------------------- //
 TokenResult Lexer::tokenize()
 {
-	std::vector<Token>* tokens = new std::vector<Token>();
+	std::vector< Token >* tokens = new std::vector< Token >();
 
 	while (!isAtEnd())
 	{

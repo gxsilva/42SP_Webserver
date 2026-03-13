@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/12 23:48:03 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 02:53:04 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,24 @@
 #include "../../infrastructure/common/TokenResult.hpp"
 #include "../../infrastructure/logging/Logger.hpp"
 
+#include "../../infrastructure/common/RuleRegistry.hpp"
+
+#include "../../domain/services/validator/CardinalityRuleService.hpp"
+#include "../../domain/services/validator/ConflictRuleService.hpp"
+#include "../../domain/services/validator/ContexRuleService.hpp"
+#include "../../domain/services/validator/DependencyRuleService.hpp"
+#include "../../domain/services/validator/ValueRuleService.hpp"
+
 #include <vector>
 
 class Debugger
 {
 	public:
-		static void logTokens(const std::vector<Token>& tokens)
+		static void logTokens(const std::vector< Token >& tokens)
 		{
 			std::cout << "---- Token list (" << tokens.size() << " tokens) ----\n";
 
-			for (std::vector<Token>::const_iterator it = tokens.begin(); it != tokens.end(); ++it)
+			for (std::vector< Token >::const_iterator it = tokens.begin(); it != tokens.end(); ++it)
 			{
 				const Token& token = *it;
 
@@ -76,7 +84,7 @@ int main(int argc, const char** argv)
 		return (1);
 	}
 
-	std::vector<Token>* tokens = res.unwrap();
+	std::vector< Token >* tokens = res.unwrap();
 
 	// ------------------------ DEVELOPMENT ------------------------ //
 	/// std::vector<Token>* tokens -> use_case -> parser -> ASTNode* astRoot -> validate AST ->
@@ -106,6 +114,19 @@ int main(int argc, const char** argv)
 		Validator validator(analyzer);
 		ValidatorResult = validator.validateAST(astRoot) ou astRes.unwrap();
 	*/
+	RuleRegistry		   ruleRegistry;
+	ContexRuleService	   ContexRuleService(ruleRegistry.getContextTable());
+	CardinalityRuleService cardinalityRule(ruleRegistry.getCardinalityTable());
+	ConflictRuleService	   conflictRule(ruleRegistry.getConflictTable());
+	DependencyRuleService  dependencyRule(ruleRegistry.getDependencyTable());
+	ValueRuleService	   valueRule;
+
+	std::vector< ISemanticRule* > rules;
+	rules.push_back(&ContexRuleService);
+	rules.push_back(&cardinalityRule);
+	rules.push_back(&conflictRule);
+	rules.push_back(&dependencyRule);
+	rules.push_back(&valueRule);
 	// delete astRoot;
 	return (0);
 }

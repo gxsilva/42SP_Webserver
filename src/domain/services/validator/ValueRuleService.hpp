@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ValueService.hpp                                   :+:      :+:    :+:   */
+/*   ValueRuleService.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,17 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef VALUESERVICE_HPP
-#define VALUESERVICE_HPP
+#ifndef ValueRuleService_HPP
+#define ValueRuleService_HPP
 
 #include "../../ports/ISemanticRule.hpp"
 
-class ValueService : public ISemanticRule
+class ValueRuleService : public ISemanticRule
 {
 	public:
-		virtual ~ValueService() {}
+		virtual ~ValueRuleService() {}
 
-		void apply(const ASTNode& node, const std::string& context, ErrorList& errors) override;
+		void apply(const ASTNode& node, const std::string& context, ErrorList& errors);
 };
 
-#endif /* VALUESERVICE_HPP */
+#endif /* ValueRuleService_HPP */

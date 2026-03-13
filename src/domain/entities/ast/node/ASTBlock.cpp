@@ -43,9 +43,9 @@ ASTBlock::~ASTBlock()
 // ------------------------ METHODS ------------------------ //
 const std::string& ASTBlock::getName() const { return name_; }
 
-const std::vector<ASTValue*>& ASTBlock::getParameters() const { return parameters_; }
+const std::vector< ASTValue* >& ASTBlock::getParameters() const { return parameters_; }
 
-const std::vector<ASTNode*>& ASTBlock::getChildren() const { return children_; }
+const std::vector< ASTNode* >& ASTBlock::getChildren() const { return children_; }
 
 std::string ASTBlock::toString(int indentation) const
 {

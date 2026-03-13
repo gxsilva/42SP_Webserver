@@ -58,10 +58,10 @@ ASTBlock
 class Parser
 {
 	private:
-		std::vector<Token>* _tokens;
-		size_t				_current;
-		ErrorList			_errors;
-		ASTRoot*			_astRoot;
+		std::vector< Token >* _tokens;
+		size_t				  _current;
+		ErrorList			  _errors;
+		ASTRoot*			  _astRoot;
 
 		Token _peek() const;
 		Token _advance();
@@ -82,7 +82,7 @@ class Parser
 		static ASTValueType _convertTokenTypeToAstValue(TokenType type);
 
 	public:
-		Parser(std::vector<Token>* tokens);
+		Parser(std::vector< Token >* tokens);
 		~Parser();
 
 		ASTResult parser();
