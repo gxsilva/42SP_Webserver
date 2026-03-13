@@ -18,6 +18,7 @@ class CgiResponse
         const std::string& getBody() const;
         std::string        getHeader(const std::string& key) const;
         int                getStatusCode() const;
+        void               setStatusCode(int code);
         const std::vector<std::pair<std::string, std::string> >& getHeaders() const;
 
     private:
