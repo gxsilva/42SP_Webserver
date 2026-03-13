@@ -22,13 +22,10 @@ class CgiHandler
 		CgiHandler(InitCgiGateway& gateway, const CgiRouteConfig& config);
 		~CgiHandler();
 
-		// Inicia execução CGI, retorna false se falhar
 		bool startCgi(const HttpRequest& request);
 
-		// Chamado pelo event loop quando poll() sinaliza readiness
 		InitCgiGateway& getGateway();
 
-		// Monta HttpResponse quando CGI termina
 		HttpResponse buildResponse();
 
 	private:
