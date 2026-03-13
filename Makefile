@@ -26,9 +26,6 @@ REQ_TOOLS	= clang-format clang-tidy bear
 SRCS_DIR			= src
 OBJ_DIR				= obj
 
-APPLICATION_DIR			= $(SRCS_DIR)/application
-SERVER_NET_DIR			= $(APPLICATION_DIR)/network
-
 DOMAIN_DIR				= $(SRCS_DIR)/domain
 D_ENTITIES_DIR			= $(DOMAIN_DIR)/entities
 D_AST_DIR				= $(D_ENTITIES_DIR)/ast
@@ -40,6 +37,8 @@ D_VALUE_OBJECTS_DIR		= $(DOMAIN_DIR)/value_objects
 D_CGI_DIR				= $(DOMAIN_DIR)/CGI
 
 APP_DIR					= $(SRCS_DIR)/application
+A_CGI_DIR				= $(APP_DIR)/CGI
+A_SERVER_NET_DIR		= $(APP_DIR)/network
 APP_USECASES_DIR		= $(APP_DIR)/use_cases
 
 INTERFACES_DIR			= $(SRCS_DIR)/interfaces
@@ -49,9 +48,7 @@ INFRA_DIR				= $(SRCS_DIR)/infrastructure
 I_COMMON_DIR			= $(INFRA_DIR)/common
 I_IO_DIR				= $(INFRA_DIR)/io
 I_NETWORK_DIR			= $(INFRA_DIR)/network
-
-APPLICATION_DIR			= $(SRCS_DIR)/application
-USE_CASES_DIR			= $(APPLICATION_DIR)/use_cases
+I_CGI_DIR				= $(INFRA_DIR)/CGI
 
 # ---------------- PROVISÒRIO ----------------
 HDRS				= $(shell find . -name "*.hpp")
@@ -59,10 +56,11 @@ HDRS				= $(shell find . -name "*.hpp")
 
 # SOURCES
 
-APPLICATION_SRCS	= $(SERVER_NET_DIR)/connectionManager.cpp \
-						$(SERVER_NET_DIR)/epollManager.cpp \
-						$(SERVER_NET_DIR)/server.cpp \
-						$(SERVER_NET_DIR)/serverHandlers.cpp \
+APPLICATION_SRCS	= $(A_SERVER_NET_DIR)/connectionManager.cpp \
+						$(A_CGI_DIR)/CgiHandler.cpp \
+						$(A_SERVER_NET_DIR)/epollManager.cpp \
+						$(A_SERVER_NET_DIR)/server.cpp \
+						$(A_SERVER_NET_DIR)/serverHandlers.cpp \
 						$(USE_CASES_DIR)/CompileSourceFile.cpp
 
 DOMAIN_SRCS			= $(D_ENTITIES_DIR)/SourceLocation.cpp \
@@ -83,7 +81,9 @@ DOMAIN_SRCS			= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 						$(D_AST_DIR)/node/ASTRoot.cpp \
 						$(D_ERRORS_DIR)/ValidationError.cpp \
 						$(D_SERVICES_DIR)/HttpRequestValidator.cpp \
-						$(D_SERVICES_DIR)/statusCodeResponse.cpp
+						$(D_SERVICES_DIR)/statusCodeResponse.cpp \
+						$(D_CGI_DIR)/CgiEnvironment.cpp \
+						$(D_CGI_DIR)/CgiResponse.cpp
 
 INTERFACE_SRCS		= $(CLI_DIR)/main.cpp
 
@@ -97,7 +97,8 @@ INFRA_SRCS			= $(I_COMMON_DIR)/TokenResult.cpp \
 						$(I_NETWORK_DIR)/clientSocket.cpp \
 						$(I_NETWORK_DIR)/serverSocket.cpp \
 						$(I_NETWORK_DIR)/fileDescriptor.cpp \
-						$(I_NETWORK_DIR)/testHttpResponse.cpp
+						$(I_NETWORK_DIR)/testHttpResponse.cpp \
+						$(I_CGI_DIR)/CgiProcessExecutor.cpp
 
 
 APP_SRCS		= $(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp
