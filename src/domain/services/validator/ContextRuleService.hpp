@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ContexRuleServiceService.hpp                              :+:      :+:    :+:   */
+/*   ContextRuleServiceService.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,22 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CONTEXRULESERVICE_HPP
-#define CONTEXRULESERVICE_HPP
+#ifndef Contexttuleeervicee_HPP
+#define Contexttuleeervicee_HPP
 
 #include "../../ports/ISemanticRule.hpp"
 #include "../../value_objects/RuleTable.hpp"
 
-class ContexRuleService : public ISemanticRule
+class ContextRuleService : public ISemanticRule
 {
 	private:
 		const RuleTable& _table;
 
 	public:
-		ContexRuleService(const RuleTable& table);
-		virtual ~ContexRuleService();
+		ContextRuleService(const RuleTable& table);
+		virtual ~ContextRuleService();
 
 		void apply(const ASTNode& node, const std::string& context, ErrorList& errors);
 };
 
-#endif /* CONTEXRULESERVICE_HPP */
+#endif /* Contexttuleeervicee_HPP */

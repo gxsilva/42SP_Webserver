@@ -20,9 +20,10 @@ class CardinalityRuleService : public ISemanticRule
 {
 	private:
 		const RuleTable& _table;
+		const RuleTable& _contextTable;
 
 	public:
-		CardinalityRuleService(const RuleTable& table);
+		CardinalityRuleService(const RuleTable& table, const RuleTable& contextTable);
 		virtual ~CardinalityRuleService();
 
 		void apply(const ASTNode& node, const std::string& context, ErrorList& errors);

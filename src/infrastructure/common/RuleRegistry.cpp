@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 22:55:20 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/13 02:58:32 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 03:27:34 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 RuleRegistry::RuleRegistry()
 {
-	this->_registerContexRuleServices();
+	this->_registerContextRuleServices();
 	this->_registerCardinalityRules();
 	this->_registerConflictRules();
 	this->_registerDependencyRules();
@@ -39,7 +39,7 @@ const RuleTable& RuleRegistry::getDependencyTable() const { return this->_depend
 // ------------------------ REGISTER RULES ------------------------ //
 
 /*
-void _registerContexRuleServices();
+void _registerContextRuleServices();
 		void _registerCardinalityRules();
 		void _registerConflictRules();
 		void _registerDependencyRules();
@@ -55,8 +55,11 @@ void _registerContexRuleServices();
 		{-1, -1} - any number
 */
 
-void RuleRegistry::_registerContexRuleServices()
+void RuleRegistry::_registerContextRuleServices()
 {
+	std::set< std::string > root;
+	root.insert("root");
+
 	std::set< std::string > server;
 	server.insert("server");
 
@@ -66,7 +69,7 @@ void RuleRegistry::_registerContexRuleServices()
 
 	std::set< std::string > location;
 	location.insert("location");
-
+	_context.addContext("server", root);
 	_context.addContext("server_name", server);
 	_context.addContext("listen", server);
 	_context.addContext("host", server);
@@ -87,8 +90,7 @@ void RuleRegistry::_registerContexRuleServices()
 
 void RuleRegistry::_registerCardinalityRules()
 {
-	_cardinality.setCardinality("server_name", 1,
-								1); // multiplos host virtuais não são suportados :(
+	_cardinality.setCardinality("server_name", 1, 1);
 	_cardinality.setCardinality("listen", 1, 1);
 	_cardinality.setCardinality("host", 1, 1);
 	_cardinality.setCardinality("client_max_body_size", 1, 1);

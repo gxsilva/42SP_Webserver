@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ContexRuleServiceService.cpp                              :+:      :+:    :+:   */
+/*   ContextRuleServiceService.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,17 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ContexRuleService.hpp"
+#include "ContextRuleService.hpp"
 
 #include "../../entities/ast/node/ASTBlock.hpp"
 #include "../../entities/ast/node/ASTDirective.hpp"
 #include "../../value_objects/ASTNodeType.hpp"
 
-ContexRuleService::ContexRuleService(const RuleTable& table) : _table(table) {}
+ContextRuleService::ContextRuleService(const RuleTable& table) : _table(table) {}
 
-ContexRuleService::~ContexRuleService() {}
+ContextRuleService::~ContextRuleService() {}
 
-void ContexRuleService::apply(const ASTNode& node, const std::string& context, ErrorList& errors)
+void ContextRuleService::apply(const ASTNode& node, const std::string& context, ErrorList& errors)
 {
 	if (node.getType() == AST_NODETYPE_BLOCK)
 	{

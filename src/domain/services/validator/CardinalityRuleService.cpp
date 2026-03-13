@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 01:14:49 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/13 02:53:36 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 03:24:30 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,20 @@ namespace
 	}
 } // namespace
 
-CardinalityRuleService::CardinalityRuleService(const RuleTable& table) : _table(table) {}
+CardinalityRuleService::CardinalityRuleService(const RuleTable& table,
+											   const RuleTable& contextTable)
+	: _table(table), _contextTable(contextTable)
+{
+}
 
 CardinalityRuleService::~CardinalityRuleService() {}
 
 void CardinalityRuleService::apply(const ASTNode& node, const std::string& context,
 								   ErrorList& errors)
 {
+	if (node.getType() != AST_NODETYPE_BLOCK && node.getType() != AST_NODETYPE_ROOT)
+		return;
+
 	std::vector< ASTNode* >					children;
 	std::map< std::string, int >			counts;
 	std::map< std::string, SourceLocation > firstLocations;
@@ -108,6 +115,8 @@ void CardinalityRuleService::apply(const ASTNode& node, const std::string& conte
 		if (countIt != counts.end())
 			count = countIt->second;
 		if (!this->_table.getCardinality(*it, min, max))
+			continue;
+		if (!this->_contextTable.isAllowedInContext(*it, contextName))
 			continue;
 		if (firstLocations.find(*it) != firstLocations.end())
 			location = firstLocations[*it];

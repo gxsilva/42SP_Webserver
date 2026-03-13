@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/13 02:53:04 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 03:36:09 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,10 @@
 
 #include "../../domain/services/validator/CardinalityRuleService.hpp"
 #include "../../domain/services/validator/ConflictRuleService.hpp"
-#include "../../domain/services/validator/ContexRuleService.hpp"
+#include "../../domain/services/validator/ContextRuleService.hpp"
 #include "../../domain/services/validator/DependencyRuleService.hpp"
 #include "../../domain/services/validator/ValueRuleService.hpp"
+#include "../../infrastructure/io/SemanticAnalyzer.hpp"
 
 #include <vector>
 
@@ -104,29 +105,33 @@ int main(int argc, const char** argv)
 	logger.log("Successfully parsed tokens from source file: " + std::string(argv[1]), INFO);
 	ASTNode* astRoot = astRes.unwrap();
 	delete tokens;
-	(void)astRoot;
 	// Debugger::logAST(astRoot);
 
-	/*
-	Main idea
-
-		SemanticAnalyzer analyzer(rules) ;
-		Validator validator(analyzer);
-		ValidatorResult = validator.validateAST(astRoot) ou astRes.unwrap();
-	*/
 	RuleRegistry		   ruleRegistry;
-	ContexRuleService	   ContexRuleService(ruleRegistry.getContextTable());
-	CardinalityRuleService cardinalityRule(ruleRegistry.getCardinalityTable());
+	ContextRuleService	   contextRule(ruleRegistry.getContextTable());
+	CardinalityRuleService cardinalityRule(ruleRegistry.getCardinalityTable(),
+										   ruleRegistry.getContextTable());
 	ConflictRuleService	   conflictRule(ruleRegistry.getConflictTable());
 	DependencyRuleService  dependencyRule(ruleRegistry.getDependencyTable());
 	ValueRuleService	   valueRule;
 
 	std::vector< ISemanticRule* > rules;
-	rules.push_back(&ContexRuleService);
+	rules.push_back(&contextRule);
 	rules.push_back(&cardinalityRule);
 	rules.push_back(&conflictRule);
 	rules.push_back(&dependencyRule);
 	rules.push_back(&valueRule);
-	// delete astRoot;
+
+	SemanticAnalyzer analyzer(rules);
+	ErrorList		 semanticErrors;
+	analyzer.analyze(*astRoot, semanticErrors);
+	delete astRoot;
+	if (semanticErrors.hasErrors())
+	{
+		semanticErrors.formatAllErrors();
+		logger.log("Semantic errors found in: " + std::string(argv[1]), ERROR);
+		return (1);
+	}
+	logger.log("Semantic analysis passed for: " + std::string(argv[1]), INFO);
 	return (0);
 }

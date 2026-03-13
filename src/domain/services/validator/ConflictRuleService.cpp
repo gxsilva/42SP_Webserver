@@ -76,6 +76,9 @@ ConflictRuleService::~ConflictRuleService() {}
 
 void ConflictRuleService::apply(const ASTNode& node, const std::string& context, ErrorList& errors)
 {
+	if (node.getType() != AST_NODETYPE_BLOCK && node.getType() != AST_NODETYPE_ROOT)
+		return;
+
 	std::vector< ASTNode* >							  children;
 	std::map< std::string, SourceLocation >			  locations;
 	std::set< std::pair< std::string, std::string > > emitted;
