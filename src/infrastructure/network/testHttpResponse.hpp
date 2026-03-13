@@ -2,8 +2,8 @@
 #define TESTHTTPRESPONSE_HPP
 
 #include "clientSocket.hpp"
-#include <cstring>
+#include "../../domain/entities/HttpResponse.hpp"
 
-void bufferTestHttpResponse(ClientSocket& client);
+void bufferTestHttpResponse(ClientSocket& client, const HttpResponse& response);
 
 #endif
