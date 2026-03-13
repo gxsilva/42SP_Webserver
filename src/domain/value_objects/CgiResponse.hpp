@@ -19,12 +19,12 @@ class CgiResponse
 		std::string		   getHeader(const std::string& key) const;
 		int				   getStatusCode() const;
 		void			   setStatusCode(int code);
-		const std::vector<std::pair<std::string, std::string> >& getHeaders() const;
+		const std::vector<std::pair<std::string, std::string>>& getHeaders() const;
 
 	private:
-		int												 	_statusCode;
-		std::vector<std::pair<std::string, std::string> >	_headers;
-		std::string										 	_body;
+		int												 _statusCode;
+		std::vector<std::pair<std::string, std::string>> _headers;
+		std::string										 _body;
 
 		void parseStatusFromHeaders();
 };

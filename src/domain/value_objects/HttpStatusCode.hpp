@@ -51,7 +51,7 @@ enum HttpStatusCode
 	BAD_REQUEST = 400, // A requisição está malformada. O servidor não conseguiu entender a sintaxe.
 	FORBIDDEN = 403, // O servidor entendeu quem você é, mas você não tem permissão para acessar
 					 // esse recurso específico.
-	NOT_FOUND = 404,		 // O servidor não encontrou nada no endereço que você passou.
+	NOT_FOUND		  = 404, // O servidor não encontrou nada no endereço que você passou.
 	CONTENT_TOO_LARGE = 413, // O arquivo ou corpo da requisição que você tentou enviar é grande
 							 // demais para o servidor.
 	URI_TOO_LONG = 414,		 // O link (URL) enviado é longo demais para o servidor processar.

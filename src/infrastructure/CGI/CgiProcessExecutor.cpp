@@ -115,7 +115,7 @@ bool CgiProcessExecutor::onWriteReady()
 	if (written == 0)
 		return (true);
 	if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
-        return (true);
+		return (true);
 	closeFdIfOpen(_pipeToChild[1]);
 	_finished = true;
 	return (false);
@@ -221,8 +221,7 @@ void CgiProcessExecutor::killChildIfAlive()
 	do
 	{
 		result = waitpid(pid, &status, WNOHANG);
-	} 
-	while (result == -1 && errno == EINTR);
+	} while (result == -1 && errno == EINTR);
 
 	if (result == pid || (result == -1 && errno == ECHILD))
 		_childPid = -1;
