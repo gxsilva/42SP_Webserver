@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/13 05:10:41 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 19:07:01 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@
 
 #include "../../application/use_cases/CompileSourceFile.hpp"
 #include "../../domain/entities/Token.hpp"
+#include "../../domain/entities/server/HttpBlock.hpp"
 #include "../../domain/services/Parser.hpp"
+
 #include "../../infrastructure/common/ASTResult.hpp"
 #include "../../infrastructure/common/TokenResult.hpp"
 #include "../../infrastructure/common/ValidatorResult.hpp"
@@ -34,6 +36,8 @@
 #include "../../domain/services/validator/DependencyRuleService.hpp"
 #include "../../domain/services/validator/ValueRuleService.hpp"
 #include "../../infrastructure/io/SemanticAnalyzer.hpp"
+
+#include "../../infrastructure/common/builder/ConfigBuilder.hpp"
 
 #include <vector>
 
@@ -63,6 +67,88 @@ class Debugger
 			std::cout << std::string(indent * 2, ' ') << node->toString(indent);
 
 			std::cout << "---- End of AST Node ----\n";
+		}
+
+		static void logHttpBlock(const HttpBlock* block, int indent = 0)
+		{
+			if (!block)
+				return;
+
+			std::string prefix(indent * 2, ' ');
+			std::cout << prefix << "---- HttpBlock ----\n";
+			std::cout << prefix << "clientMaxBodySize: " << block->clientMaxBodySize << '\n';
+			std::cout << prefix << "errorPages: ";
+			for (std::map< int, std::string >::const_iterator it = block->errorPages.begin();
+				 it != block->errorPages.end(); ++it)
+			{
+				std::cout << "[" << it->first << ": " << it->second << "] ";
+			}
+			std::cout << '\n';
+
+			std::cout << prefix << "server:\n";
+			logServerBlock(&(block->server), indent + 1);
+
+			std::cout << prefix << "---- End of HttpBlock ----\n";
+		}
+
+		static void logLocationBlock(const LocationBlock* block, int indent = 0)
+		{
+			if (!block)
+				return;
+
+			std::string prefix(indent * 2, ' ');
+			std::cout << prefix << "---- LocationBlock ----\n";
+			std::cout << prefix << "path: " << block->path << '\n';
+			std::cout << prefix << "root: " << block->root << '\n';
+			std::cout << prefix << "allowedMethods: ";
+			for (std::set< std::string >::const_iterator it = block->allowedMethods.begin();
+				 it != block->allowedMethods.end(); ++it)
+			{
+				std::cout << *it << " ";
+			}
+			std::cout << '\n';
+			std::cout << prefix << "autoindex: " << (block->autoindex ? "true" : "false") << '\n';
+			std::cout << prefix << "errorPages: ";
+			for (std::map< int, std::string >::const_iterator it = block->errorPages.begin();
+				 it != block->errorPages.end(); ++it)
+			{
+				std::cout << "[" << it->first << ": " << it->second << "] ";
+			}
+			std::cout << '\n';
+			std::cout << prefix << "---- End of LocationBlock ----\n";
+		}
+
+		static void logServerBlock(const ServerBlock* block, int indent = 0)
+		{
+			if (!block)
+				return;
+
+			std::string prefix(indent * 2, ' ');
+			std::cout << prefix << "---- ServerBlock ----\n";
+			std::cout << prefix << "port: " << block->port << '\n';
+			std::cout << prefix << "serverName: " << block->serverName << '\n';
+			std::cout << prefix << "root: " << block->root << '\n';
+			std::cout << prefix << "index: ";
+			for (std::vector< std::string >::const_iterator it = block->index.begin(); it != block->index.end(); ++it)
+			{
+				std::cout << *it << " ";
+			}
+			std::cout << '\n';
+			std::cout << prefix << "clientMaxBodySize: " << block->clientMaxBodySize << '\n';
+			std::cout << prefix << "errorPages: ";
+			for (std::map< int, std::string >::const_iterator it = block->errorPages.begin();
+				 it != block->errorPages.end(); ++it)
+			{
+				std::cout << "[" << it->first << ": " << it->second << "] ";
+			}
+			std::cout << '\n';
+			std::cout << prefix << "locations:\n";
+			for (std::vector< LocationBlock >::const_iterator it = block->locations.begin();
+				 it != block->locations.end(); ++it)
+			{
+				logLocationBlock(&(*it), indent + 1);
+			}
+			std::cout << prefix << "---- End of ServerBlock ----\n";
 		}
 };
 
@@ -127,6 +213,7 @@ int main(int argc, const char** argv)
 	SemanticAnalyzer analyzer(rules);
 	Validator		 validator(analyzer);
 	ValidatorResult	 validationResult = validator.validate(*astRoot);
+
 	if (validationResult.isErr())
 	{
 		const ErrorList& errors = validationResult.error();
@@ -136,6 +223,12 @@ int main(int argc, const char** argv)
 		return (1);
 	}
 	logger.log("Successfully validated AST from source file: " + std::string(argv[1]), INFO);
+
+	HttpBlock* config = ConfigBuilder().build(astRoot);
+
+	logger.log("Successfully built configuration from AST for source file: " + std::string(argv[1]), INFO);
+	// Debugger::logHttpBlock(config);
+	delete config;
 	delete astRoot;
 
 	return (0);
