@@ -68,6 +68,7 @@ APPLICATION_SRCS	= $(SERVER_NET_DIR)/connectionManager.cpp \
 DOMAIN_SRCS			= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 						$(D_ENTITIES_DIR)/Token.cpp \
 						$(D_ENTITIES_DIR)/HttpRequest.cpp \
+						$(D_ENTITIES_DIR)/HttpResponse.cpp \
 						$(D_ERRORS_DIR)/CompilerError.cpp \
 						$(D_ERRORS_DIR)/ErrorList.cpp \
 						$(D_EVENTS_DIR)/epollEvents.cpp \
