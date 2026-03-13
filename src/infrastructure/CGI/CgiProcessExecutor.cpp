@@ -35,7 +35,9 @@ bool CgiProcessExecutor::start(const std::string& scriptPath,
     if (pipe(_pipeFromChild) == -1)
     {
         close(_pipeToChild[0]);
+        _pipeToChild[0] = -1;
         close(_pipeToChild[1]);
+        _pipeToChild[1] = -1;
         return (false);
     }
 
@@ -124,8 +126,13 @@ bool CgiProcessExecutor::onWriteReady()
         _bodyBytesSent += static_cast<std::size_t>(written);
         if (_bodyBytesSent >= _requestBody.size())
              closeFdIfOpen(_pipeToChild[1]);
+        return (true);
     }
-    return (true);
+    if (written == 0)
+        return (true);
+    closeFdIfOpen(_pipeToChild[1]);
+    _finished = true;
+    return (false);
 }
 
 bool CgiProcessExecutor::onReadReady()
@@ -143,14 +150,12 @@ bool CgiProcessExecutor::onReadReady()
     }
     if (bytesRead == 0)
     {
-        // EOF — child closed stdout
         _finished = true;
         closeFdIfOpen(_pipeFromChild[0]);
         return (false);
     }
     if (errno == EAGAIN || errno == EWOULDBLOCK)
         return (true);
-    // Fatal error — mark as finished to trigger CGI_ERROR
     _finished = true;
     closeFdIfOpen(_pipeFromChild[0]);
     return (false);
@@ -190,7 +195,9 @@ CgiProcessState CgiProcessExecutor::checkState()
 CgiResponse CgiProcessExecutor::getResponse()
 {
     CgiResponse response;
-    response.parse(_outputBuffer);
+    bool parseOk = response.parse(_outputBuffer);
+    if (!parseOk)
+        response.setStatusCode(500);
     return (response);
 }
 
