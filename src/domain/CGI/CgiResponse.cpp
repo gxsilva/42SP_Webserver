@@ -48,7 +48,7 @@ void CgiResponse::parseStatusFromHeaders()
 {
 	for (std::size_t i = 0; i < _headers.size(); ++i)
 	{
-		if (_headers[i].first == "Status")
+		if (_headers[i].first == "STATUS")
 		{
 			int code	= std::atoi(_headers[i].second.c_str());
 			_statusCode = (code >= 100 && code <= 599) ? code : 500;
@@ -59,19 +59,26 @@ void CgiResponse::parseStatusFromHeaders()
 	_statusCode = 200;
 }
 
-const std::string& CgiResponse::getBody() const { return (_body); }
+const std::string& CgiResponse::getBody() const 
+{
+	return (_body);
+}
 
 std::string CgiResponse::getHeader(const std::string& key) const
 {
+	std::string normalizedKey = toUpper(key);
 	for (std::size_t i = 0; i < _headers.size(); ++i)
 	{
-		if (_headers[i].first == key)
+		if (_headers[i].first == normalizedKey)
 			return (_headers[i].second);
 	}
 	return ("");
 }
 
-int CgiResponse::getStatusCode() const { return (_statusCode); }
+int CgiResponse::getStatusCode() const
+{
+	return (_statusCode);
+}
 
 void CgiResponse::setStatusCode(int code)
 {
@@ -81,7 +88,15 @@ void CgiResponse::setStatusCode(int code)
 		_statusCode = 500;
 }
 
-const std::vector<std::pair<std::string, std::string>>& CgiResponse::getHeaders() const
+const std::vector<std::pair<std::string, std::string> >& CgiResponse::getHeaders() const
 {
 	return (_headers);
 }
+
+ static std::string toUpper(const std::string &str)
+ {
+     std::string result = str;
+     for (std::string::size_type i = 0; i < result.size(); ++i)
+         result[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(result[i])));
+     return (result);
+ }
