@@ -148,8 +148,12 @@ bool CgiProcessExecutor::onReadReady()
         closeFdIfOpen(_pipeFromChild[0]);
         return (false);
     }
-    // bytesRead < 0 — EAGAIN or error, handled by poll next iteration
-    return (true);
+    if (errno == EAGAIN || errno == EWOULDBLOCK)
+        return (true);
+    // Fatal error — mark as finished to trigger CGI_ERROR
+    _finished = true;
+    closeFdIfOpen(_pipeFromChild[0]);
+    return (false);
 }
 
 CgiProcessState CgiProcessExecutor::checkState()

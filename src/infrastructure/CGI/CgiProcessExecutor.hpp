@@ -1,9 +1,10 @@
 #ifndef CGI_PROCESS_EXECUTOR_HPP
 #define CGI_PROCESS_EXECUTOR_HPP
 
-#include "InitCgiGateway.hpp"
+#include "../../interfaces/port/InitCgiGateway.hpp"
 #include <string>
 #include <sys/types.h>
+#include <errno.h>
 #include <ctime>
 #include <unistd.h>
 #include <sys/wait.h>
