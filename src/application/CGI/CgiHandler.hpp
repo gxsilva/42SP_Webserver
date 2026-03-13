@@ -2,6 +2,7 @@
 #define CGIHANDLER_HPP
 
 #include "../../domain/entities/HttpRequest.hpp"
+#include "../../domain/entities/HttpResponse.hpp"
 #include "../../interfaces/port/InitCgiGateway.hpp"
 #include "../../domain/value_objects/CgiEnvironment.hpp"
 #include "../../domain/value_objects/CgiResponse.hpp"
