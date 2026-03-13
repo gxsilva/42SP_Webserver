@@ -110,8 +110,13 @@ Token Lexer::scanWord()
 
 	while (!isAtEnd() && (isAlpha(peek()) || isDigit(peek()) || peek() == '_'))
 		advance();
-	const std::string value = _content.substr(start, _pos - start);
-	return makeToken(WORD, loc, value);
+	if (!isAtEnd() && (peek() == '/' || peek() == '.'))
+	{
+		while (!isAtEnd() && isPathChar(peek()))
+			advance();
+		return makeToken(PATH, loc, _content.substr(start, _pos - start));
+	}
+	return makeToken(WORD, loc, _content.substr(start, _pos - start));
 }
 
 Token Lexer::scanNumber()
