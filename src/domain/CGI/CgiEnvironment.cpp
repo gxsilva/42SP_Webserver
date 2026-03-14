@@ -44,7 +44,7 @@ void CgiEnvironment::buildFromRequest(const HttpRequest& request, const std::str
 		std::string headerName = it->first;
 		std::string lowerName;
 		for (std::size_t j = 0; j < headerName.size(); ++j)
-			lowerName += static_cast<char>(std::tolower(headerName[j]));
+			lowerName += static_cast<char>(std::tolower(static_cast<unsigned char>(headerName[j])));
 		if (lowerName == "content-type" || lowerName == "content-length")
 			continue;
 		std::string key = "HTTP_";
@@ -54,7 +54,7 @@ void CgiEnvironment::buildFromRequest(const HttpRequest& request, const std::str
 			if (c == '-')
 				key += '_';
 			else
-				key += static_cast<char>(std::toupper(c));
+				key += static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
 		}
 		addVariable(key, it->second);
 	}
