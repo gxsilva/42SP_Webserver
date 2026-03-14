@@ -141,8 +141,10 @@ bool CgiProcessExecutor::onReadReady()
 		closeFdIfOpen(_pipeFromChild[0]);
 		return (false);
 	}
-	_finished = true;
-	closeFdIfOpen(_pipeFromChild[0]);
+	_finished = true; /*talvez troque*/
+	closeFdIfOpen(_pipeFromChild[0]); /*talvez troque*/
+	//if (written < 0)
+ 	//	return (true);
 	return (false);
 }
 
