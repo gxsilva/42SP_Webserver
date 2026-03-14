@@ -39,6 +39,15 @@ ASTNode* ASTResult::unwrap()
 	return _astRoot;
 }
 
+ASTNode* ASTResult::release()
+{
+	if (isErr())
+		throw std::runtime_error("Attempted to release an Err value from ASTResult");
+	ASTNode* tmp = _astRoot;
+	_astRoot	 = NULL;
+	return tmp;
+}
+
 const ErrorList& ASTResult::error() const
 {
 	if (isOk())

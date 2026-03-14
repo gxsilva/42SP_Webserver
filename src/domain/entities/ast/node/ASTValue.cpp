@@ -27,6 +27,8 @@ ASTValue::ASTValue(ASTValueType vtype, const std::string& value, const SourceLoc
 
 ASTValue::~ASTValue() {}
 
+ASTValueType ASTValue::getValueType() const { return _valueType; }
+
 std::string ASTValue::getValue() const { return _value; }
 
 std::string ASTValue::toString(int ident) const

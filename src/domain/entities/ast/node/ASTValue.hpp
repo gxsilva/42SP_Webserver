@@ -26,7 +26,8 @@ class ASTValue : public ASTNode
 		ASTValue(ASTValueType vtype, const std::string& value, const SourceLocation& loc);
 		virtual ~ASTValue();
 
-		std::string getValue() const;
+		ASTValueType getValueType() const;
+		std::string	 getValue() const;
 
 		std::string toString(int ident) const;
 };

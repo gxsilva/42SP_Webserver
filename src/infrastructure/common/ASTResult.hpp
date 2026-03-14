@@ -31,6 +31,7 @@ class ASTResult : public ResultBase
 		~ASTResult();
 
 		ASTNode*		 unwrap();
+		ASTNode*		 release();
 		const ErrorList& error() const;
 };
 
