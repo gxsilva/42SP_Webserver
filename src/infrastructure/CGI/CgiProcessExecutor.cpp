@@ -220,7 +220,7 @@ void CgiProcessExecutor::killChildIfAlive()
 	}
 
 	int	  status = 0;
-	pid_t result = waitpid(pid, &status, 0);
+	pid_t result = waitpid(pid, &status, WNOHANG);
 	if (result == pid || result == -1)
 		_childPid = -1;
 }
