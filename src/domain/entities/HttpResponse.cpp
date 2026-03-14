@@ -62,6 +62,6 @@ std::string HttpResponse::normalizeHeaderName(const std::string& name) const
 {
 	std::string normalized = name;
 	for (size_t i = 0; i < normalized.length(); ++i)
-		normalized[i] = std::toupper(normalized[i]);
+		normalized[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(normalized[i])));
 	return (normalized);
 }
