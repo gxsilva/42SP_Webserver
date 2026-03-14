@@ -61,7 +61,7 @@ APPLICATION_SRCS	= $(A_SERVER_NET_DIR)/connectionManager.cpp \
 						$(A_SERVER_NET_DIR)/epollManager.cpp \
 						$(A_SERVER_NET_DIR)/server.cpp \
 						$(A_SERVER_NET_DIR)/serverHandlers.cpp \
-						$(USE_CASES_DIR)/CompileSourceFile.cpp
+						$(APP_USECASES_DIR)/CompileSourceFile.cpp
 
 DOMAIN_SRCS			= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 						$(D_ENTITIES_DIR)/Token.cpp \
