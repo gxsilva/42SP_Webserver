@@ -41,6 +41,9 @@
 *.dwo
 
 webserver
+test_http_request
+test_http_validation
+test_parse_validate_usecase
 log/*
 log_*
 # python
