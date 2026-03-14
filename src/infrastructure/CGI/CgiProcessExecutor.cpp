@@ -17,6 +17,9 @@ CgiProcessExecutor::~CgiProcessExecutor() { cleanup(); }
 bool CgiProcessExecutor::start(const std::string& scriptPath, const std::string& interpreterPath,
 							   const CgiEnvironment& env, const std::string& requestBody)
 {
+	if (_childPid > 0 || _pipeToChild[0] != -1 || _pipeToChild[1] != -1 
+		|| _pipeFromChild[0] != -1 || _pipeFromChild[1] != -1)
+ 		cleanup();
 	_requestBody   = requestBody;
 	_bodyBytesSent = 0;
 	_outputBuffer.clear();
@@ -114,8 +117,6 @@ bool CgiProcessExecutor::onWriteReady()
 	}
 	if (written == 0)
 		return (true);
-	if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
-		return (true);
 	closeFdIfOpen(_pipeToChild[1]);
 	_finished = true;
 	return (false);
@@ -211,18 +212,15 @@ void CgiProcessExecutor::killChildIfAlive()
 	pid_t pid = _childPid;
 	if (kill(pid, SIGKILL) == -1)
 	{
-		if (errno == ESRCH)
+		int	  status = 0;
+		pid_t result = waitpid(pid, &status, WNOHANG);
+		if (result == pid || result == -1)
 			_childPid = -1;
 		return;
 	}
 
 	int	  status = 0;
-	pid_t result = -1;
-	do
-	{
-		result = waitpid(pid, &status, WNOHANG);
-	} while (result == -1 && errno == EINTR);
-
-	if (result == pid || (result == -1 && errno == ECHILD))
+	pid_t result = waitpid(pid, &status, 0);
+	if (result == pid || result == -1)
 		_childPid = -1;
 }

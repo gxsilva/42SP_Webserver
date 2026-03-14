@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
-#include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
 #include <string>
