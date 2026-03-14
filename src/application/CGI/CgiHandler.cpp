@@ -23,7 +23,7 @@ HttpResponse CgiHandler::buildResponse()
 
 	response.setStatusCode(cgiResp.getStatusCode());
 
-	const std::vector<std::pair<std::string, std::string>>& headers = cgiResp.getHeaders();
+	const std::vector<std::pair<std::string, std::string> >& headers = cgiResp.getHeaders();
 	for (std::size_t i = 0; i < headers.size(); ++i)
 		response.setHeader(headers[i].first, headers[i].second);
 
