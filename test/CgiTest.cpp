@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include <cstring>
+#include <string>
 #include <cstdio>
 #include "../src/domain/entities/HttpRequest.hpp"
 #include "../src/domain/value_objects/CgiEnvironment.hpp"
