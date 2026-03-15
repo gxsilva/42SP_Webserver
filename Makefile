@@ -58,6 +58,7 @@ HDRS				= $(shell find . -name "*.hpp")
 
 APPLICATION_SRCS	= $(A_SERVER_NET_DIR)/connectionManager.cpp \
 						$(A_CGI_DIR)/CgiHandler.cpp \
+						$(A_CGI_DIR)/CgiOrchestrator.cpp \
 						$(A_SERVER_NET_DIR)/epollManager.cpp \
 						$(A_SERVER_NET_DIR)/server.cpp \
 						$(A_SERVER_NET_DIR)/serverHandlers.cpp \
