@@ -3,7 +3,7 @@
 
 #include <string>
 
-template <typename T>
+template < typename T >
 class Result
 {
 	private:

@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 20:43:55 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 23:35:55 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/09 19:12:25 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,11 @@ ASTValue::~ASTValue() {}
 
 std::string ASTValue::getValue() const { return _value; }
 
-std::string ASTValue::toString(int ident) const
+std::string ASTValue::toString(int indentation) const
 {
 	std::ostringstream oss;
 
-	oss << ASTNode::indentString(ident);
+	oss << ASTNode::indentString(indentation);
 	oss << "ASTValue(" << _valueType << ", \"" << _value << "\") at " << getLocation().toString();
 	return oss.str();
 }

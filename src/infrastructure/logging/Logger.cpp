@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 03:11:50 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/06 00:11:30 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/16 03:39:10 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,14 +111,12 @@ void Logger::log(const std::string& msg, LogLevel lvl)
 	std::string		  label		= _levelToString(lvl);
 
 	// Console output with color
-	std::cout << BOLD << _levelToColor(lvl) << "[" << timestamp << "] "
-			  << "[" << label << "] " << RESET << msg << "\n";
+	std::cout << BOLD << _levelToColor(lvl) << "[" << timestamp << "] " << "[" << label << "] " << RESET << msg << "\n";
 
 	// File output (plain, no ANSI codes)
 	if (_fileLoggingEnabled && _fdOutput.is_open())
 	{
-		_fdOutput << "[" << timestamp << "] "
-				  << "[" << label << "] " << msg << "\n";
+		_fdOutput << "[" << timestamp << "] " << "[" << label << "] " << msg << "\n";
 		_fdOutput.flush();
 	}
 }

@@ -24,8 +24,7 @@ class SourceLocation
 		size_t		length;
 
 		SourceLocation(void);
-		SourceLocation(const std::string& file_name, size_t line_number, size_t column_number,
-					   size_t token_length);
+		SourceLocation(const std::string& file_name, size_t line_number, size_t column_number, size_t token_length);
 
 		std::string toString() const;
 };

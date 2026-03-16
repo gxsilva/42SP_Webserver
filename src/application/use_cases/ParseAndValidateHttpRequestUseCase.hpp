@@ -17,7 +17,7 @@ class ParseAndValidateHttpRequestUseCase
 		ParseAndValidateHttpRequestUseCase();
 		~ParseAndValidateHttpRequestUseCase();
 
-		Result<HttpRequest> execute(const std::string& rawRequest);
+		Result< HttpRequest > execute(const std::string& rawRequest);
 };
 
 #endif // PARSEANDVALIDATEHTTPREQUESTUSECASE_HPP

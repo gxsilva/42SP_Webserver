@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 21:24:34 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/06 00:08:30 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/09 19:12:25 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@ AST_NODETYPE_BLOCK,
 AST_NODETYPE_ROOT,
 
 
-VALUE -> ASTValueType(STRING, IDENTIFIER, NUMBER, PATH
-DIRECTIVE -> IDENTIFIER + VALUE
+VALUE -> ASTValueType(STRING, indentationIFIER, NUMBER, PATH
+DIRECTIVE -> indentationIFIER + VALUE
 CONFIG -> DIRECTIVE | BLOCK
-BLOCKK -> IDENTIFIER + "{" + CONFIG + "}"
+BLOCKK -> indentationIFIER + "{" + CONFIG + "}"
 CONFIG -> DIRECTIVE | BLOCK
 
 AST_ROOT
@@ -50,7 +50,7 @@ ASTBlock
    std::string name = server
    std::vector<ASTValue*> parameters
 	 values[0] = AST_VALUE
-		   ASTValueType = VALUE_IDENTIFIER
+		   ASTValueType = VALUE_indentationIFIER
 		   std::string value = server
    std::vector<ASTNode*> children
 */
@@ -58,10 +58,10 @@ ASTBlock
 class Parser
 {
 	private:
-		std::vector<Token>* _tokens;
-		size_t				_current;
-		ErrorList			_errors;
-		ASTRoot*			_astRoot;
+		std::vector< Token >* _tokens;
+		size_t				  _current;
+		ErrorList			  _errors;
+		ASTRoot*			  _astRoot;
 
 		Token _peek() const;
 		Token _advance();
@@ -82,7 +82,7 @@ class Parser
 		static ASTValueType _convertTokenTypeToAstValue(TokenType type);
 
 	public:
-		Parser(std::vector<Token>* tokens);
+		Parser(std::vector< Token >* tokens);
 		~Parser();
 
 		ASTResult parser();

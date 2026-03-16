@@ -36,6 +36,7 @@ D_ERRORS_DIR			= $(DOMAIN_DIR)/errors
 D_EVENTS_DIR			= $(DOMAIN_DIR)/events
 D_NETWORK_DIR			= $(DOMAIN_DIR)/network
 D_SERVICES_DIR			= $(DOMAIN_DIR)/services
+D_VALIDATOR_DIR			= $(D_SERVICES_DIR)/validator
 D_VALUE_OBJECTS_DIR		= $(DOMAIN_DIR)/value_objects
 
 APP_DIR					= $(SRCS_DIR)/application
@@ -47,7 +48,6 @@ CLI_DIR					= $(INTERFACES_DIR)/cli
 INFRA_DIR				= $(SRCS_DIR)/infrastructure
 I_COMMON_DIR			= $(INFRA_DIR)/common
 I_IO_DIR				= $(INFRA_DIR)/io
-I_NETWORK_DIR			= $(INFRA_DIR)/network
 
 APPLICATION_DIR			= $(SRCS_DIR)/application
 USE_CASES_DIR			= $(APPLICATION_DIR)/use_cases
@@ -58,56 +58,28 @@ HDRS				= $(shell find . -name "*.hpp")
 
 # SOURCES
 
-APPLICATION_SRCS	= $(SERVER_NET_DIR)/connectionManager.cpp \
-						$(SERVER_NET_DIR)/epollManager.cpp \
-						$(SERVER_NET_DIR)/server.cpp \
-						$(SERVER_NET_DIR)/serverHandlers.cpp \
-						$(USE_CASES_DIR)/CompileSourceFile.cpp
-
-DOMAIN_SRCS			= $(D_ENTITIES_DIR)/SourceLocation.cpp \
-						$(D_ENTITIES_DIR)/Token.cpp \
-						$(D_ENTITIES_DIR)/HttpRequest.cpp \
-						$(D_ERRORS_DIR)/CompilerError.cpp \
-						$(D_ERRORS_DIR)/ErrorList.cpp \
-						$(D_EVENTS_DIR)/epollEvents.cpp \
-						$(D_NETWORK_DIR)/ipAddr.cpp \
-						$(D_NETWORK_DIR)/port.cpp \
-						$(D_SERVICES_DIR)/Lexer.cpp \
-						$(D_SERVICES_DIR)/Parser.cpp \
-						$(D_AST_DIR)/base/ASTNode.cpp \
-						$(D_AST_DIR)/node/ASTValue.cpp \
-						$(D_AST_DIR)/node/ASTDirective.cpp \
-						$(D_AST_DIR)/node/ASTBlock.cpp \
-						$(D_AST_DIR)/node/ASTRoot.cpp \
-						$(D_ERRORS_DIR)/ValidationError.cpp \
-						$(D_SERVICES_DIR)/HttpRequestValidator.cpp
+DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
+					$(D_ENTITIES_DIR)/Token.cpp \
+					$(D_ERRORS_DIR)/CompilerError.cpp \
+					$(D_ERRORS_DIR)/ErrorList.cpp \
+					$(D_SERVICES_DIR)/Lexer.cpp \
+					$(D_SERVICES_DIR)/Parser.cpp \
+					$(D_AST_DIR)/base/ASTNode.cpp \
+					$(D_AST_DIR)/node/ASTValue.cpp \
+					$(D_AST_DIR)/node/ASTDirective.cpp \
+					$(D_AST_DIR)/node/ASTBlock.cpp \
+					$(D_AST_DIR)/node/ASTRoot.cpp 
 
 INTERFACE_SRCS		= $(CLI_DIR)/main.cpp
 
-INFRA_SRCS			= $(I_COMMON_DIR)/TokenResult.cpp \
-						$(I_COMMON_DIR)/LexerResult.cpp \
-						$(I_COMMON_DIR)/ASTResult.cpp \
-						$(I_IO_DIR)/FileReader.cpp \
-						$(I_IO_DIR)/FileValidator.cpp \
-						$(I_IO_DIR)/HttpRequestParser.cpp \
-						$(INFRA_DIR)/logging/Logger.cpp \
-						$(I_NETWORK_DIR)/clientSocket.cpp \
-						$(I_NETWORK_DIR)/serverSocket.cpp \
-						$(I_NETWORK_DIR)/fileDescriptor.cpp \
-						$(I_NETWORK_DIR)/testHttpResponse.cpp
+INFRA_SRCS		= $(I_COMMON_DIR)/TokenResult.cpp \
+					$(I_COMMON_DIR)/LexerResult.cpp \
+					$(I_COMMON_DIR)/ASTResult.cpp \
+					$(I_IO_DIR)/FileReader.cpp \
+					$(I_IO_DIR)/FileValidator.cpp \
+					$(INFRA_DIR)/logging/Logger.cpp
 
-
-APP_SRCS		= $(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp
-
-# TEST DEFINITIONS
-TEST_NAME		= test_http_request
-TEST_SRC		= test/HttpRequestTest.cpp
-TEST_VALIDATION_NAME	= test_http_validation
-TEST_VALIDATION_SRC	= test/HttpRequestValidationTest.cpp
-TEST_USECASE_NAME	= test_parse_validate_usecase
-TEST_USECASE_SRC	= test/ParseAndValidateHttpRequestUseCaseTest.cpp
-TEST_OBJS		= $(OBJ_DIR)/test/HttpRequest.o \
-					$(OBJ_DIR)/test/HttpRequestParser.o
+APPLICATION_SRCS	= $(USE_CASES_DIR)/CompileSourceFile.cpp
 
 # EXPANSIONS
 SRC_SET				= $(INTERFACE_SRCS) \

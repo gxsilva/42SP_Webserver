@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 22:36:54 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 23:48:21 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 03:32:36 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,10 +97,7 @@ Example of valid paths:
 - -images
 - _assets
 */
-bool Lexer::isPathChar(char c)
-{
-	return isAlpha(c) || isDigit(c) || c == '/' || c == '.' || c == '-' || c == '_';
-}
+bool Lexer::isPathChar(char c) { return isAlpha(c) || isDigit(c) || c == '/' || c == '.' || c == '-' || c == '_'; }
 
 // ----------------------- SCANNERS --------------------------- //
 Token Lexer::scanWord()
@@ -110,8 +107,13 @@ Token Lexer::scanWord()
 
 	while (!isAtEnd() && (isAlpha(peek()) || isDigit(peek()) || peek() == '_'))
 		advance();
-	const std::string value = _content.substr(start, _pos - start);
-	return makeToken(WORD, loc, value);
+	if (!isAtEnd() && (peek() == '/' || peek() == '.'))
+	{
+		while (!isAtEnd() && isPathChar(peek()))
+			advance();
+		return makeToken(PATH, loc, _content.substr(start, _pos - start));
+	}
+	return makeToken(WORD, loc, _content.substr(start, _pos - start));
 }
 
 Token Lexer::scanNumber()
@@ -121,8 +123,13 @@ Token Lexer::scanNumber()
 
 	while (!isAtEnd() && isDigit(peek()))
 		advance();
-	const std::string value = _content.substr(start, _pos - start);
-	return makeToken(NUMBER, loc, value);
+	if (!isAtEnd() && isPathChar(peek()))
+	{
+		while (!isAtEnd() && isPathChar(peek()))
+			advance();
+		return makeToken(PATH, loc, _content.substr(start, _pos - start));
+	}
+	return makeToken(NUMBER, loc, _content.substr(start, _pos - start));
 }
 
 /*
@@ -201,7 +208,7 @@ void Lexer::addError(const CompilerError& error) { _errorList.addError(error); }
 // ---------------------- PUBLIC METHODS ---------------------- //
 TokenResult Lexer::tokenize()
 {
-	std::vector<Token>* tokens = new std::vector<Token>();
+	std::vector< Token >* tokens = new std::vector< Token >();
 
 	while (!isAtEnd())
 	{
@@ -239,10 +246,7 @@ TokenResult Lexer::tokenize()
 }
 
 // ------------------------ arrumar algum dia ------------------------ //
-SourceLocation Lexer::currentLocation() const
-{
-	return SourceLocation(_filePath, _line, _column, 1);
-}
+SourceLocation Lexer::currentLocation() const { return SourceLocation(_filePath, _line, _column, 1); }
 
 void Lexer::internalTest()
 {

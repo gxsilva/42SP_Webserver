@@ -26,13 +26,13 @@ class ErrorList
 		void addError(const CompilerError& error);
 		bool hasErrors() const;
 
-		const std::vector<CompilerError>& getErrors() const;
-		int								  size() const;
+		const std::vector< CompilerError >& getErrors() const;
+		int									size() const;
 
 		void formatAllErrors() const;
 
 	private:
-		std::vector<CompilerError> errors;
+		std::vector< CompilerError > errors;
 };
 
 #endif /* ERRORLIST_HPP */

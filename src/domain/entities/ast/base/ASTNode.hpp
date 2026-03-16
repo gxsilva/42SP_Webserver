@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 18:20:00 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 22:13:04 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/09 19:12:25 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ class ASTNode
 		ASTNodeType	   getType() const;
 		SourceLocation getLocation() const;
 
-		virtual std::string toString(int ident) const = 0;
+		virtual std::string toString(int indentation) const = 0;
 
-		static std::string indentString(int ident);
+		static std::string indentString(int indentation);
 };
 
 #endif /* ASTNODE_HPP */

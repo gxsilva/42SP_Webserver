@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 22:23:52 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 23:49:04 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 01:14:12 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ enum ErrorCode
 	ERROR_EXPECTED_VALUE,
 	ERROR_EXPECTED_LEFT_BRACE,
 	ERROR_UNEXPECTED_TOKEN,
+	ERROR_DIRECTIVE_NOT_ALLOWED_IN_CONTEXT,
+	ERROR_DIRECTIVE_CARDINALITY_VIOLATION,
+	ERROR_DIRECTIVE_CONFLICT,
+	ERROR_DIRECTIVE_DEPENDENCY_MISSING,
+	ERROR_DIRECTIVE_INVALID_VALUE
 };
 
 #endif /* ERRORCODE_HPP */

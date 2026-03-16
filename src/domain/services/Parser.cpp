@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 23:30:48 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/06 00:08:17 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/09 19:12:25 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 #include "../value_objects/ASTValueType.hpp"
 
 // ------------------------ OCCF ------------------------ //
-Parser::Parser(std::vector<Token>* tokens) : _tokens(tokens), _current(0), _astRoot() {}
+Parser::Parser(std::vector< Token >* tokens) : _tokens(tokens), _current(0), _astRoot() {}
 
 Parser::~Parser() {}
 
@@ -74,8 +74,8 @@ ASTValue* Parser::parseValue()
 {
 	if (!_isValueToken(_peek().type))
 	{
-		_addError(CompilerError::expectedValueError(
-			"Expected a value (identifier, number, string, or path)", _peek().location));
+		_addError(CompilerError::expectedValueError("Expected a value (indentationifier, number, string, or path)",
+													_peek().location));
 		return (NULL);
 	}
 	const Token		   valueToken = _advance();
@@ -88,17 +88,16 @@ ASTNode* Parser::parseStatement()
 {
 	if (!_check(WORD))
 	{
-		_addError(
-			CompilerError::expectedNameError("Expected directive or block name", _peek().location));
+		_addError(CompilerError::expectedNameError("Expected directive or block name", _peek().location));
 		_synchronize();
 		return (NULL);
 	}
 
-	const Token			 identifierToken = _advance();
-	const std::string	 directiveName	 = identifierToken.value;
-	const SourceLocation loc			 = identifierToken.location;
+	const Token			 indentationifierToken = _advance();
+	const std::string	 directiveName		   = indentationifierToken.value;
+	const SourceLocation loc				   = indentationifierToken.location;
 
-	std::vector<ASTValue*> parameters;
+	std::vector< ASTValue* > parameters;
 
 	while (_isValueToken(_peek().type))
 	{
@@ -134,8 +133,7 @@ ASTNode* Parser::parseStatement()
 		else
 		{
 			const std::string	expectedTokens = "'}' to close block";
-			const CompilerError error =
-				CompilerError::expectedRightBraceError(expectedTokens, _peek().location);
+			const CompilerError error = CompilerError::expectedRightBraceError(expectedTokens, _peek().location);
 			_addError(error);
 			_synchronize();
 		}
@@ -145,8 +143,7 @@ ASTNode* Parser::parseStatement()
 	else if (!_check(SEMICOLON))
 	{
 		const std::string	expectedTokens = "'{' for block or ';' for directive";
-		const CompilerError error =
-			CompilerError::unepxectedTokenError(expectedTokens, _peek().location);
+		const CompilerError error		   = CompilerError::unepxectedTokenError(expectedTokens, _peek().location);
 		_addError(error);
 
 		_synchronize();
@@ -192,17 +189,14 @@ ASTResult Parser::parser()
 
 // ------------------------ UTILS ------------------------ //
 
-bool Parser::_isValueToken(TokenType type)
-{
-	return type == WORD || type == NUMBER || type == STRING || type == PATH;
-}
+bool Parser::_isValueToken(TokenType type) { return type == WORD || type == NUMBER || type == STRING || type == PATH; }
 
 ASTValueType Parser::_convertTokenTypeToAstValue(TokenType type)
 {
 	switch (type)
 	{
 	case WORD:
-		return AST_VALUE_IDENTIFIER;
+		return AST_VALUE_indentationIFIER;
 	case NUMBER:
 		return AST_VALUE_NUMBER;
 	case STRING:

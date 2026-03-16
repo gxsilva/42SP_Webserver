@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 20:52:04 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 23:35:02 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/09 19:12:25 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,13 @@ ASTDirective::~ASTDirective()
 
 const std::string& ASTDirective::getName() const { return _name; }
 
-const std::vector<ASTValue*>& ASTDirective::getValues() const { return _values; }
+const std::vector< ASTValue* >& ASTDirective::getValues() const { return _values; }
 
-std::string ASTDirective::toString(int ident) const
+std::string ASTDirective::toString(int indentation) const
 {
 	std::ostringstream oss;
-	const std::string  ind		= ASTNode::indentString(ident);
-	const std::string  indChild = ASTNode::indentString(ident + 1);
+	const std::string  ind		= ASTNode::indentString(indentation);
+	const std::string  indChild = ASTNode::indentString(indentation + 1);
 
 	oss << ind << "+- Directive: \"" << _name << "\"\n";
 	oss << ind << "|  Location: " << getLocation().toString() << "\n";
@@ -61,7 +61,7 @@ std::string ASTDirective::toString(int ident) const
 		const bool isLast = (i + 1 == _values.size());
 		oss << indChild;
 		oss << "+- ";
-		oss << _values[i]->toString(ident + 2);
+		oss << _values[i]->toString(indentation + 2);
 		if (!isLast)
 			oss << "\n";
 	}

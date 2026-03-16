@@ -15,8 +15,8 @@
 class ConnectionManager
 {
 	private:
-		EpollManager&			   _epollManager;
-		std::vector<ClientSocket*> _clients;
+		EpollManager&				 _epollManager;
+		std::vector< ClientSocket* > _clients;
 
 		void disconnectClient(int fd);
 

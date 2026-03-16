@@ -65,12 +65,12 @@ CompilerError* FileValidator::validateBinaryFile(const std::string& filepath)
 		return new CompilerError(CompilerError::permissionDeniedError(filepath));
 
 	char buffer[FileValidator::sampleSize];
-	file.read(buffer, static_cast<std::streamsize>(FileValidator::sampleSize));
+	file.read(buffer, static_cast< std::streamsize >(FileValidator::sampleSize));
 	const std::streamsize bytesRead = file.gcount();
 	file.close();
 
 	std::size_t i = 0;
-	while (i < static_cast<std::size_t>(bytesRead))
+	while (i < static_cast< std::size_t >(bytesRead))
 	{
 		if (buffer[i] == '\0')
 			return new CompilerError(CompilerError::invalidBinaryFileError(filepath));

@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 00:27:49 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/06 00:01:52 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 03:37:25 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,14 @@
 #include "../../domain/errors/ErrorList.hpp"
 #include "ResultBase.hpp"
 
-ASTResult::ASTResult(const ErrorList& error) : ResultBase(false), _astRoot(NULL), _errorList(error)
-{
-}
+ASTResult::ASTResult(const ErrorList& error) : ResultBase(false), _astRoot(NULL), _errorList(error) {}
 
 ASTResult::ASTResult(ASTNode* astRoot) : ResultBase(true), _astRoot(astRoot) {}
 
 ASTResult::~ASTResult()
 {
-	if (_is_ok && _astRoot != NULL)
-		delete _astRoot;
+	// if (_is_ok && _astRoot != NULL)
+	// 	delete _astRoot;
 }
 
 ASTNode* ASTResult::unwrap()
