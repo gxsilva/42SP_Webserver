@@ -1,0 +1,50 @@
+Webserv
+É aqui que você finalmente entende por que URLs começam com HTTP
+
+Versão: 23.0
+
+---
+CAPÍTULO I: INTRODUÇÃO
+
+O Hypertext Transfer Protocol (HTTP) é um protocolo de aplicação para sistemas de informação hipermídia distribuídos e colaborativos. É a base da comunicação de dados para a World Wide Web.
+
+A função primária de um servidor web é armazenar, processar e entregar páginas web para clientes. A comunicação ocorre via HTTP. Embora sirva conteúdo (HTML, imagens, etc.), o HTTP também permite que clientes enviem dados (formulários, arquivos). O servidor responde com o recurso solicitado ou uma mensagem de erro.
+
+---
+CAPÍTULO II: REGRAS GERAIS
+
+• O programa não deve travar ou terminar inesperadamente (nota 0 se ocorrer).
+• Deve conter um Makefile com as regras: $(NAME), all, clean, fclean e re.
+• Compilação: c++ com flags -Wall -Wextra -Werror.
+• Padrão: C++98 (deve compilar com -std=c++98).
+• Preferir recursos de C++ (ex: <cstring> em vez de <string.h>).
+• Bibliotecas externas e Boost são proibidas.
+
+---
+CAPÍTULO III: PARTE OBRIGATÓRIA
+
+Nome do programa: webserv
+Arquivos: Makefile, *.{h, hpp}, *.cpp, *.tpp, *.ipp, arquivos de configuração.
+Funções autorizadas: execve, pipe, strerror, gai_strerror, errno, dup, dup2, fork, socketpair, htons, htonl, ntohs, ntohl, select, poll, epoll, kqueue, socket, accept, listen, send, recv, chdir, bind, connect, getaddrinfo, freeaddrinfo, setsockopt, getsockname, getprotobyname, fcntl, close, read, write, waitpid, kill, signal, access, stat, open, opendir, readdir, closedir.
+
+REQUISITOS:
+• Deve usar um arquivo de configuração como argumento: ./webserv [config_file].
+• O servidor deve ser não bloqueante e usar apenas 1 poll() (ou equivalente) para todas as operações de I/O.
+• Não é permitido ler/escrever sem passar pelo poll() (nota 0 se descumprido).
+• Proibido verificar errno após leitura/escrita para ajustar comportamento.
+• Fork permitido apenas para CGI.
+• Métodos obrigatórios: GET, POST e DELETE.
+• Deve ouvir múltiplas portas e fornecer páginas de erro padrão.
+
+APENAS PARA MACOS:
+• Permitido fcntl() apenas com flags: F_SETFL, O_NONBLOCK e FD_CLOEXEC.
+
+ARQUIVO DE CONFIGURAÇÃO:
+• Definir interface:porta.
+• Configurar páginas de erro e tamanho máximo do corpo da solicitação.
+• Configurar rotas com: métodos aceitos, redirecionamento, diretório raiz, listagem de diretórios e arquivo padrão.
+• Configurar execução de CGI baseada na extensão (ex: .php).
+
+---
+
+parte de implementação, MANTER CONCEITOS DE DDD E OBJECT CALISTHENICS, SEGUIR NÂO IMPORTA O CASO
