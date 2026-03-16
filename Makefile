@@ -64,20 +64,31 @@ DOMAIN_SRCS		= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 					$(D_ERRORS_DIR)/ErrorList.cpp \
 					$(D_SERVICES_DIR)/Lexer.cpp \
 					$(D_SERVICES_DIR)/Parser.cpp \
+					$(D_SERVICES_DIR)/validator/CardinalityRuleService.cpp \
+					$(D_SERVICES_DIR)/validator/ConflictRuleService.cpp \
+					$(D_SERVICES_DIR)/validator/ContextRuleService.cpp \
+					$(D_SERVICES_DIR)/validator/DependencyRuleService.cpp \
+					$(D_SERVICES_DIR)/validator/ValueRuleService.cpp \
+					$(D_SERVICES_DIR)/Validator.cpp \
 					$(D_AST_DIR)/base/ASTNode.cpp \
 					$(D_AST_DIR)/node/ASTValue.cpp \
 					$(D_AST_DIR)/node/ASTDirective.cpp \
 					$(D_AST_DIR)/node/ASTBlock.cpp \
-					$(D_AST_DIR)/node/ASTRoot.cpp 
+					$(D_AST_DIR)/node/ASTRoot.cpp \
+					$(D_VALUE_OBJECTS_DIR)/RuleTable.cpp
 
 INTERFACE_SRCS		= $(CLI_DIR)/main.cpp
 
 INFRA_SRCS		= $(I_COMMON_DIR)/TokenResult.cpp \
 					$(I_COMMON_DIR)/LexerResult.cpp \
 					$(I_COMMON_DIR)/ASTResult.cpp \
+					$(I_COMMON_DIR)/ValidatorResult.cpp \
 					$(I_IO_DIR)/FileReader.cpp \
 					$(I_IO_DIR)/FileValidator.cpp \
-					$(INFRA_DIR)/logging/Logger.cpp
+					$(I_IO_DIR)/SemanticAnalyzer.cpp \
+					$(INFRA_DIR)/logging/Logger.cpp \
+					$(I_COMMON_DIR)/RuleRegistry.cpp \
+					$(I_COMMON_DIR)/builder/ConfigBuilder.cpp
 
 APPLICATION_SRCS	= $(USE_CASES_DIR)/CompileSourceFile.cpp
 
