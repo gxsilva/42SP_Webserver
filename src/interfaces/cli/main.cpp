@@ -6,38 +6,37 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 18:19:13 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/13 19:07:01 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/16 04:55:07 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <string>
 
-// ------------------------ TMP IMPORT TO TEST ------------------------ //
-#include "../../domain/errors/ErrorList.hpp"
+#include "../../domain/errors/common/ErrorList.hpp"
 
 #include "../../application/use_cases/CompileSourceFile.hpp"
-#include "../../domain/entities/Token.hpp"
+#include "../../domain/entities/config/Token.hpp"
 #include "../../domain/entities/server/HttpBlock.hpp"
-#include "../../domain/services/Parser.hpp"
+#include "../../domain/services/config/Parser.hpp"
 
-#include "../../infrastructure/common/ASTResult.hpp"
-#include "../../infrastructure/common/TokenResult.hpp"
-#include "../../infrastructure/common/ValidatorResult.hpp"
+#include "../../infrastructure/common/config/ASTResult.hpp"
+#include "../../infrastructure/common/config/TokenResult.hpp"
+#include "../../infrastructure/common/config/ValidatorResult.hpp"
 #include "../../infrastructure/logging/Logger.hpp"
 
-#include "../../infrastructure/common/RuleRegistry.hpp"
+#include "../../infrastructure/common/config/RuleRegistry.hpp"
 
-#include "../../domain/services/Validator.hpp"
+#include "../../domain/services/config/Validator.hpp"
 
 #include "../../domain/services/validator/CardinalityRuleService.hpp"
 #include "../../domain/services/validator/ConflictRuleService.hpp"
 #include "../../domain/services/validator/ContextRuleService.hpp"
 #include "../../domain/services/validator/DependencyRuleService.hpp"
 #include "../../domain/services/validator/ValueRuleService.hpp"
-#include "../../infrastructure/io/SemanticAnalyzer.hpp"
+#include "../../infrastructure/io/config/SemanticAnalyzer.hpp"
 
-#include "../../infrastructure/common/builder/ConfigBuilder.hpp"
+#include "../../domain/services/config/ConfigBuilder.hpp"
 
 #include <vector>
 

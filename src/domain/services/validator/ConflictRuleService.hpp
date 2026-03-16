@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 01:15:03 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/13 01:16:29 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/16 04:53:44 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #define CONFLICTRULESERVICE_HPP
 
 #include "../../ports/ISemanticRule.hpp"
-#include "../../value_objects/RuleTable.hpp"
+#include "../../value_objects/config/RuleTable.hpp"
 
 class ConflictRuleService : public ISemanticRule
 {

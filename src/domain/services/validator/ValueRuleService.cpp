@@ -21,8 +21,8 @@
 #include "../../entities/ast/node/ASTBlock.hpp"
 #include "../../entities/ast/node/ASTDirective.hpp"
 #include "../../entities/ast/node/ASTValue.hpp"
-#include "../../errors/CompilerError.hpp"
-#include "../../value_objects/ASTNodeType.hpp"
+#include "../../errors/common/CompilerError.hpp"
+#include "../../value_objects/config/ASTNodeType.hpp"
 
 namespace
 {

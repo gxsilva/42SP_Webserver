@@ -11,7 +11,7 @@ const std::string& HttpRequest::getUri() const { return _uri; }
 
 const std::string& HttpRequest::getVersion() const { return _version; }
 
-const std::map<std::string, std::string>& HttpRequest::getHeaders() const { return _headers; }
+const std::map< std::string, std::string >& HttpRequest::getHeaders() const { return _headers; }
 
 const std::string& HttpRequest::getBody() const { return _body; }
 

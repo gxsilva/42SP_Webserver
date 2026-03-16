@@ -6,23 +6,22 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 16:37:11 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 23:23:18 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/16 04:56:51 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "CompileSourceFile.hpp"
 
 #include <cstddef>
 #include <string>
 
-#include "../../domain/errors/CompilerError.hpp"
-#include "../../domain/errors/ErrorList.hpp"
-#include "../../domain/services/Lexer.hpp"
-#include "../../infrastructure/common/LexerResult.hpp"
-#include "../../infrastructure/common/TokenResult.hpp"
-#include "../../infrastructure/io/FileReader.hpp"
-#include "../../infrastructure/io/FileValidator.hpp"
+#include "../../domain/errors/common/CompilerError.hpp"
+#include "../../domain/errors/common/ErrorList.hpp"
+#include "../../domain/services/config/Lexer.hpp"
+#include "../../infrastructure/common/config/LexerResult.hpp"
+#include "../../infrastructure/common/config/TokenResult.hpp"
+#include "../../infrastructure/io/config/FileReader.hpp"
+#include "../../infrastructure/io/config/FileValidator.hpp"
 #include "../ports/ILogger.hpp"
+#include "CompileSourceFile.hpp"
 
 // ------------------------ COMPILE_SOURCE_FILE.CPP ------------------------ //
 

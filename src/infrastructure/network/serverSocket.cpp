@@ -7,8 +7,7 @@ ServerSocket::ServerSocket() : _fd(-1)
 	_saddr.sin_addr.s_addr = INADDR_ANY;
 }
 
-ServerSocket::ServerSocket(const Port& port, const IpAddr& ipAddr)
-	: _fd(socket(AF_INET, SOCK_STREAM, 0))
+ServerSocket::ServerSocket(const Port& port, const IpAddr& ipAddr) : _fd(socket(AF_INET, SOCK_STREAM, 0))
 {
 	if (!_fd.isValid())
 		return;

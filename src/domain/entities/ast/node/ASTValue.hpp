@@ -6,14 +6,14 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 20:20:42 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/09 19:12:25 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/16 04:29:08 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ASTVALUE_HPP
 #define ASTVALUE_HPP
 
-#include "../../../value_objects/ASTValueType.hpp"
+#include "../../../value_objects/config/ASTValueType.hpp"
 #include "../base/ASTNode.hpp"
 
 class ASTValue : public ASTNode

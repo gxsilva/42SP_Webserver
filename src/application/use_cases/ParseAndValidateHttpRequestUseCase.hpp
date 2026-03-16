@@ -2,9 +2,9 @@
 #define PARSEANDVALIDATEHTTPREQUESTUSECASE_HPP
 
 #include "../../domain/entities/HttpRequest.hpp"
-#include "../../domain/services/HttpRequestValidator.hpp"
+#include "../../domain/services/request/HttpRequestValidator.hpp"
 #include "../../infrastructure/common/Result.hpp"
-#include "../../infrastructure/io/HttpRequestParser.hpp"
+#include "../../infrastructure/io/request/HttpRequestParser.hpp"
 #include <string>
 
 class ParseAndValidateHttpRequestUseCase

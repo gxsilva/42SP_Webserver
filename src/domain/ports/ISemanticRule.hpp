@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 23:27:53 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/13 01:14:09 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/16 04:52:35 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #define ISEMANTICRULE_HPP
 
 #include "../entities/ast/base/ASTNode.hpp"
-#include "../errors/ErrorList.hpp"
+#include "../errors/common/ErrorList.hpp"
 
 class ISemanticRule
 {
