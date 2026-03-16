@@ -22,8 +22,8 @@
 // ------------------------ OCCF ------------------------ //
 SourceLocation::SourceLocation(void) : line(0), column(0), length(0) {}
 
-SourceLocation::SourceLocation(const std::string& file_name, size_t line_number,
-							   size_t column_number, size_t token_length)
+SourceLocation::SourceLocation(const std::string& file_name, size_t line_number, size_t column_number,
+							   size_t token_length)
 	: filename(file_name), line(line_number), column(column_number), length(token_length)
 {
 }

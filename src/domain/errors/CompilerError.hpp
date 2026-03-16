@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 22:19:10 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 23:48:35 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/13 01:14:13 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class CompilerError
 		SourceLocation location;
 		bool		   has_location;
 
-		std::vector<std::string> notes;
+		std::vector< std::string > notes;
 
 		bool		has_hint;
 		std::string hint;
@@ -60,14 +60,24 @@ class CompilerError
 		static CompilerError invalidBinaryFileError(const std::string& filename);
 
 		// Parsing-related errors
-		static CompilerError expectedNameError(const std::string&	 message,
-											   const SourceLocation& location);
-		static CompilerError expectedValueError(const std::string&	  message,
-												const SourceLocation& location);
-		static CompilerError expectedRightBraceError(const std::string&	   message,
-													 const SourceLocation& location);
-		static CompilerError unepxectedTokenError(const std::string&	message,
-												  const SourceLocation& location);
+		static CompilerError expectedNameError(const std::string& message, const SourceLocation& location);
+		static CompilerError expectedValueError(const std::string& message, const SourceLocation& location);
+		static CompilerError expectedRightBraceError(const std::string& message, const SourceLocation& location);
+		static CompilerError unepxectedTokenError(const std::string& message, const SourceLocation& location);
+
+		// Semantic-related errors
+		static CompilerError directiveNotAllowedInContextError(const std::string& directive, const std::string& context,
+															   const SourceLocation& location);
+		static CompilerError directiveCardinalityError(const std::string& directive, const std::string& context,
+													   int min, int max, int count, const SourceLocation& location);
+		static CompilerError directiveConflictError(const std::string& directive,
+													const std::string& conflictingDirective, const std::string& context,
+													const SourceLocation& location);
+		static CompilerError directiveDependencyError(const std::string& directive,
+													  const std::string& requiredDirective, const std::string& context,
+													  const SourceLocation& location);
+		static CompilerError directiveInvalidValueError(const std::string& directive, const std::string& value,
+														const std::string& reason, const SourceLocation& location);
 };
 
 #endif /* COMPILERERROR_HPP */

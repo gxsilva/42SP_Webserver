@@ -17,9 +17,9 @@
  * Macro helper para prevenir cópia (C++98 style)
  * Uso: DISABLE_COPY(MinhaClasse)
  */
-#define DISABLE_COPY(ClassName)                                                                    \
-private:                                                                                           \
-	ClassName(const ClassName&);                                                                   \
+#define DISABLE_COPY(ClassName)                                                                                        \
+private:                                                                                                               \
+	ClassName(const ClassName&);                                                                                       \
 	ClassName& operator=(const ClassName&)
 
 #endif /* MACROS_HPP */

@@ -23,10 +23,7 @@
 // ------------------------ OCCF ------------------------ //
 Token::Token() : type(UNKNOWN) {}
 
-Token::Token(TokenType t, const std::string& v, const SourceLocation& loc)
-	: type(t), value(v), location(loc)
-{
-}
+Token::Token(TokenType t, const std::string& v, const SourceLocation& loc) : type(t), value(v), location(loc) {}
 
 std::string Token::toString() const
 {

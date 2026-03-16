@@ -4,7 +4,7 @@ UseTab: Always
 IndentWidth: 4
 TabWidth: 4
 
-ColumnLimit: 100
+ColumnLimit: 120
 
 BreakBeforeBraces: Allman
 
@@ -31,3 +31,4 @@ ReflowComments: true
 AlwaysBreakTemplateDeclarations: Yes
 
 InsertNewlineAtEOF: true
+SpacesInAngles: true

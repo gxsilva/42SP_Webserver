@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 20:44:43 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/05 22:16:53 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/09 19:12:25 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,17 @@ class ASTValue;
 class ASTDirective : public ASTNode
 {
 	private:
-		std::string			   _name;	// "listen", "server_name"
-		std::vector<ASTValue*> _values; // [8080], [example.com, www.example.com]
+		std::string				 _name;	  // "listen", "server_name"
+		std::vector< ASTValue* > _values; // [8080], [example.com, www.example.com]
 
 	public:
 		ASTDirective(const std::string& name, const SourceLocation& loc);
 		~ASTDirective();
 
-		const std::string&			  getName() const;
-		const std::vector<ASTValue*>& getValues() const;
+		const std::string&				getName() const;
+		const std::vector< ASTValue* >& getValues() const;
 
-		std::string toString(int ident) const;
+		std::string toString(int indentation) const;
 
 		void addValue(ASTValue* value);
 };

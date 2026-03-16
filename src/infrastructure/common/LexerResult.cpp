@@ -23,14 +23,8 @@
 
 // ------------------------ OCCF ------------------------ //
 LexerResult::LexerResult(Lexer* lexer) : ResultBase(true), _lexer(lexer) {}
-LexerResult::LexerResult(const ErrorList& error)
-	: ResultBase(false), _lexer(NULL), _errorList(error)
-{
-}
-LexerResult::LexerResult(const CompilerError& err) : ResultBase(false), _lexer(NULL)
-{
-	_errorList.addError(err);
-}
+LexerResult::LexerResult(const ErrorList& error) : ResultBase(false), _lexer(NULL), _errorList(error) {}
+LexerResult::LexerResult(const CompilerError& err) : ResultBase(false), _lexer(NULL) { _errorList.addError(err); }
 
 LexerResult::~LexerResult()
 {

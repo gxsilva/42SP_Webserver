@@ -33,6 +33,7 @@ D_ERRORS_DIR			= $(DOMAIN_DIR)/errors
 D_EVENTS_DIR			= $(DOMAIN_DIR)/events
 D_NETWORK_DIR			= $(DOMAIN_DIR)/network
 D_SERVICES_DIR			= $(DOMAIN_DIR)/services
+D_VALIDATOR_DIR			= $(D_SERVICES_DIR)/validator
 D_VALUE_OBJECTS_DIR		= $(DOMAIN_DIR)/value_objects
 D_CGI_DIR				= $(DOMAIN_DIR)/CGI
 
@@ -48,7 +49,9 @@ INFRA_DIR				= $(SRCS_DIR)/infrastructure
 I_COMMON_DIR			= $(INFRA_DIR)/common
 I_IO_DIR				= $(INFRA_DIR)/io
 I_NETWORK_DIR			= $(INFRA_DIR)/network
-I_CGI_DIR				= $(INFRA_DIR)/CGI
+
+APPLICATION_DIR			= $(SRCS_DIR)/application
+USE_CASES_DIR			= $(APPLICATION_DIR)/use_cases
 
 # ---------------- PROVISÒRIO ----------------
 HDRS				= $(shell find . -name "*.hpp")
@@ -56,18 +59,15 @@ HDRS				= $(shell find . -name "*.hpp")
 
 # SOURCES
 
-APPLICATION_SRCS	= $(A_SERVER_NET_DIR)/connectionManager.cpp \
-						$(A_CGI_DIR)/CgiHandler.cpp \
-						$(A_CGI_DIR)/CgiOrchestrator.cpp \
-						$(A_SERVER_NET_DIR)/epollManager.cpp \
-						$(A_SERVER_NET_DIR)/server.cpp \
-						$(A_SERVER_NET_DIR)/serverHandlers.cpp \
-						$(APP_USECASES_DIR)/CompileSourceFile.cpp
+APPLICATION_SRCS	= $(SERVER_NET_DIR)/connectionManager.cpp \
+						$(SERVER_NET_DIR)/epollManager.cpp \
+						$(SERVER_NET_DIR)/server.cpp \
+						$(SERVER_NET_DIR)/serverHandlers.cpp \
+						$(USE_CASES_DIR)/CompileSourceFile.cpp
 
 DOMAIN_SRCS			= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 						$(D_ENTITIES_DIR)/Token.cpp \
 						$(D_ENTITIES_DIR)/HttpRequest.cpp \
-						$(D_ENTITIES_DIR)/HttpResponse.cpp \
 						$(D_ERRORS_DIR)/CompilerError.cpp \
 						$(D_ERRORS_DIR)/ErrorList.cpp \
 						$(D_EVENTS_DIR)/epollEvents.cpp \
@@ -81,10 +81,7 @@ DOMAIN_SRCS			= $(D_ENTITIES_DIR)/SourceLocation.cpp \
 						$(D_AST_DIR)/node/ASTBlock.cpp \
 						$(D_AST_DIR)/node/ASTRoot.cpp \
 						$(D_ERRORS_DIR)/ValidationError.cpp \
-						$(D_SERVICES_DIR)/HttpRequestValidator.cpp \
-						$(D_SERVICES_DIR)/statusCodeResponse.cpp \
-						$(D_CGI_DIR)/CgiEnvironment.cpp \
-						$(D_CGI_DIR)/CgiResponse.cpp
+						$(D_SERVICES_DIR)/HttpRequestValidator.cpp
 
 INTERFACE_SRCS		= $(CLI_DIR)/main.cpp
 
@@ -98,8 +95,7 @@ INFRA_SRCS			= $(I_COMMON_DIR)/TokenResult.cpp \
 						$(I_NETWORK_DIR)/clientSocket.cpp \
 						$(I_NETWORK_DIR)/serverSocket.cpp \
 						$(I_NETWORK_DIR)/fileDescriptor.cpp \
-						$(I_NETWORK_DIR)/testHttpResponse.cpp \
-						$(I_CGI_DIR)/CgiProcessExecutor.cpp
+						$(I_NETWORK_DIR)/testHttpResponse.cpp
 
 
 APP_SRCS		= $(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp
@@ -113,8 +109,6 @@ TEST_USECASE_NAME	= test_parse_validate_usecase
 TEST_USECASE_SRC	= test/ParseAndValidateHttpRequestUseCaseTest.cpp
 TEST_OBJS		= $(OBJ_DIR)/test/HttpRequest.o \
 					$(OBJ_DIR)/test/HttpRequestParser.o
-TEST_CGI_NAME	= test_cgi
-TEST_CGI_SRC	= test/CgiTest.cpp
 
 # EXPANSIONS
 SRC_SET				= $(INTERFACE_SRCS) \

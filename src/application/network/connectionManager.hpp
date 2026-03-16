@@ -18,10 +18,8 @@
 class ConnectionManager
 {
 	private:
-		EpollManager&						 _epollManager;
-		std::vector<ClientSocket*>			 _clients;
-		ParseAndValidateHttpRequestUseCase	 _parseUseCase;
-		CgiOrchestrator*					 _cgiOrchestrator;
+		EpollManager&			   _epollManager;
+		std::vector<ClientSocket*> _clients;
 
 		void disconnectClient(int fd);
 

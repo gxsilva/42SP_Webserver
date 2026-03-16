@@ -26,11 +26,11 @@ ErrorList::~ErrorList() {}
 // ------------------------ METHODS ------------------------ //
 void ErrorList::addError(const CompilerError& error) { errors.push_back(error); }
 
-const std::vector<CompilerError>& ErrorList::getErrors() const { return errors; }
+const std::vector< CompilerError >& ErrorList::getErrors() const { return errors; }
 
 bool ErrorList::hasErrors() const { return !errors.empty(); }
 
-int ErrorList::size() const { return static_cast<int>(errors.size()); }
+int ErrorList::size() const { return static_cast< int >(errors.size()); }
 
 void ErrorList::formatAllErrors() const
 {
