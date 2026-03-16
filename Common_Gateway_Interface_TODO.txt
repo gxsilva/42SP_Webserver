@@ -1,0 +1,59 @@
+Variáveis de Ambiente Obrigatórias (RFC 3875)
+-----------------------------------------------------------------------
+|Variável	         |   Origem                                       |
+-----------------------------------------------------------------------
+|REQUEST_METHOD	     |   Método HTTP (GET, POST...)                   |
+|QUERY_STRING	     |   Parte após ? na URI                          |
+|CONTENT_TYPE	     |   Header Content-Type do request               |
+|CONTENT_LENGTH      |   Header Content-Length do request             |
+|SCRIPT_NAME	     |   Caminho do script relativo ao server         |
+|PATH_INFO	         |   Info extra no path após o script             |
+|PATH_TRANSLATED	 |   PATH_INFO traduzido para path no filesystem  |
+|SERVER_NAME	     |   Hostname do servidor                         |
+|SERVER_PORT	     |   Porta do servidor                            |
+|SERVER_PROTOCOL	 |   HTTP/1.1                                     |
+|HTTP_*	             |   Headers do request prefixados com HTTP_      |
+-----------------------------------------------------------------------
+
+| | O servidor recebe um request para um recurso CGI (ex: /cgi-bin/script.py)
+| | O servidor faz fork() para criar um processo filho
+| | O filho configura variáveis de ambiente (meta-variables) e redireciona stdin/stdout via pipe()
+| | O filho executa execve() com o interpretador/script
+| | Se houver body (POST), o servidor escreve no stdin do filho
+| | O servidor lê o stdout do filho (a resposta CGI)
+| | O servidor parseia a saída CGI e monta a HttpResponse
+
+┌─────────────────────────────────────────────────────┐
+│  Domain Layer                                       │
+│  ┌───────────────────────────────────────────────┐  │
+│  │ CgiEnvironment  (value object)                │  │
+│  │   - Encapsula as meta-variables               │  │
+│  │   - Construído a partir de HttpRequest +      │  │
+│  │     config da rota                            │  │
+│  │                                               │  │
+│  │ CgiResponse  (value object)                   │  │
+│  │   - Resultado parseado do stdout do CGI       │  │
+│  │   - Headers + body separados                  │  │
+│  │                                               │  │
+│  │ ICgiGateway  (interface/port)                 │  │
+│  │   - Contrato: executar CGI e retornar         │  │
+│  │     CgiResponse                               │  │
+│  └───────────────────────────────────────────────┘  │
+├─────────────────────────────────────────────────────┤
+│  Application Layer                                  │
+│  ┌───────────────────────────────────────────────┐  │
+│  │ CgiHandler                                    │  │
+│  │   - Orquestra: monta CgiEnvironment,          │  │
+│  │     chama ICgiGateway, converte CgiResponse   │  │
+│  │     em HttpResponse                           │  │
+│  └───────────────────────────────────────────────┘  │
+├─────────────────────────────────────────────────────┤
+│  Infrastructure Layer                               │
+│  ┌───────────────────────────────────────────────┐  │
+│  │ CgiProcessExecutor (implementa ICgiGateway)   │  │
+│  │   - fork(), pipe(), dup2(), execve()          │  │
+│  │   - Gerencia FDs dos pipes no poll()          │  │
+│  │   - Timeout para matar processos pendurados   │  │
+│  │   - Escreve body no stdin / lê stdout         │  │
+│  └───────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────┘

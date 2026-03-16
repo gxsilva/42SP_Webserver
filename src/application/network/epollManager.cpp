@@ -50,6 +50,13 @@ int EpollManager::waitForEvents()
 	return (_readyEventsCount);
 }
 
+int EpollManager::waitForEvents(int timeoutMs)
+{
+	_readyEventsCount =
+		epoll_wait(_epollFd, _triggeredEvents.data(), _maxEvents.getAmount(), timeoutMs);
+	return (_readyEventsCount);
+}
+
 int EpollManager::getEventFd(int index) const
 {
 	if (index < 0)

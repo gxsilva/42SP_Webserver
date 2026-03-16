@@ -1,12 +1,15 @@
 #ifndef CONNECTIONMANAGER_HPP
 #define CONNECTIONMANAGER_HPP
 
+#include "../../domain/entities/HttpRequest.hpp"
 #include "../../domain/events/epollEvents.hpp"
 #include "../../infrastructure/network/clientSocket.hpp"
 #include "../../infrastructure/network/serverSocket.hpp"
+#include "../../infrastructure/network/testHttpResponse.hpp"
+#include "../CGI/CgiOrchestrator.hpp"
+#include "../use_cases/ParseAndValidateHttpRequestUseCase.hpp"
 #include "epollManager.hpp"
 
-#include "../../infrastructure/network/testHttpResponse.hpp"
 #include <iostream>
 #include <poll.h>
 #include <unistd.h>
@@ -15,8 +18,8 @@
 class ConnectionManager
 {
 	private:
-		EpollManager&				 _epollManager;
-		std::vector< ClientSocket* > _clients;
+		EpollManager&			   _epollManager;
+		std::vector<ClientSocket*> _clients;
 
 		void disconnectClient(int fd);
 
@@ -24,9 +27,15 @@ class ConnectionManager
 		ConnectionManager(EpollManager& epollManager, const PollCapacity& maxEvents);
 		~ConnectionManager();
 
+		void setCgiOrchestrator(CgiOrchestrator* orch);
+
 		void acceptNewClient(ServerSocket& serverSocket);
 		void handleClientRead(int fd);
 		void handleClientWrite(int fd);
+
+		bool isCgiFd(int fd) const;
+		void handleCgiEvent(int fd, unsigned int flags);
+		void dispatchCgiResponses();
 };
 
 #endif

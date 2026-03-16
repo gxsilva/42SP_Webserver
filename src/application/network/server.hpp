@@ -16,12 +16,15 @@
 #include <sys/epoll.h>
 #include <sys/socket.h>
 
+class CgiOrchestrator;
+
 class Server
 {
 	private:
 		ServerSocket	   _serverSocket;
 		EpollManager*	   _epollManager;
 		ConnectionManager* _connectionManager;
+		CgiOrchestrator*   _cgiOrchestrator;
 		bool			   _isValid;
 		void			   processEvents(int count);
 		void			   handleEventByIndex(int index);

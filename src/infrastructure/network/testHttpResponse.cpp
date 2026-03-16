@@ -1,14 +1,7 @@
 #include "testHttpResponse.hpp"
 
-// por hora teste, mas depois possivelmente quando alterarmos coisas sera implementacao real
-void bufferTestHttpResponse(ClientSocket& client)
+void bufferTestHttpResponse(ClientSocket& client, const HttpResponse& response)
 {
-	const char* response = "HTTP/1.1 200 OK\r\n"
-						   "Content-Type: text/plain\r\n"
-						   "Content-Length: 13\r\n"
-						   "Connection: close\r\n"
-						   "\r\n"
-						   "Hello, World!";
-
-	client.appendToWriteBuffer(response, strlen(response));
+	std::string raw = response.serialize();
+	client.appendToWriteBuffer(raw.c_str(), raw.size());
 }
