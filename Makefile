@@ -69,79 +69,62 @@ HDRS				= $(shell find . -name "*.hpp")
 
 # SOURCES
 
-DOMAIN_SRCS		= $(D_ENTITIES_CONFIG_DIR)/Token.cpp \
-					$(D_ERRORS_COMMON_DIR)/CompilerError.cpp \
-					$(D_ERRORS_COMMON_DIR)/ErrorList.cpp \
-					$(D_CONFIG_SERVICES_DIR)/Lexer.cpp \
-					$(D_CONFIG_SERVICES_DIR)/Parser.cpp \
-					$(D_SERVICES_DIR)/validator/CardinalityRuleService.cpp \
-					$(D_SERVICES_DIR)/validator/ConflictRuleService.cpp \
-					$(D_SERVICES_DIR)/validator/ContextRuleService.cpp \
-					$(D_SERVICES_DIR)/validator/DependencyRuleService.cpp \
-					$(D_SERVICES_DIR)/validator/ValueRuleService.cpp \
-					$(D_CONFIG_SERVICES_DIR)/Validator.cpp \
-					$(D_CONFIG_SERVICES_DIR)/ConfigBuilder.cpp \
-					$(D_AST_DIR)/base/ASTNode.cpp \
-					$(D_AST_DIR)/node/ASTValue.cpp \
-					$(D_AST_DIR)/node/ASTDirective.cpp \
-					$(D_AST_DIR)/node/ASTBlock.cpp \
-					$(D_AST_DIR)/node/ASTRoot.cpp \
-					$(D_ENTITIES_COMMON_DIR)/SourceLocation.cpp \
-					$(D_VALUE_CONFIG_DIR)/RuleTable.cpp
-
 INTERFACE_SRCS		= $(CLI_DIR)/main.cpp
 
-INFRA_SRCS		= $(I_COMMON_CONFIG_DIR)/TokenResult.cpp \
-					$(I_COMMON_CONFIG_DIR)/LexerResult.cpp \
-					$(I_COMMON_CONFIG_DIR)/ASTResult.cpp \
-					$(I_COMMON_CONFIG_DIR)/ValidatorResult.cpp \
-					$(I_IO_CONFIG_DIR)/FileReader.cpp \
-					$(I_IO_CONFIG_DIR)/FileValidator.cpp \
-					$(I_IO_CONFIG_DIR)/SemanticAnalyzer.cpp \
-					$(INFRA_DIR)/logging/Logger.cpp \
-					$(I_COMMON_CONFIG_DIR)/RuleRegistry.cpp
+APPLICATION_SRCS	= $(A_SERVER_NET_DIR)/connectionManager.cpp \
+						$(A_SERVER_NET_DIR)/epollManager.cpp \
+						$(A_SERVER_NET_DIR)/server.cpp \
+						$(A_SERVER_NET_DIR)/serverHandlers.cpp \
+						$(A_CGI_DIR)/CgiHandler.cpp \
+						$(A_CGI_DIR)/CgiOrchestrator.cpp \
+						$(APP_USECASES_DIR)/CompileSourceFile.cpp \
+						$(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp
 
-APPLICATION_SRCS	= $(USE_CASES_DIR)/CompileSourceFile.cpp
-APPLICATION_SRCS	= $(SERVER_NET_DIR)/connectionManager.cpp \
-						$(SERVER_NET_DIR)/epollManager.cpp \
-						$(SERVER_NET_DIR)/server.cpp \
-						$(SERVER_NET_DIR)/serverHandlers.cpp \
-						$(USE_CASES_DIR)/CompileSourceFile.cpp
-
-DOMAIN_SRCS			= $(D_ENTITIES_DIR)/SourceLocation.cpp \
-						$(D_ENTITIES_DIR)/Token.cpp \
+DOMAIN_SRCS			= $(D_ENTITIES_COMMON_DIR)/SourceLocation.cpp \
+						$(D_ENTITIES_CONFIG_DIR)/Token.cpp \
 						$(D_ENTITIES_DIR)/HttpRequest.cpp \
-						$(D_ERRORS_DIR)/CompilerError.cpp \
-						$(D_ERRORS_DIR)/ErrorList.cpp \
+						$(D_ENTITIES_DIR)/HttpResponse.cpp \
+						$(D_ERRORS_COMMON_DIR)/CompilerError.cpp \
+						$(D_ERRORS_COMMON_DIR)/ErrorList.cpp \
+						$(D_ERRORS_VALIDATOR_DIR)/ValidationError.cpp \
 						$(D_EVENTS_DIR)/epollEvents.cpp \
 						$(D_NETWORK_DIR)/ipAddr.cpp \
 						$(D_NETWORK_DIR)/port.cpp \
-						$(D_SERVICES_DIR)/Lexer.cpp \
-						$(D_SERVICES_DIR)/Parser.cpp \
+						$(D_CONFIG_SERVICES_DIR)/ConfigBuilder.cpp \
+						$(D_CONFIG_SERVICES_DIR)/Lexer.cpp \
+						$(D_CONFIG_SERVICES_DIR)/Parser.cpp \
+						$(D_CONFIG_SERVICES_DIR)/Validator.cpp \
+						$(D_REQUEST_SERVICES_DIR)/HttpRequestValidator.cpp \
+						$(D_VALIDATOR_DIR)/CardinalityRuleService.cpp \
+						$(D_VALIDATOR_DIR)/ConflictRuleService.cpp \
+						$(D_VALIDATOR_DIR)/ContextRuleService.cpp \
+						$(D_VALIDATOR_DIR)/DependencyRuleService.cpp \
+						$(D_VALIDATOR_DIR)/ValueRuleService.cpp \
+						$(D_SERVICES_DIR)/statusCodeResponse.cpp \
 						$(D_AST_DIR)/base/ASTNode.cpp \
 						$(D_AST_DIR)/node/ASTValue.cpp \
 						$(D_AST_DIR)/node/ASTDirective.cpp \
 						$(D_AST_DIR)/node/ASTBlock.cpp \
 						$(D_AST_DIR)/node/ASTRoot.cpp \
-						$(D_ERRORS_DIR)/ValidationError.cpp \
-						$(D_SERVICES_DIR)/HttpRequestValidator.cpp
+						$(D_VALUE_CONFIG_DIR)/RuleTable.cpp \
+						$(D_CGI_DIR)/CgiEnvironment.cpp \
+						$(D_CGI_DIR)/CgiResponse.cpp
 
-INTERFACE_SRCS		= $(CLI_DIR)/main.cpp
-
-INFRA_SRCS			= $(I_COMMON_DIR)/TokenResult.cpp \
-						$(I_COMMON_DIR)/LexerResult.cpp \
-						$(I_COMMON_DIR)/ASTResult.cpp \
-						$(I_IO_DIR)/FileReader.cpp \
-						$(I_IO_DIR)/FileValidator.cpp \
-						$(I_IO_DIR)/HttpRequestParser.cpp \
+INFRA_SRCS			= $(I_COMMON_CONFIG_DIR)/TokenResult.cpp \
+						$(I_COMMON_CONFIG_DIR)/LexerResult.cpp \
+						$(I_COMMON_CONFIG_DIR)/ASTResult.cpp \
+						$(I_COMMON_CONFIG_DIR)/ValidatorResult.cpp \
+						$(I_COMMON_CONFIG_DIR)/RuleRegistry.cpp \
+						$(I_IO_CONFIG_DIR)/FileReader.cpp \
+						$(I_IO_CONFIG_DIR)/FileValidator.cpp \
+						$(I_IO_CONFIG_DIR)/SemanticAnalyzer.cpp \
+						$(I_IO_REQUEST_DIR)/HttpRequestParser.cpp \
 						$(INFRA_DIR)/logging/Logger.cpp \
+						$(INFRA_DIR)/CGI/CgiProcessExecutor.cpp \
 						$(I_NETWORK_DIR)/clientSocket.cpp \
 						$(I_NETWORK_DIR)/serverSocket.cpp \
 						$(I_NETWORK_DIR)/fileDescriptor.cpp \
 						$(I_NETWORK_DIR)/testHttpResponse.cpp
-
-
-APP_SRCS		= $(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp
 
 # TEST DEFINITIONS
 TEST_NAME		= test_http_request
@@ -152,18 +135,6 @@ TEST_USECASE_NAME	= test_parse_validate_usecase
 TEST_USECASE_SRC	= test/ParseAndValidateHttpRequestUseCaseTest.cpp
 TEST_OBJS		= $(OBJ_DIR)/test/HttpRequest.o \
 					$(OBJ_DIR)/test/HttpRequestParser.o
-
-APP_SRCS			= $(SERVER_NET_DIR)/connectionManager.cpp \
-					$(SERVER_NET_DIR)/epollManager.cpp \
-					$(SERVER_NET_DIR)/server.cpp \
-					$(SERVER_NET_DIR)/serverHandlers.cpp \
-					$(D_EVENTS_DIR)/epollEvents.cpp \
-					$(D_NETWORK_DIR)/ipAddr.cpp \
-					$(D_NETWORK_DIR)/port.cpp \
-					$(INFRA_DIR)/network/clientSocket.cpp \
-					$(INFRA_DIR)/network/fileDescriptor.cpp \
-					$(INFRA_DIR)/network/serverSocket.cpp \
-					$(INFRA_DIR)/network/testHttpResponse.cpp
 
 TEST_DIR					= test
 
@@ -214,8 +185,7 @@ TEST_DEPS					= $(TEST_OBJ:.o=.d)
 SRC_SET				= $(INTERFACE_SRCS) \
 						$(APPLICATION_SRCS) \
 						$(DOMAIN_SRCS) \
-						$(INFRA_SRCS) \
-						$(APP_SRCS)
+						$(INFRA_SRCS)
 
 OBJ					= $(patsubst $(SRCS_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_SET))
 DEPS				= $(OBJ:.o=.d)
@@ -244,11 +214,6 @@ fclean: clean
 	@echo "🧹 Removing binary..."
 	@rm -f $(NAME)
 	@rm -f $(TEST_BINS)
-
-re: fclean all
-
-test: $(TEST_BINS)
-	@rm -f $(TEST_NAME) $(TEST_VALIDATION_NAME) $(TEST_USECASE_NAME) $(TEST_CGI_NAME)
 
 re: fclean all
 
