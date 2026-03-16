@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 20:47:16 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/03 17:29:29 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/16 04:45:23 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 #include <string>
 
 #include "../../../includes/macros.hpp"
-#include "../../infrastructure/common/LexerResult.hpp"
-#include "../../infrastructure/common/TokenResult.hpp"
+#include "../../infrastructure/common/config/LexerResult.hpp"
+#include "../../infrastructure/common/config/TokenResult.hpp"
 #include "../ports/ILogger.hpp"
 
 /*

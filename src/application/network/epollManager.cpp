@@ -1,8 +1,7 @@
 #include "epollManager.hpp"
 
 EpollManager::EpollManager(const PollCapacity& maxEvents)
-	: _epollFd(epoll_create1(0)), _maxEvents(maxEvents), _triggeredEvents(maxEvents.getAmount()),
-	  _readyEventsCount(0)
+	: _epollFd(epoll_create1(0)), _maxEvents(maxEvents), _triggeredEvents(maxEvents.getAmount()), _readyEventsCount(0)
 {
 	if (_epollFd < 0)
 		throw std::runtime_error("Failed to create epoll instance");
@@ -64,12 +63,9 @@ int EpollManager::getEventFd(int index) const
 		throw std::out_of_range("EpollManager::getEventFd: Negative index!");
 	if (index >= _readyEventsCount)
 		throw std::out_of_range("EpollManager::getEventFd: index exceeds ready events!");
-	if (static_cast<size_t>(index) >= _triggeredEvents.size())
+	if (static_cast< size_t >(index) >= _triggeredEvents.size())
 		throw std::out_of_range("EpollManager::getEventFd: index exceeds triggered events buffer");
 	return (_triggeredEvents[index].data.fd);
 }
 
-unsigned int EpollManager::getEventFlags(int index) const
-{
-	return (_triggeredEvents[index].events);
-}
+unsigned int EpollManager::getEventFlags(int index) const { return (_triggeredEvents[index].events); }

@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 01:14:49 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/13 03:24:30 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/16 05:00:59 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 #include "../../entities/ast/node/ASTBlock.hpp"
 #include "../../entities/ast/node/ASTDirective.hpp"
 #include "../../entities/ast/node/ASTRoot.hpp"
-#include "../../errors/CompilerError.hpp"
-#include "../../value_objects/ASTNodeType.hpp"
+#include "../../errors/common/CompilerError.hpp"
+#include "../../value_objects/config/ASTNodeType.hpp"
 
 namespace
 {

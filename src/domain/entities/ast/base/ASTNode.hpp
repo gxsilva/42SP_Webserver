@@ -6,17 +6,17 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 18:20:00 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/09 19:12:25 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/16 04:29:35 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ASTNODE_HPP
 #define ASTNODE_HPP
 
-#include "../../../value_objects/ASTNodeType.hpp"
-#include "../../../value_objects/ASTValueType.hpp"
+#include "../../../value_objects/config/ASTNodeType.hpp"
+#include "../../../value_objects/config/ASTValueType.hpp"
 
-#include "../../SourceLocation.hpp"
+#include "../../common/SourceLocation.hpp"
 
 class ASTNode
 {

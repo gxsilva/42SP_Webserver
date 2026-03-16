@@ -14,7 +14,7 @@
 #define Contexttuleeervicee_HPP
 
 #include "../../ports/ISemanticRule.hpp"
-#include "../../value_objects/RuleTable.hpp"
+#include "../../value_objects/config/RuleTable.hpp"
 
 class ContextRuleService : public ISemanticRule
 {

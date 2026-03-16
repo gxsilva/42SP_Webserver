@@ -60,7 +60,7 @@ void ConnectionManager::acceptNewClient(ServerSocket& serverSocket)
 	}
 
 	_epollManager.addFd(newClient, POLLIN);
-	if (static_cast<size_t>(newClient) >= _clients.size())
+	if (static_cast< size_t >(newClient) >= _clients.size())
 		_clients.resize(newClient + 128, (ClientSocket*)NULL);
 
 	_clients[newClient] = client;

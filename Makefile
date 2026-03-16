@@ -29,12 +29,19 @@ OBJ_DIR				= obj
 DOMAIN_DIR				= $(SRCS_DIR)/domain
 D_ENTITIES_DIR			= $(DOMAIN_DIR)/entities
 D_AST_DIR				= $(D_ENTITIES_DIR)/ast
+D_ENTITIES_COMMON_DIR	= $(D_ENTITIES_DIR)/common
+D_ENTITIES_CONFIG_DIR	= $(D_ENTITIES_DIR)/config
 D_ERRORS_DIR			= $(DOMAIN_DIR)/errors
+D_ERRORS_COMMON_DIR		= $(D_ERRORS_DIR)/common
+D_ERRORS_VALIDATOR_DIR	= $(D_ERRORS_DIR)/validator
 D_EVENTS_DIR			= $(DOMAIN_DIR)/events
 D_NETWORK_DIR			= $(DOMAIN_DIR)/network
 D_SERVICES_DIR			= $(DOMAIN_DIR)/services
+D_CONFIG_SERVICES_DIR	= $(D_SERVICES_DIR)/config
+D_REQUEST_SERVICES_DIR	= $(D_SERVICES_DIR)/request
 D_VALIDATOR_DIR			= $(D_SERVICES_DIR)/validator
 D_VALUE_OBJECTS_DIR		= $(DOMAIN_DIR)/value_objects
+D_VALUE_CONFIG_DIR		= $(D_VALUE_OBJECTS_DIR)/config
 D_CGI_DIR				= $(DOMAIN_DIR)/CGI
 
 APP_DIR					= $(SRCS_DIR)/application
@@ -48,6 +55,9 @@ CLI_DIR					= $(INTERFACES_DIR)/cli
 INFRA_DIR				= $(SRCS_DIR)/infrastructure
 I_COMMON_DIR			= $(INFRA_DIR)/common
 I_IO_DIR				= $(INFRA_DIR)/io
+I_COMMON_CONFIG_DIR		= $(I_COMMON_DIR)/config
+I_IO_CONFIG_DIR			= $(I_IO_DIR)/config
+I_IO_REQUEST_DIR		= $(I_IO_DIR)/request
 I_NETWORK_DIR			= $(INFRA_DIR)/network
 
 APPLICATION_DIR			= $(SRCS_DIR)/application
@@ -59,6 +69,39 @@ HDRS				= $(shell find . -name "*.hpp")
 
 # SOURCES
 
+DOMAIN_SRCS		= $(D_ENTITIES_CONFIG_DIR)/Token.cpp \
+					$(D_ERRORS_COMMON_DIR)/CompilerError.cpp \
+					$(D_ERRORS_COMMON_DIR)/ErrorList.cpp \
+					$(D_CONFIG_SERVICES_DIR)/Lexer.cpp \
+					$(D_CONFIG_SERVICES_DIR)/Parser.cpp \
+					$(D_SERVICES_DIR)/validator/CardinalityRuleService.cpp \
+					$(D_SERVICES_DIR)/validator/ConflictRuleService.cpp \
+					$(D_SERVICES_DIR)/validator/ContextRuleService.cpp \
+					$(D_SERVICES_DIR)/validator/DependencyRuleService.cpp \
+					$(D_SERVICES_DIR)/validator/ValueRuleService.cpp \
+					$(D_CONFIG_SERVICES_DIR)/Validator.cpp \
+					$(D_CONFIG_SERVICES_DIR)/ConfigBuilder.cpp \
+					$(D_AST_DIR)/base/ASTNode.cpp \
+					$(D_AST_DIR)/node/ASTValue.cpp \
+					$(D_AST_DIR)/node/ASTDirective.cpp \
+					$(D_AST_DIR)/node/ASTBlock.cpp \
+					$(D_AST_DIR)/node/ASTRoot.cpp \
+					$(D_ENTITIES_COMMON_DIR)/SourceLocation.cpp \
+					$(D_VALUE_CONFIG_DIR)/RuleTable.cpp
+
+INTERFACE_SRCS		= $(CLI_DIR)/main.cpp
+
+INFRA_SRCS		= $(I_COMMON_CONFIG_DIR)/TokenResult.cpp \
+					$(I_COMMON_CONFIG_DIR)/LexerResult.cpp \
+					$(I_COMMON_CONFIG_DIR)/ASTResult.cpp \
+					$(I_COMMON_CONFIG_DIR)/ValidatorResult.cpp \
+					$(I_IO_CONFIG_DIR)/FileReader.cpp \
+					$(I_IO_CONFIG_DIR)/FileValidator.cpp \
+					$(I_IO_CONFIG_DIR)/SemanticAnalyzer.cpp \
+					$(INFRA_DIR)/logging/Logger.cpp \
+					$(I_COMMON_CONFIG_DIR)/RuleRegistry.cpp
+
+APPLICATION_SRCS	= $(USE_CASES_DIR)/CompileSourceFile.cpp
 APPLICATION_SRCS	= $(SERVER_NET_DIR)/connectionManager.cpp \
 						$(SERVER_NET_DIR)/epollManager.cpp \
 						$(SERVER_NET_DIR)/server.cpp \
@@ -110,6 +153,63 @@ TEST_USECASE_SRC	= test/ParseAndValidateHttpRequestUseCaseTest.cpp
 TEST_OBJS		= $(OBJ_DIR)/test/HttpRequest.o \
 					$(OBJ_DIR)/test/HttpRequestParser.o
 
+APP_SRCS			= $(SERVER_NET_DIR)/connectionManager.cpp \
+					$(SERVER_NET_DIR)/epollManager.cpp \
+					$(SERVER_NET_DIR)/server.cpp \
+					$(SERVER_NET_DIR)/serverHandlers.cpp \
+					$(D_EVENTS_DIR)/epollEvents.cpp \
+					$(D_NETWORK_DIR)/ipAddr.cpp \
+					$(D_NETWORK_DIR)/port.cpp \
+					$(INFRA_DIR)/network/clientSocket.cpp \
+					$(INFRA_DIR)/network/fileDescriptor.cpp \
+					$(INFRA_DIR)/network/serverSocket.cpp \
+					$(INFRA_DIR)/network/testHttpResponse.cpp
+
+TEST_DIR					= test
+
+TEST_HTTP_REQUEST_BIN			= test_http_request
+TEST_HTTP_REQUEST_MAIN			= $(TEST_DIR)/HttpRequestTest.cpp
+TEST_HTTP_REQUEST_SRCS			= $(TEST_HTTP_REQUEST_MAIN) \
+						  $(D_ENTITIES_DIR)/HttpRequest.cpp \
+						  $(I_IO_REQUEST_DIR)/HttpRequestParser.cpp
+
+TEST_HTTP_VALIDATION_BIN		= test_http_validation
+TEST_HTTP_VALIDATION_MAIN		= $(TEST_DIR)/HttpRequestValidationTest.cpp
+TEST_HTTP_VALIDATION_SRCS		= $(TEST_HTTP_VALIDATION_MAIN) \
+						  $(D_ENTITIES_DIR)/HttpRequest.cpp \
+						  $(I_IO_REQUEST_DIR)/HttpRequestParser.cpp \
+						  $(D_REQUEST_SERVICES_DIR)/HttpRequestValidator.cpp \
+						  $(D_ERRORS_VALIDATOR_DIR)/ValidationError.cpp
+
+TEST_PARSE_VALIDATE_USECASE_BIN		= test_parse_validate_usecase
+TEST_PARSE_VALIDATE_USECASE_MAIN		= $(TEST_DIR)/ParseAndValidateHttpRequestUseCaseTest.cpp
+TEST_PARSE_VALIDATE_USECASE_SRCS		= $(TEST_PARSE_VALIDATE_USECASE_MAIN) \
+											$(D_ENTITIES_DIR)/HttpRequest.cpp \
+											$(I_IO_REQUEST_DIR)/HttpRequestParser.cpp \
+											$(D_REQUEST_SERVICES_DIR)/HttpRequestValidator.cpp \
+											$(D_ERRORS_VALIDATOR_DIR)/ValidationError.cpp \
+											$(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp
+
+TEST_BINS					= $(TEST_HTTP_REQUEST_BIN) \
+						  $(TEST_HTTP_VALIDATION_BIN) \
+						  $(TEST_PARSE_VALIDATE_USECASE_BIN)
+
+TEST_FILES					= $(TEST_HTTP_REQUEST_MAIN) \
+						  $(TEST_HTTP_VALIDATION_MAIN) \
+						  $(TEST_PARSE_VALIDATE_USECASE_MAIN)
+
+TEST_OBJ_DIR					= $(OBJ_DIR)/test
+TEST_ALL_SRCS					= $(sort $(TEST_HTTP_REQUEST_SRCS) \
+						  $(TEST_HTTP_VALIDATION_SRCS) \
+						  $(TEST_PARSE_VALIDATE_USECASE_SRCS))
+
+TEST_HTTP_REQUEST_OBJ			= $(patsubst %.cpp,$(TEST_OBJ_DIR)/%.o,$(TEST_HTTP_REQUEST_SRCS))
+TEST_HTTP_VALIDATION_OBJ		= $(patsubst %.cpp,$(TEST_OBJ_DIR)/%.o,$(TEST_HTTP_VALIDATION_SRCS))
+TEST_PARSE_VALIDATE_USECASE_OBJ		= $(patsubst %.cpp,$(TEST_OBJ_DIR)/%.o,$(TEST_PARSE_VALIDATE_USECASE_SRCS))
+
+TEST_OBJ					= $(patsubst %.cpp,$(TEST_OBJ_DIR)/%.o,$(TEST_ALL_SRCS))
+TEST_DEPS					= $(TEST_OBJ:.o=.d)
+
 # EXPANSIONS
 SRC_SET				= $(INTERFACE_SRCS) \
 						$(APPLICATION_SRCS) \
@@ -138,41 +238,53 @@ $(OBJ_DIR):
 clean:
 	@echo "🧹 Removing objects..."
 	@rm -f $(OBJ) $(DEPS)
+	@rm -f $(TEST_OBJ) $(TEST_DEPS)
 
 fclean: clean
 	@echo "🧹 Removing binary..."
 	@rm -f $(NAME)
+	@rm -f $(TEST_BINS)
+
+re: fclean all
+
+test: $(TEST_BINS)
 	@rm -f $(TEST_NAME) $(TEST_VALIDATION_NAME) $(TEST_USECASE_NAME) $(TEST_CGI_NAME)
 
 re: fclean all
 
 test: $(TEST_NAME) $(TEST_VALIDATION_NAME) $(TEST_USECASE_NAME) $(TEST_CGI_NAME)
 	@echo "🧪 Running parser tests..."
-	@./$(TEST_NAME)
+	@./$(TEST_HTTP_REQUEST_BIN)
 	@echo ""
 	@echo "🧪 Running validation tests..."
-	@./$(TEST_VALIDATION_NAME)
+	@./$(TEST_HTTP_VALIDATION_BIN)
 	@echo ""
 	@echo "🧪 Running use case tests..."
+	@./$(TEST_PARSE_VALIDATE_USECASE_BIN)
+
+$(TEST_OBJ_DIR)/%.o: %.cpp | $(TEST_OBJ_DIR)
+	@echo "🛠️  Building test object..."
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(TEST_OBJ_DIR):
+	@mkdir -p $(TEST_OBJ_DIR)
 	@./$(TEST_USECASE_NAME)
 	@echo ""
 	@echo "🧪 Running CGI tests..."
 	@./$(TEST_CGI_NAME)
 
-$(TEST_NAME): $(TEST_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp | $(OBJ_DIR)
+$(TEST_HTTP_REQUEST_BIN): $(TEST_HTTP_REQUEST_OBJ) | $(TEST_OBJ_DIR)
 	@echo "🛠️  Building parser test..."
-	@mkdir -p $(OBJ_DIR)/test
-	$(CXX) $(CXXFLAGS) -o $@ $(TEST_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
-$(TEST_VALIDATION_NAME): $(TEST_VALIDATION_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp $(D_SERVICES_DIR)/HttpRequestValidator.cpp $(D_ERRORS_DIR)/ValidationError.cpp | $(OBJ_DIR)
+$(TEST_HTTP_VALIDATION_BIN): $(TEST_HTTP_VALIDATION_OBJ) | $(TEST_OBJ_DIR)
 	@echo "🛠️  Building validation test..."
-	@mkdir -p $(OBJ_DIR)/test
-	$(CXX) $(CXXFLAGS) -o $@ $(TEST_VALIDATION_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp $(D_SERVICES_DIR)/HttpRequestValidator.cpp $(D_ERRORS_DIR)/ValidationError.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
-$(TEST_USECASE_NAME): $(TEST_USECASE_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp $(D_SERVICES_DIR)/HttpRequestValidator.cpp $(D_ERRORS_DIR)/ValidationError.cpp $(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp | $(OBJ_DIR)
+$(TEST_PARSE_VALIDATE_USECASE_BIN): $(TEST_PARSE_VALIDATE_USECASE_OBJ) | $(TEST_OBJ_DIR)
 	@echo "🛠️  Building use case test..."
-	@mkdir -p $(OBJ_DIR)/test
-	$(CXX) $(CXXFLAGS) -o $@ $(TEST_USECASE_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(I_IO_DIR)/HttpRequestParser.cpp $(D_SERVICES_DIR)/HttpRequestValidator.cpp $(D_ERRORS_DIR)/ValidationError.cpp $(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
 $(TEST_CGI_NAME): $(TEST_CGI_SRC) $(D_ENTITIES_DIR)/HttpRequest.cpp $(D_CGI_DIR)/CgiEnvironment.cpp $(D_CGI_DIR)/CgiResponse.cpp | $(OBJ_DIR)
 	@echo "🛠️  Building CGI test..."
@@ -198,7 +310,7 @@ check-tools:
 
 format: check-tools
 	@echo "🔧 Formatting..."
-	@clang-format -i $(SRC_SET) $(HDRS)
+	@clang-format -i $(SRC_SET) $(TEST_ALL_SRCS) $(HDRS)
 
 
 #gt = greater than | -B force recompile | -s = existe and it size is grater than 0
@@ -228,6 +340,6 @@ clean_logs:
 	@rm -f log/log_*
 	@rm -f log_*
 
-.PHONY: all clean fclean re format check-tools tidy compile_commands_json clean_logs test
+.PHONY: all clean fclean re format check-tools tidy compile_commands_json clean_logs test test_http_request test_http_validation test_parse_validate_usecase
 
--include $(DEPS)
+-include $(DEPS) $(TEST_DEPS)

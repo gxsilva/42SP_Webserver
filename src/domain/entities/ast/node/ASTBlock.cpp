@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 21:06:24 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/09 19:12:25 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/16 04:28:52 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
 #include <string>
 #include <vector>
 
-#include "../../../entities/SourceLocation.hpp"
-#include "../../../value_objects/ASTNodeType.hpp"
+#include "../../../entities/common/SourceLocation.hpp"
+#include "../../../value_objects/config/ASTNodeType.hpp"
 #include "../base/ASTNode.hpp"
 
 // ------------------------ OCCD ------------------------ //

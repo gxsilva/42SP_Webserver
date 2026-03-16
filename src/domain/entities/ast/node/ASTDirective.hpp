@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 20:44:43 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/09 19:12:25 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/16 04:29:08 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 #include <vector>
 
-#include "../../../value_objects/ASTNodeType.hpp"
-#include "../../../value_objects/ASTValueType.hpp"
+#include "../../../value_objects/config/ASTNodeType.hpp"
+#include "../../../value_objects/config/ASTValueType.hpp"
 #include "../base/ASTNode.hpp"
 
 class ASTValue;

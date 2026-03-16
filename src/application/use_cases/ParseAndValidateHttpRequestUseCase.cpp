@@ -1,12 +1,10 @@
 #include "ParseAndValidateHttpRequestUseCase.hpp"
 
-ParseAndValidateHttpRequestUseCase::ParseAndValidateHttpRequestUseCase() : _parser(), _validator()
-{
-}
+ParseAndValidateHttpRequestUseCase::ParseAndValidateHttpRequestUseCase() : _parser(), _validator() {}
 
 ParseAndValidateHttpRequestUseCase::~ParseAndValidateHttpRequestUseCase() {}
 
-Result<HttpRequest> ParseAndValidateHttpRequestUseCase::execute(const std::string& rawRequest)
+Result< HttpRequest > ParseAndValidateHttpRequestUseCase::execute(const std::string& rawRequest)
 {
 	HttpRequest request = _parser.parse(rawRequest);
 
@@ -14,10 +12,10 @@ Result<HttpRequest> ParseAndValidateHttpRequestUseCase::execute(const std::strin
 
 	if (validationError.empty())
 	{
-		return Result<HttpRequest>(request);
+		return Result< HttpRequest >(request);
 	}
 	else
 	{
-		return Result<HttpRequest>(validationError);
+		return Result< HttpRequest >(validationError);
 	}
 }
