@@ -1,13 +1,20 @@
 #include "server.hpp"
+#include "../CGI/CgiOrchestrator.hpp"
 
-Server::Server() : _epollManager(NULL), _connectionManager(NULL), _isValid(false) {}
+Server::Server()
+	: _epollManager(NULL), _connectionManager(NULL), _cgiOrchestrator(NULL), _isValid(false)
+{
+}
 
 Server::Server(const Port& port, const IpAddr& ipAddr)
-	: _serverSocket(port, ipAddr), _epollManager(NULL), _connectionManager(NULL), _isValid(false)
+	: _serverSocket(port, ipAddr), _epollManager(NULL), _connectionManager(NULL),
+	  _cgiOrchestrator(NULL), _isValid(false)
 {
 	PollCapacity maxEvents(1024);
 	_epollManager	   = new EpollManager(maxEvents);
 	_connectionManager = new ConnectionManager(*_epollManager, maxEvents);
+	_cgiOrchestrator   = new CgiOrchestrator(*_epollManager);
+	_connectionManager->setCgiOrchestrator(_cgiOrchestrator);
 
 	if (!_serverSocket.isValid())
 	{
@@ -31,6 +38,7 @@ Server::Server(const Port& port, const IpAddr& ipAddr)
 
 Server::~Server()
 {
+	delete _cgiOrchestrator;
 	delete _connectionManager;
 	delete _epollManager;
 }
@@ -41,7 +49,7 @@ void Server::run()
 {
 	while (true)
 	{
-		int count = _epollManager->waitForEvents();
+		int count = _epollManager->waitForEvents(1000);
 
 		if (count < 0)
 			break;
@@ -53,6 +61,7 @@ void Server::processEvents(int count)
 {
 	for (int i = 0; i < count; i++)
 		handleEventByIndex(i);
+	_connectionManager->dispatchCgiResponses();
 }
 
 void Server::handleEventByIndex(int index)
@@ -63,6 +72,12 @@ void Server::handleEventByIndex(int index)
 	if (isServerSocket(fd))
 	{
 		_connectionManager->acceptNewClient(_serverSocket);
+		return;
+	}
+
+	if (_connectionManager->isCgiFd(fd))
+	{
+		_connectionManager->handleCgiEvent(fd, flags);
 		return;
 	}
 

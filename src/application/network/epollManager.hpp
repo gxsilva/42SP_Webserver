@@ -24,6 +24,7 @@ class EpollManager
 		void modifyFd(int fd, unsigned int event);
 		void removeFd(int fd);
 		int	 waitForEvents();
+		int	 waitForEvents(int timeoutMs);
 
 		int			 getEventFd(int index) const;
 		unsigned int getEventFlags(int index) const;
