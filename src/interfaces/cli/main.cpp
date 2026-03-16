@@ -225,6 +225,9 @@ int main(int argc, const char** argv)
 
 	HttpBlock* config = ConfigBuilder().build(astRoot);
 
+	//config->server.port;
+	//ip na config
+
 	logger.log("Successfully built configuration from AST for source file: " + std::string(argv[1]), INFO);
 	// Debugger::logHttpBlock(config);
 	delete config;

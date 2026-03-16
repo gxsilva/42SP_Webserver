@@ -22,7 +22,7 @@ Arquivo .conf
 ```text
 ConfigBuilder produz HttpBlock, mas:
   -> main.cpp ainda NÃO inicializa o Server com base na config
-  -> HttpBlock suporta apenas 1 ServerBlock (sem multi-server)
+  -> HttpBlock suporta apenas 1 ServerBlock (sem multi-server) //suave
   -> Valores hardcoded no ConnectionManager (porta 8080, paths de interpreters)
   -> Config precisa alimentar o Server no bootstrap
 ```
