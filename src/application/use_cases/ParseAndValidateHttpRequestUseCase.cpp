@@ -11,11 +11,7 @@ Result< HttpRequest > ParseAndValidateHttpRequestUseCase::execute(const std::str
 	std::string validationError = _validator.validate(request);
 
 	if (validationError.empty())
-	{
 		return Result< HttpRequest >(request);
-	}
 	else
-	{
 		return Result< HttpRequest >(validationError);
-	}
 }

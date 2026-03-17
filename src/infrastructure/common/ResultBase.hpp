@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef RESULT_HPP
-#define RESULT_HPP
+#ifndef RESULTBASE_HPP
+#define RESULTBASE_HPP
 
 class ResultBase
 {
