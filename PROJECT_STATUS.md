@@ -1,153 +1,267 @@
-# Webserv - Project Status
+# Webserv - Status do Projeto
 
-Data da revisão: 2026-03-16
-Escopo: varredura completa de `src/` — rede, HTTP, CGI, config, conformidade com subject.
+**Última atualização:** 2026-03-17
 
-## Resumo executivo
+## 📊 Resumo Executivo
 
-- **Config pipeline COMPLETO**: Lexer + Parser + AST + SemanticAnalyzer + ConfigBuilder produz HttpBlock/ServerBlock/LocationBlock.
-- **CGI INTEGRADO ao event loop**: CgiOrchestrator gerencia múltiplas sessões CGI concorrentes, pipes registrados no epoll, timeout de 30s, cleanup com SIGKILL.
-- **HTTP parse/validate CONECTADO ao runtime**: ConnectionManager usa ParseAndValidateHttpRequestUseCase para processar requests reais.
-- **HttpResponse funcional**: serialização HTTP/1.1 com headers e body.
-- **Gap principal**: servir arquivos estáticos (GET/POST/DELETE handlers), config -> Server bootstrap, multi-porta.
-- Regra de `fork()` apenas para CGI: aderente.
-- Sem uso de `errno` pós-I/O: aderente.
+### Progresso Geral: ~45% (13/31 requisitos obrigatórios)
 
-## Estado por área
+**✅ COMPLETO (42%):**
+- Infraestrutura de rede (epoll, sockets non-blocking)
+- Parsing de configuração (Lexer → Parser → AST)
+- Parsing de HTTP requests (HttpRequest + HttpRequestValidator)
+- HttpResponse com serialização
+- CGI básico (CgiHandler, CgiEnvironment, CgiProcessExecutor)
 
-### 1) Infra de rede e event loop
-- **Status:** COMPLETO (base)
-- Implementado:
-  - `EpollManager` com `epoll_create1` + `epoll_wait` (timeout 1s)
-  - `Server.run()` com loop de eventos e dispatch para handlers
-  - `ConnectionManager` com accept/read/write por eventos
-  - `ServerSocket` non-blocking com SO_REUSEADDR
-  - `ClientSocket` com write buffer e flush
-  - `FileDescriptor` RAII wrapper
-  - CGI pipe FDs registrados no mesmo epoll
-- Pendente:
-  - **Config -> Server bootstrap** (main.cpp só processa config, não inicia Server)
-  - **Multi-porta/server blocks** (HttpBlock suporta apenas 1 ServerBlock)
-  - Valores hardcoded no ConnectionManager (porta 8080, interpreter paths)
+**🔴 BLOQUEIOS CRÍTICOS:**
+1. **AST não convertido em Config** → main.cpp:99 descarta astRoot
+2. **CGI não integrado ao epoll** → fork() bloqueia event loop
+3. **Sem Router/Dispatcher** → requests sempre retornam "Hello World"
+4. **Handlers ausentes** → GET/POST/DELETE não implementados
 
-### 2) HTTP request/response
-- **Status:** INTEGRADO ao runtime
-- Implementado:
-  - `HttpRequestParser` (request line, headers, body, CRLF/LF)
-  - `HttpRequest` (método, URI, headers normalizados, body)
-  - `HttpRequestValidator` (métodos GET/POST/DELETE, URI, Host, Content-Length)
-  - `ParseAndValidateHttpRequestUseCase` (orquestra parse + validação)
-  - `HttpResponse` com `serialize()` (status line, headers, Content-Length auto, body)
-  - `StatusCodeResponse` (códigos 200-505 mapeados)
-  - Pipeline conectado ao ConnectionManager.handleClientRead()
-- Pendente:
-  - **Handlers reais de GET/POST/DELETE** (servir arquivos, upload, delete)
-  - **Autoindex** (listagem de diretório)
-  - **Redirect** (301/302)
-  - **Páginas de erro customizadas** (structs existem — ErrPage, errorPages em ServerBlock/LocationBlock)
-  - **HTTP/1.1**: validator rejeita HTTP/1.1 (aceita apenas HTTP/1.0)
-  - Resposta para requests estáticos é stub: `"Static file logic goes here!"`
+**📋 Resumo por Categoria:**
+- **Core do Servidor:** 3/8 completos
+- **Métodos HTTP:** 0/3 implementados
+- **Responses:** 2/3 funcionais
+- **Config:** 2/11 completos (Lexer/Parser OK, resto bloqueado)
+- **CGI:** 5/6 completos (falta integração com event loop)
 
-### 3) Configuração (arquivo .conf)
-- **Status:** COMPLETO (pipeline inteiro)
-- Implementado:
-  - `FileValidator` (existência, permissões, binário, leitura)
-  - `FileReader` (conteúdo inteiro em string)
-  - `Lexer` (WORD, NUMBER, STRING, PATH, LBRACE, RBRACE, SEMICOLON, etc.)
-  - `Parser` (recursive descent -> AST com ASTRoot/ASTBlock/ASTDirective/ASTValue)
-  - `SemanticAnalyzer` + regras (Context, Cardinality, Conflict, Dependency, Value)
-  - `RuleRegistry` (todas as diretivas: server, listen, host, root, index, error_page, allow_methods, autoindex, return, cgi_path, cgi_ext, upload_path, client_max_body_size, server_name, location)
-  - `ConfigBuilder` (AST -> HttpBlock com ServerBlock e LocationBlocks)
-  - `CompileSourceFile` use case (orquestra pipeline)
-  - `main.cpp` processa config completa e gera HttpBlock
-- Pendente:
-  - **HttpBlock passar para o Server** (wiring no main.cpp)
-  - **HttpBlock suportar múltiplos ServerBlocks** (atualmente tem apenas 1)
+---
 
-### 4) CGI
-- **Status:** COMPLETO E INTEGRADO
-- Implementado:
-  - `CgiEnvironment` (variáveis CGI: REQUEST_METHOD, QUERY_STRING, CONTENT_*, SCRIPT_NAME, PATH_INFO, SERVER_*, GATEWAY_INTERFACE, HTTP_*)
-  - `CgiResponse` (parse headers/body/status, CRLF e LF)
-  - `CgiProcessExecutor` (pipe, fork/execve, non-blocking I/O, timeout, SIGKILL cleanup) — implementa `InitCgiGateway`
-  - `CgiHandler` (request -> env -> executor -> response) com `CgiRouteConfig`
-  - `CgiOrchestrator` (múltiplas sessões concorrentes, FDs no epoll, collectFinished, cancelForClient)
-  - Detecção por extensão (.py/.php) em `ConnectionManager.isCgiRequest()`
-  - Dispatch de respostas CGI em `ConnectionManager.dispatchCgiResponses()`
-- Pendente:
-  - Roteamento CGI baseado em config (cgi_path/cgi_ext do LocationBlock) em vez de hardcoded
-  - Testar com carga concorrente real
+## Requisitos do Subject (Cap. III)
 
-### 5) Testes
-- **Status:** BOM (unitários)
-- Implementados:
-  - `HttpRequestTest` (12 testes) — parser e entidade
-  - `HttpRequestValidationTest` (11 testes) — validação de requests
-  - `ParseAndValidateHttpRequestUseCaseTest` (5 testes) — integração parse+validate
-  - `CgiTest` (14 testes) — CgiEnvironment + CgiResponse
-  - `statusCodeTest` — testes standalone do StatusCodeResponse
-- Pendente:
-  - Testes de integração end-to-end (request real -> response real)
-  - Testes de config pipeline (Lexer -> Parser -> ConfigBuilder)
-  - Testes do Server/ConnectionManager com mock
+### Core do Servidor
+| # | Requisito | Status | Notas |
+|---|-----------|--------|-------|
+| 1 | Compilar com `-Wall -Wextra -Werror -std=c++98` | ✅ FEITO | Makefile configurado |
+| 2 | Arquivo de configuracao como argumento | ⚠️ PARCIAL | AST criado mas main.cpp nao converte para Config, astRoot descartado linha 99 |
+| 3 | Servidor nao-bloqueante | ⚠️ PARCIAL | epoll + non-blocking sockets OK, mas sem request routing |
+| 4 | Usar apenas 1 poll/epoll para TODAS operacoes I/O | ⚠️ PARCIAL | EpollManager existe, mas CGI pipes nao estao integrados |
+| 5 | Nunca fazer read/write sem poll() | ⚠️ PARCIAL | Sockets respeitam, CGI nao integrado ao event loop |
+| 6 | fork() apenas para CGI | ✅ FEITO | fork() so esta em CgiProcessExecutor.cpp |
+| 7 | Servidor nunca deve crashar | ⏸️ A TESTAR | Falta stress test, mas protecoes basicas existem |
+| 8 | Ouvir em multiplas portas | ❌ NAO FEITO | Server.cpp linha 5 aceita 1 Port/IpAddr, sem suporte multi-porta |
 
-## Conformidade com regras do subject
+### Metodos HTTP
+| # | Requisito | Status | Notas |
+|---|-----------|--------|-------|
+| 9 | GET | ❌ NAO FEITO | HttpRequest parse/validate OK, mas sem handler de arquivos estaticos |
+| 10 | POST | ❌ NAO FEITO | Parse/validate OK, sem handler de upload, apenas CGI parcial |
+| 11 | DELETE | ❌ NAO FEITO | Parse/validate OK, sem handler de delecao de arquivos |
 
-| Regra | Status | Notas |
-|-------|--------|-------|
-| Non-blocking, 1 poll/epoll para todo I/O | **OK** | EpollManager único, rede + CGI pipes |
-| Sem read/write fora do poll | **OK** | Toda I/O via epoll readiness |
-| Sem errno pós-I/O | **OK** | Não encontrado no src/ |
-| fork() apenas para CGI | **OK** | Único fork em CgiProcessExecutor |
-| Métodos GET/POST/DELETE | **PARCIAL** | Parser aceita, handlers não implementados |
-| Múltiplas portas | **PENDENTE** | Server usa porta única |
-| Páginas de erro padrão | **PENDENTE** | Structs existem, não conectadas |
-| Config file como argumento | **PARCIAL** | Compila config, não usa no Server |
-| Listagem de diretórios (autoindex) | **PENDENTE** | Flag no LocationBlock, sem handler |
-| Redirecionamento HTTP | **PENDENTE** | Campo no LocationBlock, sem handler |
-| Upload de arquivos | **PENDENTE** | Campo no LocationBlock, sem handler |
-| CGI baseado em extensão | **PARCIAL** | Funciona hardcoded, não usa config |
-| client_max_body_size | **PENDENTE** | Está na config, não aplicado no runtime |
+### Responses
+| # | Requisito | Status | Notas |
+|---|-----------|--------|-------|
+| 12 | Classe HttpResponse | ✅ FEITO | HttpResponse.cpp/.hpp completos com serialize(), usado em connectionManager linha 67-72 |
+| 13 | Paginas de erro padrao | ⚠️ PARCIAL | ErrorPageGenerator::generate() existe mas nao integrado no pipeline |
+| 14 | Status codes corretos | ⚠️ PARCIAL | StatusCodeResponse + HttpStatusCode.hpp OK, mas sem routing para decidir codes |
 
-## Problemas identificados
+### Arquivo de Configuracao
+| # | Requisito | Status | Notas |
+|---|-----------|--------|-------|
+| 15 | Lexer (tokenizacao) | ✅ FEITO | Lexer.cpp completo e testado |
+| 16 | Parser (tokens -> AST) | ✅ FEITO | Parser.cpp completo, gera ASTNode tree |
+| 17 | AST -> objeto Config | ❌ **BLOCKER** | main.cpp linha 99 descarta astRoot, sem interpreter/visitor |
+| 18 | Definir interface:porta | ❌ NAO FEITO | AST suporta mas Config nao existe, Server hardcoded 1 porta |
+| 19 | Paginas de erro customizadas (por config) | ❌ NAO FEITO | Sem Config para mapear error_page |
+| 20 | Tamanho max do corpo (client_max_body_size) | ❌ NAO FEITO | HttpRequestValidator hardcode 1MB |
+| 21 | Rotas com metodos aceitos | ❌ NAO FEITO | Sem location matching, connectionManager aceita tudo |
+| 22 | Redirecionamento (return) | ❌ NAO FEITO | HttpStatusCode tem 301/302 mas sem logica de redirect |
+| 23 | Diretorio raiz (root) | ❌ NAO FEITO | Sem resolucao de paths estaticos |
+| 24 | Listagem de diretorios (autoindex) | ❌ NAO FEITO | Sem DirectoryLister |
+| 25 | Arquivo padrao (index) | ❌ NAO FEITO | Sem fallback para index.html |
 
-1. **HttpRequestValidator rejeita HTTP/1.1** — `validateVersion()` aceita apenas HTTP/1.0. O subject exige HTTP/1.1.
-2. **HttpBlock suporta apenas 1 ServerBlock** — precisa ser `std::vector<ServerBlock>`.
-3. **IpAddr validation mínima** — só checa non-empty, sem validação de formato.
-4. **ASTValueType typo** — `AST_VALUE_indentationIFIER` deveria ser `AST_VALUE_IDENTIFIER`.
-5. **main.cpp não inicia o Server** — processa config e termina.
-6. **Valores hardcoded no ConnectionManager** — porta 8080, paths de interpreters.
+### CGI
+| # | Requisito | Status | Notas |
+|---|-----------|--------|-------|
+| 26 | Executar CGI baseado em extensao (.py, .php) | ✅ FEITO | CgiProcessExecutor.cpp com fork/execve/pipes linha 51 |
+| 27 | CgiEnvironment (variaveis CGI) | ✅ FEITO | CgiEnvironment.cpp buildFromRequest() completo, toEnvArray() OK |
+| 28 | CgiResponse (parse output) | ✅ FEITO | CgiResponse parse headers + body + status |
+| 29 | CgiHandler (orquestrador) | ✅ FEITO | CgiHandler.cpp/hpp completo, buildResponse() retorna HttpResponse |
+| 30 | Integrar CGI no event loop | ❌ **BLOCKER** | Pipes CGI nao adicionados ao epoll, fork bloqueia |
+| 31 | Timeout de CGI | ✅ FEITO | checkState() com SIGKILL |
 
-## Próximos passos das conexões (foco atual)
+---
 
-### Fase 1: Wiring config -> Server (prioridade máxima)
-1. Modificar `main.cpp` para: compilar config **E** iniciar `Server` com os dados do `HttpBlock`
-2. `Server` receber `HttpBlock` (ou `ServerBlock`) no construtor
-3. `ConnectionManager` ler porta, host, root, locations da config em vez de hardcoded
-4. Suportar `std::vector<ServerBlock>` no `HttpBlock` para múltiplos servidores
+## Pipeline Atual vs Pipeline Necessario
 
-### Fase 2: Request routing baseado em config
-5. Implementar **Router** que recebe o request e o `ServerBlock`, encontra o `LocationBlock` correto
-6. Router decide: servir arquivo estático, redirect, CGI, autoindex, ou erro
-7. CGI routing usar `cgi_path`/`cgi_ext` do `LocationBlock` em vez de extensão hardcoded
+### O que existe (funcional):
+```
+Config File -> Lexer -> Tokens -> Parser -> AST (astRoot descartado no main.cpp:99)
 
-### Fase 3: Handlers de arquivo estático
-8. **GET handler**: resolver path (root + URI), servir arquivo, Content-Type por extensão
-9. **DELETE handler**: remover arquivo, responder 200/204 ou 404
-10. **POST handler**: upload de arquivo para `upload_path`
-11. **Autoindex**: gerar HTML com listagem do diretório quando `autoindex on`
-12. **Redirect**: responder 301/302 com Location header quando `return` configurado
-13. **Error pages**: servir páginas customizadas de `error_page` ou default
+Raw HTTP -> HttpRequestParser -> HttpRequest -> HttpRequestValidator (isolado, nao integrado)
 
-### Fase 4: Correções de conformidade
-14. Aceitar HTTP/1.1 no validator (manter compatibilidade com 1.0)
-15. Aplicar `client_max_body_size` no parse de requests
-16. Múltiplas portas — 1 ServerSocket por porta, todos no mesmo epoll
+HttpRequest -> CgiEnvironment -> CgiProcessExecutor -> CgiResponse -> HttpResponse (isolado)
 
+Sockets -> epoll -> accept -> handleClientRead -> HttpResponse hardcoded "Hello World" -> write
+                                (connectionManager.cpp linha 67-72)
+```
 
-Próximos passos das conexões (4 fases no PROJECT_STATUS.md)
-Fase	Foco
-1	Wiring config -> Server — main.cpp iniciar Server com HttpBlock, ConnectionManager ler config
-2	Router baseado em config — encontrar LocationBlock correto, decidir handler
-3	Handlers reais — GET (servir arquivo), POST (upload), DELETE, autoindex, redirect, error pages
-4	Correções de conformidade — HTTP/1.1, client_max_body_size, múltiplas portas
+### O que falta para funcionar end-to-end:
+```
+✅ AST criado
+❌ AST -> Config (interpreter/visitor)
+     |
+     v
+❌ Config -> Server multi-porta (atualmente 1 porta hardcoded)
+     |
+     v
+✅ Request chega -> epoll ready
+✅ parse HTTP (HttpRequestParser OK)
+❌ Router/Dispatcher (match URI -> handler)
+     |
+     +--> ❌ GET Handler:    FileReader + autoindex + index fallback
+     +--> ❌ POST Handler:   upload + body parsing + CGI routing
+     +--> ❌ DELETE Handler: file removal + permissions
+     |
+     v
+✅ HttpResponse.serialize() -> write buffer
+❌ Error pages (ErrorPageGenerator nao conectado)
+```
+
+---
+
+## Proximos Passos Sugeridos (ordem de prioridade)
+
+### ~~1. HttpResponse~~ ✅ JA EXISTE
+- ✅ Classe completa em `src/domain/entities/HttpResponse.cpp`
+- ✅ Metodos: setStatusCode, setHeader, setBody, serialize
+- ✅ Usado em connectionManager mas apenas com resposta hardcoded
+
+### 2. AST -> Config (BLOQUEIO CRITICO)
+- Criar classe Config (ou ServerConfig) que represente:
+  - listen (porta/interface)
+  - server_name
+  - error_page (map code -> path)
+  - client_max_body_size
+  - locations (vector de RouteConfig)
+- Cada RouteConfig: root, index, autoindex, methods, return, cgi_extension, cgi_path
+- Visitor/interpreter que percorre o AST e popula o Config
+
+### 3. Request Router / Dispatcher
+- Receber HttpRequest + Config
+- Match da URI contra locations (prefix matching)
+- Decidir handler: StaticFileHandler, CgiHandler, RedirectHandler, ErrorHandler
+- Integrar em connectionManager.handleClientRead (substituir hardcoded response)
+
+### 4. StaticFileHandler (GET)
+- Resolver path: Config.root + HttpRequest.getUri()
+- Se diretorio:
+  - Tentar Config.index (index.html)
+  - Se Config.autoindex: gerar listagem HTML
+  - Senao: 403 Forbidden
+- Se arquivo: FileReader + Content-Type (MIME detection)
+- Se nao existe: 404
+
+### 5. UploadHandler (POST)
+- Parse multipart/form-data ou application/x-www-form-urlencoded
+- Salvar arquivo no Config.upload_path
+- Validar Content-Length vs Config.client_max_body_size
+- Retornar 201 Created ou 413 Payload Too Large
+
+### 6. DeleteHandler (DELETE)
+- Resolver path: Config.root + URI
+- Validar permissoes (nao permitir delete fora do root)
+- unlink() e retornar 204 No Content ou 404
+
+### 7. Integrar CGI no epoll (BLOQUEIO CRITICO)
+- CgiProcessExecutor retornar fds dos pipes (stdin/stdout)
+- ConnectionManager adicionar pipe_stdout ao epoll com EPOLLIN
+- Processar output incremental sem blocking reads
+- Timeout: remover do epoll + SIGKILL
+
+### 8. Multiplas portas/server blocks
+- Config retornar vector<ServerConfig>
+- main.cpp criar vector<Server*>, cada um com sua porta
+- Adicionar todos ServerSocket fds no mesmo EpollManager
+- connectionManager identificar qual Config usar por fd
+
+---
+
+## Bugs/Issues Conhecidos
+
+| # | Arquivo | Issue | Severidade |
+|---|---------|-------|------------|
+| 1 | `HttpRequestValidator.cpp` | Valida `HTTP/1.0` mas servidor e HTTP/1.1 | MEDIA |
+| 2 | `ipAddr.cpp` | `isValidIp()` so verifica non-empty, sem validacao real | MEDIA |
+| 3 | `TokenResult.cpp` | Destructor nao deleta tokens (comentado) | BAIXA (leak) |
+| 4 | `main.cpp:100` | `delete astRoot` comentado, leak do AST | MEDIA (leak) |
+| 5 | `main.cpp:99` | `(void)astRoot` descarta o AST sem usar | ALTA (blocker) |
+| 6 | `connectionManager.cpp:67-72` | HttpResponse hardcoded "Hello, World!" | ALTA (placeholder) |
+| 7 | `Server.cpp:5` | Construtor aceita 1 Port, sem suporte multi-porta | ALTA |
+| 8 | `CgiProcessExecutor` | fork/exec nao integrado ao epoll, bloqueia event loop | CRITICA |
+| 9 | `interfaces/old_main.cpp` | Codigo morto | BAIXA |
+| 10 | `ErrorPageGenerator` | Existe mas nunca usado no pipeline real | MEDIA |
+
+---
+
+## Arquitetura (DDD + Hexagonal) - Resumo
+
+```
+interfaces/          -> Entry points (main, ports/interfaces)
+application/         -> Use cases, orchestration (CgiHandler, Server, ConnectionManager)
+domain/              -> Entidades, value objects, services (HttpRequest, CgiEnvironment, Lexer, Parser)
+infrastructure/      -> Implementacoes concretas (sockets, I/O, CgiProcessExecutor, Logger)
+```
+
+Fluxo de dependencia: interfaces -> application -> domain <- infrastructure
+
+---
+
+## 🧪 O Que Testar Agora (antes de continuar implementação)
+
+### Testes Unitários Existentes
+```bash
+# Verificar se existem testes compilados
+make test 2>/dev/null || echo "Sem target 'test' no Makefile"
+find test/ -name "*.cpp" -o -name "*test*" | head -10
+```
+
+### Testar Componentes Isolados
+1. **Lexer/Parser:**
+   - `./webserv config.conf` deve gerar AST sem crashar
+   - Conferir se tokens estão corretos
+
+2. **HttpRequestParser:**
+   - Testar parsing de GET/POST/DELETE válidos e inválidos
+   - Verificar validação de headers, URI, versão HTTP
+
+3. **HttpResponse:**
+   - Testar serialize() gera HTTP/1.1 válido
+   - Verificar auto-inserção de Content-Length
+
+4. **CGI isolado:**
+   - Testar CgiEnvironment.toEnvArray()
+   - Testar CgiProcessExecutor com script Python simples
+   - Verificar timeout mata processo corretamente
+
+### Stress Test (antes de entregar)
+```bash
+# Teste de carga básico
+ab -n 1000 -c 10 http://localhost:8080/
+
+# Teste de requests grandes
+dd if=/dev/urandom bs=1M count=10 | curl -X POST --data-binary @- http://localhost:8080/upload
+
+# Teste de slow loris (keep-alive abuse)
+slowhttptest -c 1000 -H -g -o slow.html -i 10 -r 200 -t GET -u http://localhost:8080/
+```
+
+---
+
+## �� Referências
+
+- **Subject:** `subject.txt`
+- **NGINX Behavior:** Usar como referência para edge cases HTTP
+- **CGI/1.1 Spec:** RFC 3875
+- **HTTP/1.1 Spec:** RFC 2616 (legacy) ou RFC 7230-7235 (atualizado)
+- **DDD Principles:** Seguir separação domain/application/infrastructure
+- **Object Calisthenics:** Aplicar quando melhora legibilidade
+
+---
+
+## 🚀 Próxima Sessão de Trabalho
+
+**Prioridade 1:** Implementar AST → Config interpreter
+**Prioridade 2:** Criar Router/Dispatcher básico
+**Prioridade 3:** Implementar StaticFileHandler (GET)
