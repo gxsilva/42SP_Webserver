@@ -2,16 +2,26 @@
 
 static bool isCgiRequest(const std::string& uri)
 {
-	if (uri.size() >= 3 && uri.substr(uri.size() - 3) == ".py")
+	std::string path = uri;
+	std::string::size_type queryPos = path.find('?');
+	if (queryPos != std::string::npos)
+		path = path.substr(0, queryPos);
+
+	if (path.size() >= 3 && path.substr(path.size() - 3) == ".py")
 		return true;
-	if (uri.size() >= 4 && uri.substr(uri.size() - 4) == ".php")
+	if (path.size() >= 4 && path.substr(path.size() - 4) == ".php")
 		return true;
 	return false;
 }
 
 static std::string getInterpreter(const std::string& uri)
 {
-	if (uri.size() >= 3 && uri.substr(uri.size() - 3) == ".py")
+	std::string path = uri;
+	std::string::size_type queryPos = path.find('?');
+	if (queryPos != std::string::npos)
+		path = path.substr(0, queryPos);
+
+	if (path.size() >= 3 && path.substr(path.size() - 3) == ".py")
 		return "/usr/bin/python3";
 	return "/usr/bin/php-cgi";
 }
@@ -19,7 +29,12 @@ static std::string getInterpreter(const std::string& uri)
 static CgiRouteConfig buildCgiConfig(const HttpRequest& request)
 {
 	CgiRouteConfig config;
-	config.scriptPath = "./www" + request.getUri();
+	std::string uriPath = request.getUri();
+	std::string::size_type queryPos = uriPath.find('?');
+	if (queryPos != std::string::npos)
+		uriPath = uriPath.substr(0, queryPos);
+
+	config.scriptPath = "./www" + uriPath;
 	config.interpreterPath = getInterpreter(request.getUri());
 	config.serverName = "localhost";
 	config.serverPort = 8080;
