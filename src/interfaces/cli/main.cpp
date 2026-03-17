@@ -16,6 +16,7 @@
 #include "../../domain/errors/common/ErrorList.hpp"
 
 #include "../../application/use_cases/CompileSourceFile.hpp"
+#include "../../application/network/server.hpp"
 #include "../../domain/entities/config/Token.hpp"
 #include "../../domain/entities/server/HttpBlock.hpp"
 #include "../../domain/services/config/Parser.hpp"
@@ -224,14 +225,42 @@ int main(int argc, const char** argv)
 	logger.log("Successfully validated AST from source file: " + std::string(argv[1]), INFO);
 
 	HttpBlock* config = ConfigBuilder().build(astRoot);
+	if (!config)
+	{
+	    logger.log("Failed to build configuration object.", ERROR);
+	    delete astRoot;
+	    return (1);
+	}
 
-	//config->server.port;
-	//ip na config
+	int configuredPort = config->server.port;
 
 	logger.log("Successfully built configuration from AST for source file: " + std::string(argv[1]), INFO);
 	// Debugger::logHttpBlock(config);
+
 	delete config;
 	delete astRoot;
 
+	try
+	{
+	    Port port(configuredPort);
+	    IpAddr ipAddr("127.0.0.1"); // hardcoded só para teste
+
+	    Server server(port, ipAddr);
+	    if (!server.isValid())
+	    {
+	        logger.log("Server initialization failed.", ERROR);
+	        return (1);
+	    }
+
+	    std::cout << "Server running at http://" << ipAddr.getValue()
+	              << ":" << port.getValue() << std::endl;
+	    server.run();
+	}
+	catch (const std::exception& e)
+	{
+	    std::cerr << "Startup error: " << e.what() << std::endl;
+	    logger.log(std::string("Startup error: ") + e.what(), ERROR);
+	    return (1);
+	}
 	return (0);
 }
