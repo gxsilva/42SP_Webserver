@@ -19,6 +19,7 @@
 struct FileReader
 {
 		static bool readFile(const std::string& filepath, std::string& content);
+		static bool readBinaryFile(const std::string& filepath, std::string& content);
 };
 
 #endif /* FILEREADER_HPP */

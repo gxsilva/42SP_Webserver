@@ -30,3 +30,26 @@ bool FileReader::readFile(const std::string& filepath, std::string& content)
 	}
 	return false;
 }
+
+bool FileReader::readBinaryFile(const std::string& filepath, std::string& content)
+{
+	std::ifstream file(filepath.c_str(), std::ios::in | std::ios::binary);
+	if (!file.good())
+		return (false);
+
+	file.seekg(0, std::ios::end);
+	std::streamsize size = file.tellg();
+	file.seekg(0, std::ios::beg);
+
+	if (size <= 0)
+	{
+		content.clear();
+		file.close();
+		return (true);
+	}
+
+	content.resize(static_cast<size_t>(size));
+	file.read(&content[0], size);
+	file.close();
+	return (true);
+}
