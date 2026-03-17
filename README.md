@@ -57,9 +57,9 @@ if (res.isErr()) { res.error().formatAllErrors(); return 1; }
 std::vector<Token>* tokens = res.unwrap(); // transfers ownership
 ```
 
-Result types: [`LexerResult`](src/infrastructure/common/LexerResult.hpp), [`TokenResult`](src/infrastructure/common/TokenResult.hpp), [`ASTResult`](src/infrastructure/common/ASTResult.hpp) — all inherit from [`ResultBase`](src/infrastructure/common/ResultBase.hpp).
+Result types: [`LexerResult`](src/infrastructure/common/config/LexerResult.hpp), [`TokenResult`](src/infrastructure/common/TokenResult.hpp), [`ASTResult`](src/infrastructure/common/ASTResult.hpp) — all inherit from [`ResultBase`](src/infrastructure/common/ResultBase.hpp).
 
-**Static Factory Methods** on [`CompilerError`](src/domain/errors/CompilerError.hpp) produce typed, contextual errors (file errors, parse errors, lexer errors) with optional source location, hints, and notes.
+**Static Factory Methods** on [`CompilerError`](src/domain/errors/common/CompilerError.hpp) produce typed, contextual errors (file errors, parse errors, lexer errors) with optional source location, hints, and notes.
 
 ---
 

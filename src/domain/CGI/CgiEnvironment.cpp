@@ -1,8 +1,8 @@
 #include "../value_objects/CgiEnvironment.hpp"
 #include "../entities/HttpRequest.hpp"
 
-CgiEnvironment::CgiEnvironment(const HttpRequest& request, const std::string& scriptPath,
-							   const std::string& serverName, int port)
+CgiEnvironment::CgiEnvironment(const HttpRequest& request, const std::string& scriptPath, const std::string& serverName,
+							   int port)
 {
 	buildFromRequest(request, scriptPath, serverName, port);
 }
@@ -37,14 +37,13 @@ void CgiEnvironment::buildFromRequest(const HttpRequest& request, const std::str
 	addVariable("GATEWAY_INTERFACE", "CGI/1.1");
 	addVariable("REDIRECT_STATUS", "200");
 
-	const std::map<std::string, std::string>& headers = request.getHeaders();
-	for (std::map<std::string, std::string>::const_iterator it = headers.begin();
-		 it != headers.end(); ++it)
+	const std::map< std::string, std::string >& headers = request.getHeaders();
+	for (std::map< std::string, std::string >::const_iterator it = headers.begin(); it != headers.end(); ++it)
 	{
 		std::string headerName = it->first;
 		std::string lowerName;
 		for (std::size_t j = 0; j < headerName.size(); ++j)
-			lowerName += static_cast<char>(std::tolower(static_cast<unsigned char>(headerName[j])));
+			lowerName += static_cast< char >(std::tolower(static_cast< unsigned char >(headerName[j])));
 		if (lowerName == "content-type" || lowerName == "content-length")
 			continue;
 		std::string key = "HTTP_";
@@ -54,7 +53,7 @@ void CgiEnvironment::buildFromRequest(const HttpRequest& request, const std::str
 			if (c == '-')
 				key += '_';
 			else
-				key += static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
+				key += static_cast< char >(std::toupper(static_cast< unsigned char >(c)));
 		}
 		addVariable(key, it->second);
 	}

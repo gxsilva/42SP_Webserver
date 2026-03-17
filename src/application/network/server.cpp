@@ -1,14 +1,11 @@
 #include "server.hpp"
 #include "../CGI/CgiOrchestrator.hpp"
 
-Server::Server()
-	: _epollManager(NULL), _connectionManager(NULL), _cgiOrchestrator(NULL), _isValid(false)
-{
-}
+Server::Server() : _epollManager(NULL), _connectionManager(NULL), _cgiOrchestrator(NULL), _isValid(false) {}
 
 Server::Server(const Port& port, const IpAddr& ipAddr)
-	: _serverSocket(port, ipAddr), _epollManager(NULL), _connectionManager(NULL),
-	  _cgiOrchestrator(NULL), _isValid(false)
+	: _serverSocket(port, ipAddr), _epollManager(NULL), _connectionManager(NULL), _cgiOrchestrator(NULL),
+	  _isValid(false)
 {
 	PollCapacity maxEvents(1024);
 	_epollManager	   = new EpollManager(maxEvents);

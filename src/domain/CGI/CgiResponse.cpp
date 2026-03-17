@@ -33,11 +33,11 @@ bool CgiResponse::parse(const std::string& rawOutput)
 		std::string::size_type colon = line.find(':');
 		if (colon == std::string::npos)
 			continue;
-		std::string			   key	 = line.substr(0, colon);
+		std::string			   key	  = line.substr(0, colon);
 		std::string::size_type keyEnd = key.find_last_not_of(' ');
 		if (keyEnd != std::string::npos)
 			key = key.substr(0, keyEnd + 1);
-		key = toUpper(key);
+		key							 = toUpper(key);
 		std::string			   value = line.substr(colon + 1);
 		std::string::size_type start = value.find_first_not_of(' ');
 		if (start != std::string::npos)
@@ -55,13 +55,13 @@ void CgiResponse::parseStatusFromHeaders()
 	for (std::size_t i = 0; i < _headers.size(); ++i)
 	{
 		std::string headerName = _headers[i].first;
- 		for (std::string::size_type j = 0; j < headerName.size(); ++j)
- 			headerName[j] = static_cast<char>(std::toupper(static_cast<unsigned char>(headerName[j])));
- 		if (headerName == "STATUS")
+		for (std::string::size_type j = 0; j < headerName.size(); ++j)
+			headerName[j] = static_cast< char >(std::toupper(static_cast< unsigned char >(headerName[j])));
+		if (headerName == "STATUS")
 		{
 			int code	= std::atoi(_headers[i].second.c_str());
 			_statusCode = (code >= 100 && code <= 599) ? code : 500;
-			_headers.erase(_headers.begin() + static_cast<long>(i));
+			_headers.erase(_headers.begin() + static_cast< long >(i));
 			return;
 		}
 	}
@@ -91,15 +91,12 @@ void CgiResponse::setStatusCode(int code)
 		_statusCode = 500;
 }
 
-const std::vector<std::pair<std::string, std::string> >& CgiResponse::getHeaders() const
-{
-	return (_headers);
-}
+const std::vector< std::pair< std::string, std::string > >& CgiResponse::getHeaders() const { return (_headers); }
 
 std::string CgiResponse::toUpper(const std::string& str)
 {
 	std::string result = str;
 	for (std::string::size_type i = 0; i < result.size(); ++i)
-		result[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(result[i])));
+		result[i] = static_cast< char >(std::toupper(static_cast< unsigned char >(result[i])));
 	return (result);
 }

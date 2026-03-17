@@ -4,12 +4,12 @@ repos:
     hooks:
       - id: check-added-large-files
 
-  - repo: https://github.com/pocc/pre-commit-hooks
-    rev: 9a9bbc0
-    hooks:
-      - id: clang-format
-        name: clang-format
-        args: [--style=file]  # uses .clang-format
+  # - repo: https://github.com/pocc/pre-commit-hooks
+  #   rev: 9a9bbc0
+  #   hooks:
+  #     - id: clang-format
+  #       name: clang-format
+  #       args: [--style=file]  # uses .clang-format
 
   # - repo: https://github.com/pocc/pre-commit-hooks
   #   rev: 9a9bbc0

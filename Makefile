@@ -78,6 +78,7 @@ APPLICATION_SRCS	= $(A_SERVER_NET_DIR)/connectionManager.cpp \
 						$(A_CGI_DIR)/CgiHandler.cpp \
 						$(A_CGI_DIR)/CgiOrchestrator.cpp \
 						$(APP_USECASES_DIR)/CompileSourceFile.cpp \
+						$(APP_USECASES_DIR)/BuildServerConfig.cpp \
 						$(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp
 
 DOMAIN_SRCS			= $(D_ENTITIES_COMMON_DIR)/SourceLocation.cpp \
@@ -113,6 +114,7 @@ DOMAIN_SRCS			= $(D_ENTITIES_COMMON_DIR)/SourceLocation.cpp \
 INFRA_SRCS			= $(I_COMMON_CONFIG_DIR)/TokenResult.cpp \
 						$(I_COMMON_CONFIG_DIR)/LexerResult.cpp \
 						$(I_COMMON_CONFIG_DIR)/ASTResult.cpp \
+						$(I_COMMON_CONFIG_DIR)/ConfigResult.cpp \
 						$(I_COMMON_CONFIG_DIR)/ValidatorResult.cpp \
 						$(I_COMMON_CONFIG_DIR)/RuleRegistry.cpp \
 						$(I_IO_CONFIG_DIR)/FileReader.cpp \

@@ -18,8 +18,8 @@ class InitCgiGateway
 	public:
 		virtual ~InitCgiGateway(){};
 
-		virtual bool start(const std::string& scriptPath, const std::string& interpreterPath,
-						   const CgiEnvironment& env, const std::string& requestBody) = 0;
+		virtual bool start(const std::string& scriptPath, const std::string& interpreterPath, const CgiEnvironment& env,
+						   const std::string& requestBody) = 0;
 
 		virtual int getReadFd() const  = 0;
 		virtual int getWriteFd() const = 0;
