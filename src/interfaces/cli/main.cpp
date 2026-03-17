@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:59:27 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/17 20:34:14 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/17 20:34:49 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,8 @@ int main(int argc, const char** argv)
 		std::cerr << "Usage: " << argv[0] << " <config_file>\n";
 		logger.log("No configuration file provided. Exiting.", ERROR);
 		return 1;
-		return 1;
 	}
 
-	ConfigResult result = BuildServerConfig::execute(argv[1], &logger);
-	if (result.isErr())
 	ConfigResult result = BuildServerConfig::execute(argv[1], &logger);
 	if (result.isErr())
 	{

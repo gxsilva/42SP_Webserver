@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 22:55:20 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/13 03:27:34 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/17 20:35:43 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void RuleRegistry::_registerCardinalityRules()
 {
 	_cardinality.setCardinality("server_name", 1, 1);
 	_cardinality.setCardinality("listen", 1, 1);
-	_cardinality.setCardinality("host", 1, 1);
+	_cardinality.setCardinality("host", 0, 1);
 	_cardinality.setCardinality("client_max_body_size", 1, 1);
 	_cardinality.setCardinality("location", 0, -1);
 
