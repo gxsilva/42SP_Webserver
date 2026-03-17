@@ -132,11 +132,7 @@ void ConnectionManager::handleClientRead(int fd)
 		return;
 	}
 
-	HttpResponse response;
-	response.setStatusCode(200);
-	response.setHeader("Content-Type", "text/plain");
-	response.setHeader("Connection", "close");
-	response.setBody("Static file logic goes here!");
+	HttpResponse response = _getHandler.handle(request);
 	bufferTestHttpResponse(*client, response);
 	_epollManager.modifyFd(fd, EPOLLOUT);
 }

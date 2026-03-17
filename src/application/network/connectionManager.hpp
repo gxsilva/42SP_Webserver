@@ -7,6 +7,7 @@
 #include "../../infrastructure/network/serverSocket.hpp"
 #include "../../infrastructure/network/testHttpResponse.hpp"
 #include "../CGI/CgiOrchestrator.hpp"
+#include "../use_cases/GetRequestHandler.hpp"
 #include "../use_cases/ParseAndValidateHttpRequestUseCase.hpp"
 #include "epollManager.hpp"
 
@@ -22,6 +23,7 @@ class ConnectionManager
 		std::vector<ClientSocket*>			 _clients;
 		ParseAndValidateHttpRequestUseCase	 _parseUseCase;
 		CgiOrchestrator*					 _cgiOrchestrator;
+		GetRequestHandler				 _getHandler;
 
 		void disconnectClient(int fd);
 
