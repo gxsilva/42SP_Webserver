@@ -6,13 +6,26 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:59:27 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/17 16:00:13 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/17 20:34:14 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
+#include <sstream>
 
+#include "../../infrastructure/common/config/ConfigResult.hpp"
 #include "../../infrastructure/logging/Logger.hpp"
+
+#include "../../application/use_cases/BuildServerConfig.hpp"
+
+#include "../../domain/entities/server/HttpBlock.hpp"
+
+// ---------------------- DEVELOPMENT ---------------------- //
+#include "../../application/network/server.hpp"
+#include "../../domain/network/ipAddr.hpp"
+#include "../../domain/network/port.hpp"
+
+// --------------------------------------------------------- //
 
 int main(int argc, const char** argv)
 {
@@ -24,8 +37,11 @@ int main(int argc, const char** argv)
 		std::cerr << "Usage: " << argv[0] << " <config_file>\n";
 		logger.log("No configuration file provided. Exiting.", ERROR);
 		return 1;
+		return 1;
 	}
 
+	ConfigResult result = BuildServerConfig::execute(argv[1], &logger);
+	if (result.isErr())
 	ConfigResult result = BuildServerConfig::execute(argv[1], &logger);
 	if (result.isErr())
 	{
@@ -34,8 +50,23 @@ int main(int argc, const char** argv)
 		return 1;
 	}
 
-	Config* config = result.unwrap();
-	// usa config...
-	delete config;
+	HttpBlock* server = result.unwrap();
+
+	// ---------------------- DEVELOPMENT ---------------------- //
+	Port   port(server->server.port);
+	IpAddr ip(server->server.host);
+
+	Server webServer(port, ip);
+
+	if (!webServer.isValid())
+	{
+		std::stringstream ss;
+		ss << "Failed to initialize server on " << ip.getValue() << ":" << port.getValue();
+		logger.log(ss.str(), ERROR);
+		return 1;
+	}
+	webServer.run();
+	delete server;
+	// --------------------------------------------------------- //
 	return 0;
 }

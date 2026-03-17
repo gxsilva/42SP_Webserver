@@ -6,12 +6,12 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 00:37:58 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/02/25 01:15:14 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/17 20:26:48 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef RESULT_HPP
-#define RESULT_HPP
+#ifndef RESULT_BASE_HPP
+#define RESULT_BASE_HPP
 
 class ResultBase
 {
@@ -27,4 +27,4 @@ class ResultBase
 		bool isErr() const { return !_is_ok; }
 };
 
-#endif /* RESULT_HPP */
+#endif /* RESULT_BASE_HPP */
