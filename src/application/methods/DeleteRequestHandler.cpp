@@ -98,6 +98,17 @@ bool DeleteRequestHandler::isMethodAllowed(const LocationBlock* location) const
 	return location->allowedMethods.find("DELETE") != location->allowedMethods.end();
 }
 
+HttpResponse DeleteRequestHandler::buildRedirectResponse(int statusCode, const std::string& target) const
+{
+	HttpResponse response;
+	response.setStatusCode(statusCode);
+	response.setHeader("Location", target);
+	response.setHeader("Content-Type", "text/plain");
+	response.setHeader("Connection", "close");
+	response.setBody("Redirecting to " + target + "\n");
+	return (response);
+}
+
 HttpResponse DeleteRequestHandler::buildNoContentResponse() const
 {
 	HttpResponse response;
@@ -126,6 +137,9 @@ HttpResponse DeleteRequestHandler::handle(const HttpRequest& request)
 		return (buildErrorResponse(FORBIDDEN));
 
 	const LocationBlock* location = findBestLocation(uriPath);
+	if (location != NULL && !location->redirectUri.empty())
+		return (buildRedirectResponse(location->redirectCode, location->redirectUri));
+
 	if (!isMethodAllowed(location))
 		return (buildErrorResponse(METHOD_NOT_ALLOWED));
 

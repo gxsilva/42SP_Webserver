@@ -30,6 +30,7 @@ class PostRequestHandler
 		bool				 isMethodAllowed(const LocationBlock* location) const;
 		HttpResponse		 writeRequestBody(const HttpRequest& request, const std::string& targetPath) const;
 		HttpResponse		 buildCreatedResponse(const std::string& targetPath) const;
+		HttpResponse		 buildRedirectResponse(int statusCode, const std::string& target) const;
 		HttpResponse		 buildErrorResponse(HttpStatusCode code) const;
 
 		PostRequestHandler(const PostRequestHandler&);

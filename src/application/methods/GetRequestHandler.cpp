@@ -121,6 +121,9 @@ HttpResponse GetRequestHandler::handle(const HttpRequest& request)
 		return (buildErrorResponse(FORBIDDEN));
 
 	const LocationBlock*   location = findBestLocation(uriPath);
+	if (location != NULL && !location->redirectUri.empty())
+		return (buildRedirectResponse(location->redirectCode, location->redirectUri));
+
 	if (location != NULL && !location->allowedMethods.empty()
 		&& location->allowedMethods.find("GET") == location->allowedMethods.end())
 		return (buildErrorResponse(METHOD_NOT_ALLOWED));
@@ -203,5 +206,16 @@ HttpResponse GetRequestHandler::buildErrorResponse(HttpStatusCode code)
 	response.setHeader("Content-Type", "text/html");
 	response.setHeader("Connection", "close");
 	response.setBody(ErrorPageGenerator::generate(code, statusHelper));
+	return (response);
+}
+
+HttpResponse GetRequestHandler::buildRedirectResponse(int statusCode, const std::string& target) const
+{
+	HttpResponse response;
+	response.setStatusCode(statusCode);
+	response.setHeader("Location", target);
+	response.setHeader("Content-Type", "text/plain");
+	response.setHeader("Connection", "close");
+	response.setBody("Redirecting to " + target + "\n");
 	return (response);
 }

@@ -152,6 +152,17 @@ HttpResponse PostRequestHandler::buildCreatedResponse(const std::string& targetP
 	return (response);
 }
 
+HttpResponse PostRequestHandler::buildRedirectResponse(int statusCode, const std::string& target) const
+{
+	HttpResponse response;
+	response.setStatusCode(statusCode);
+	response.setHeader("Location", target);
+	response.setHeader("Content-Type", "text/plain");
+	response.setHeader("Connection", "close");
+	response.setBody("Redirecting to " + target + "\n");
+	return (response);
+}
+
 HttpResponse PostRequestHandler::buildErrorResponse(HttpStatusCode code) const
 {
 	StatusCodeResponse statusHelper;
@@ -171,6 +182,9 @@ HttpResponse PostRequestHandler::handle(const HttpRequest& request)
 		return (buildErrorResponse(FORBIDDEN));
 
 	const LocationBlock* location = findBestLocation(uriPath);
+	if (location != NULL && !location->redirectUri.empty())
+		return (buildRedirectResponse(location->redirectCode, location->redirectUri));
+
 	if (!isMethodAllowed(location))
 		return (buildErrorResponse(METHOD_NOT_ALLOWED));
 

@@ -35,6 +35,7 @@ class GetRequestHandler
 			const std::string& uri,
 			const std::vector<std::string>& indexFiles,
 			bool autoIndex);
+		HttpResponse buildRedirectResponse(int statusCode, const std::string& target) const;
 		HttpResponse buildErrorResponse(HttpStatusCode code);
 		bool		 isTextFile(const std::string& mimeType) const;
 

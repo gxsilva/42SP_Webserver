@@ -24,6 +24,8 @@ struct LocationBlock
 		std::string				root;
 		std::set< std::string > allowedMethods;
 		bool					autoindex;
+		std::string				redirectUri;
+		int						redirectCode;
 
 		// std::string					 uploadPath;
 		std::map< int, std::string > errorPages;
