@@ -1,11 +1,13 @@
 #include "server.hpp"
 #include "../CGI/CgiOrchestrator.hpp"
 
-Server::Server() : _epollManager(NULL), _connectionManager(NULL), _cgiOrchestrator(NULL), _isValid(false) {}
+Server::Server() : _epollManager(NULL), _connectionManager(NULL), _cgiOrchestrator(NULL), _config(NULL), _isValid(false)
+{
+}
 
-Server::Server(const Port& port, const IpAddr& ipAddr)
+Server::Server(const Port& port, const IpAddr& ipAddr, HttpBlock* config)
 	: _serverSocket(port, ipAddr), _epollManager(NULL), _connectionManager(NULL), _cgiOrchestrator(NULL),
-	  _isValid(false)
+	  _config(config), _isValid(false)
 {
 	PollCapacity maxEvents(1024);
 	_epollManager	   = new EpollManager(maxEvents);
@@ -38,6 +40,7 @@ Server::~Server()
 	delete _cgiOrchestrator;
 	delete _connectionManager;
 	delete _epollManager;
+	delete _config;
 }
 
 bool Server::isValid() const { return _isValid; }
@@ -89,3 +92,25 @@ void Server::handleEventByIndex(int index)
 }
 
 bool Server::isServerSocket(int fd) const { return (fd == _serverSocket.getPollFd()); }
+
+void Server::displayServerStatus() const
+{
+	std::string host = _config->host;
+	std::string port = Server::intToString(_config->server.port);
+	std::string line(50, '=');
+
+	std::cout << line << std::endl;
+	std::cout << "  Server Status" << std::endl;
+	std::cout << line << std::endl;
+	std::cout << "  Host:     " << host << std::endl;
+	std::cout << "  Port:     " << port << std::endl;
+	std::cout << "  Status:   " << (_isValid ? "Running" : "Stopped") << std::endl;
+	std::cout << line << std::endl;
+}
+
+std::string Server::intToString(int value)
+{
+	std::stringstream ss;
+	ss << value;
+	return ss.str();
+}

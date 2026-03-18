@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:59:27 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/17 20:34:49 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/17 21:52:38 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int main(int argc, const char** argv)
 	Port   port(server->server.port);
 	IpAddr ip(server->server.host);
 
-	Server webServer(port, ip);
+	Server webServer(port, ip, server);
 
 	if (!webServer.isValid())
 	{
@@ -62,8 +62,10 @@ int main(int argc, const char** argv)
 		logger.log(ss.str(), ERROR);
 		return 1;
 	}
+	logger.log("Server initialized successfully on " + ip.getValue() + ":" + port.toString(), INFO);
+	webServer.displayServerStatus();
 	webServer.run();
-	delete server;
+	// delete server;
 	// --------------------------------------------------------- //
 	return 0;
 }

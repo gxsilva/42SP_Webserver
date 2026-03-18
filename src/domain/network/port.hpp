@@ -13,7 +13,8 @@ class Port
 		explicit Port(int value);
 		~Port();
 
-		int getValue() const;
+		int			getValue() const;
+		std::string toString() const;
 };
 
 #endif

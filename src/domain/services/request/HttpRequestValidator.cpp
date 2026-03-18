@@ -63,7 +63,7 @@ bool HttpRequestValidator::isValidMethod(const std::string& method) const
 	return (method == "GET" || method == "POST" || method == "DELETE");
 }
 
-bool HttpRequestValidator::isValidVersion(const std::string& version) const { return (version == "HTTP/1.0"); }
+bool HttpRequestValidator::isValidVersion(const std::string& version) const { return (version == "HTTP/1.1"); }
 
 bool HttpRequestValidator::isValidUri(const std::string& uri) const { return !uri.empty(); }
 
