@@ -46,6 +46,7 @@ D_CGI_DIR				= $(DOMAIN_DIR)/CGI
 
 APP_DIR					= $(SRCS_DIR)/application
 A_CGI_DIR				= $(APP_DIR)/CGI
+A_METHODS				= $(APP_DIR)/methods
 A_SERVER_NET_DIR		= $(APP_DIR)/network
 APP_USECASES_DIR		= $(APP_DIR)/use_cases
 
@@ -79,7 +80,10 @@ APPLICATION_SRCS	= $(A_SERVER_NET_DIR)/connectionManager.cpp \
 						$(A_CGI_DIR)/CgiOrchestrator.cpp \
 						$(APP_USECASES_DIR)/CompileSourceFile.cpp \
 						$(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp \
-						$(APP_USECASES_DIR)/GetRequestHandler.cpp
+						$(A_METHODS)/HttpMethodOrchestrator.cpp \
+						$(A_METHODS)/DeleteRequestHandler.cpp \
+						$(A_METHODS)/GetRequestHandler.cpp \
+						$(A_METHODS)/PostRequestHandler.cpp
 
 DOMAIN_SRCS			= $(D_ENTITIES_COMMON_DIR)/SourceLocation.cpp \
 						$(D_ENTITIES_CONFIG_DIR)/Token.cpp \
