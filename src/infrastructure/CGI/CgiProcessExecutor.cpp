@@ -46,11 +46,11 @@ bool CgiProcessExecutor::start(const std::string& scriptPath, const std::string&
 	int flagsFromChild = fcntl(_pipeFromChild[0], F_GETFL, 0);
 	if (flagsFromChild != -1)
 		fcntl(_pipeFromChild[0], F_SETFL, flagsFromChild | O_NONBLOCK);
-	if (flagsFromChild == -1 || fcntl(_pipeToChild[1], F_SETFL, flagsFromChild | O_NONBLOCK) == -1)
-	{
-		cleanup();
-		return (false);
-	}
+	if (flagsFromChild == -1 || fcntl(_pipeFromChild[0], F_SETFL, flagsFromChild | O_NONBLOCK) == -1)
+ 	{
+ 		cleanup();
+ 		return (false);
+ 	}
 	char** envp = env.toEnvArray();
 
 	_childPid = fork();
@@ -180,6 +180,11 @@ CgiProcessState CgiProcessExecutor::checkState()
 			{
 				cleanup();
 				return (CGI_ERROR);
+			}
+			if (_pipeFromChild[0] == -1)
+			{
+				_finished = true;
+				return (CGI_FINISHED);
 			}
 		}
 	}

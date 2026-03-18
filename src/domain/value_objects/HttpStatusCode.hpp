@@ -50,6 +50,7 @@ enum HttpStatusCode
 	FORBIDDEN	= 403,		 // O servidor entendeu quem você é, mas você não tem permissão para acessar
 							 // esse recurso específico.
 	NOT_FOUND		  = 404, // O servidor não encontrou nada no endereço que você passou.
+	METHOD_NOT_ALLOWED = 405, // O método HTTP utilizado não é permitido para este recurso.
 	CONTENT_TOO_LARGE = 413, // O arquivo ou corpo da requisição que você tentou enviar é grande
 							 // demais para o servidor.
 	URI_TOO_LONG	  = 414, // O link (URL) enviado é longo demais para o servidor processar.

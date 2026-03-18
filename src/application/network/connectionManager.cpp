@@ -2,16 +2,26 @@
 
 static bool isCgiRequest(const std::string& uri)
 {
-	if (uri.size() >= 3 && uri.substr(uri.size() - 3) == ".py")
+	std::string path = uri;
+	std::string::size_type queryPos = path.find('?');
+	if (queryPos != std::string::npos)
+		path = path.substr(0, queryPos);
+
+	if (path.size() >= 3 && path.substr(path.size() - 3) == ".py")
 		return true;
-	if (uri.size() >= 4 && uri.substr(uri.size() - 4) == ".php")
+	if (path.size() >= 4 && path.substr(path.size() - 4) == ".php")
 		return true;
 	return false;
 }
 
 static std::string getInterpreter(const std::string& uri)
 {
-	if (uri.size() >= 3 && uri.substr(uri.size() - 3) == ".py")
+	std::string path = uri;
+	std::string::size_type queryPos = path.find('?');
+	if (queryPos != std::string::npos)
+		path = path.substr(0, queryPos);
+
+	if (path.size() >= 3 && path.substr(path.size() - 3) == ".py")
 		return "/usr/bin/python3";
 	return "/usr/bin/php-cgi";
 }
@@ -19,7 +29,12 @@ static std::string getInterpreter(const std::string& uri)
 static CgiRouteConfig buildCgiConfig(const HttpRequest& request)
 {
 	CgiRouteConfig config;
-	config.scriptPath	   = "./www" + request.getUri();
+	std::string uriPath = request.getUri();
+	std::string::size_type queryPos = uriPath.find('?');
+	if (queryPos != std::string::npos)
+		uriPath = uriPath.substr(0, queryPos);
+
+	config.scriptPath = "./www" + uriPath;
 	config.interpreterPath = getInterpreter(request.getUri());
 	config.serverName	   = "localhost";
 	config.serverPort	   = 8080;
@@ -38,7 +53,15 @@ ConnectionManager::~ConnectionManager()
 	_clients.clear();
 }
 
-void ConnectionManager::setCgiOrchestrator(CgiOrchestrator* orch) { _cgiOrchestrator = orch; }
+void ConnectionManager::setCgiOrchestrator(CgiOrchestrator* orch)
+{
+	_cgiOrchestrator = orch;
+}
+
+void ConnectionManager::configureMethodOrchestrator(const ServerBlock& serverConfig)
+{
+	_methodOrchestrator.configure(serverConfig);
+}
 
 void ConnectionManager::acceptNewClient(ServerSocket& serverSocket)
 {
@@ -73,24 +96,36 @@ void ConnectionManager::disconnectClient(int fd)
 	_clients[fd] = NULL;
 }
 
-void ConnectionManager::handleClientRead(int fd)
+void ConnectionManager::queueResponse(int fd, ClientSocket& client, const HttpResponse& response)
 {
-	ClientSocket* client = _clients[fd];
+	bufferTestHttpResponse(client, response);
+	_epollManager.modifyFd(fd, EPOLLOUT);
+}
 
-	if (client == NULL)
-		return;
-
+bool ConnectionManager::readRawRequestOrDisconnect(int fd,
+	ClientSocket& client,
+	std::string& rawRequest)
+{
 	char buffer[4096];
 	memset(buffer, 0, sizeof(buffer));
-	ssize_t bytesRead = client->receiveData(buffer, sizeof(buffer) - 1);
+	ssize_t bytesRead = client.receiveData(buffer, sizeof(buffer) - 1);
 
 	if (bytesRead <= 0)
 	{
 		disconnectClient(fd);
-		return;
+		return false;
 	}
 
-	Result< HttpRequest > result = _parseUseCase.execute(std::string(buffer, bytesRead));
+	rawRequest.assign(buffer, bytesRead);
+	return true;
+}
+
+bool ConnectionManager::parseRequestOrRespondBadRequest(int fd,
+	ClientSocket& client,
+	const std::string& rawRequest,
+	HttpRequest& request)
+{
+	Result<HttpRequest> result = _parseUseCase.execute(rawRequest);
 
 	if (result.isErr())
 	{
@@ -101,39 +136,57 @@ void ConnectionManager::handleClientRead(int fd)
 		response.setHeader("Content-Type", "text/plain");
 		response.setHeader("Connection", "close");
 		response.setBody("Invalid Request: " + result.getError());
-		bufferTestHttpResponse(*client, response);
-		_epollManager.modifyFd(fd, EPOLLOUT);
-		return;
+		queueResponse(fd, client, response);
+		return false;
 	}
 
-	HttpRequest request = result.getValue();
+	request = result.getValue();
+	return true;
+}
 
-	std::cout << "[Request] FD: " << fd << " | Method: " << request.getMethod() << " | URI: " << request.getUri()
-			  << std::endl;
+bool ConnectionManager::handleCgiOrRespondBadGateway(int fd,
+	ClientSocket& client,
+	const HttpRequest& request)
+{
+	if (!isCgiRequest(request.getUri()) || _cgiOrchestrator == NULL)
+		return false;
 
-	if (isCgiRequest(request.getUri()) && _cgiOrchestrator != NULL)
-	{
-		CgiRouteConfig config = buildCgiConfig(request);
-		if (_cgiOrchestrator->startCgi(fd, request, config))
-			return;
-
-		HttpResponse response;
-		response.setStatusCode(502);
-		response.setHeader("Content-Type", "text/html");
-		response.setHeader("Connection", "close");
-		response.setBody("<html><body><h1>502 Bad Gateway</h1></body></html>");
-		bufferTestHttpResponse(*client, response);
-		_epollManager.modifyFd(fd, EPOLLOUT);
-		return;
-	}
+	CgiRouteConfig config = buildCgiConfig(request);
+	if (_cgiOrchestrator->startCgi(fd, request, config))
+		return true;
 
 	HttpResponse response;
-	response.setStatusCode(200);
-	response.setHeader("Content-Type", "text/plain");
+	response.setStatusCode(502);
+	response.setHeader("Content-Type", "text/html");
 	response.setHeader("Connection", "close");
-	response.setBody("Static file logic goes here!");
-	bufferTestHttpResponse(*client, response);
-	_epollManager.modifyFd(fd, EPOLLOUT);
+	response.setBody("<html><body><h1>502 Bad Gateway</h1></body></html>");
+	queueResponse(fd, client, response);
+	return true;
+}
+
+void ConnectionManager::handleClientRead(int fd)
+{
+	ClientSocket* client = _clients[fd];
+
+	if (client == NULL)
+		return;
+
+	std::string rawRequest;
+	if (!readRawRequestOrDisconnect(fd, *client, rawRequest))
+		return;
+
+	HttpRequest request;
+	if (!parseRequestOrRespondBadRequest(fd, *client, rawRequest, request))
+		return;
+
+	std::cout << "[Request] FD: " << fd << " | Method: " << request.getMethod()
+			  << " | URI: " << request.getUri() << std::endl;
+
+	if (handleCgiOrRespondBadGateway(fd, *client, request))
+		return;
+
+	HttpResponse response = _methodOrchestrator.handle(request);
+	queueResponse(fd, *client, response);
 }
 
 void ConnectionManager::handleClientWrite(int fd)

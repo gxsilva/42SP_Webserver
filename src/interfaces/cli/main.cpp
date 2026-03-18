@@ -13,19 +13,15 @@
 #include <iostream>
 #include <sstream>
 
+#include "../../application/network/server.hpp"
+#include "../../domain/entities/server/HttpBlock.hpp"
 #include "../../infrastructure/common/config/ConfigResult.hpp"
 #include "../../infrastructure/logging/Logger.hpp"
 
 #include "../../application/use_cases/BuildServerConfig.hpp"
 
-#include "../../domain/entities/server/HttpBlock.hpp"
-
-// ---------------------- DEVELOPMENT ---------------------- //
-#include "../../application/network/server.hpp"
 #include "../../domain/network/ipAddr.hpp"
 #include "../../domain/network/port.hpp"
-
-// --------------------------------------------------------- //
 
 int main(int argc, const char** argv)
 {
@@ -47,23 +43,41 @@ int main(int argc, const char** argv)
 		return 1;
 	}
 
-	HttpBlock* server = result.unwrap();
+	HttpBlock* httpConfig = result.unwrap();
+	ServerBlock serverConfig = httpConfig->server;
+	int configuredPort = serverConfig.port;
+	std::string configuredHost = serverConfig.host;
 
-	// ---------------------- DEVELOPMENT ---------------------- //
-	Port   port(server->server.port);
-	IpAddr ip(server->server.host);
+	if (configuredHost.empty())
+		configuredHost = "127.0.0.1";
 
-	Server webServer(port, ip);
-
-	if (!webServer.isValid())
+	try
 	{
+		Port port(configuredPort);
+		IpAddr ipAddr(configuredHost);
+
+		Server server(port, ipAddr, serverConfig);
+		if (!server.isValid())
+		{
+			logger.log("Server initialization failed.", ERROR);
+			delete httpConfig;
+			return 1;
+		}
+
 		std::stringstream ss;
-		ss << "Failed to initialize server on " << ip.getValue() << ":" << port.getValue();
-		logger.log(ss.str(), ERROR);
+		ss << "Server running at http://" << ipAddr.getValue() << ":" << port.getValue();
+		std::cout << ss.str() << std::endl;
+		logger.log(ss.str(), INFO);
+		server.run();
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << "Startup error: " << e.what() << std::endl;
+		logger.log(std::string("Startup error: ") + e.what(), ERROR);
+		delete httpConfig;
 		return 1;
 	}
-	webServer.run();
-	delete server;
-	// --------------------------------------------------------- //
+
+	delete httpConfig;
 	return 0;
 }

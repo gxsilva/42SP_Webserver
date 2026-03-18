@@ -78,7 +78,7 @@ void CgiOrchestrator::handleEvent(int fd, unsigned int flags)
 	if (session == NULL)
 		return;
 
-	if ((flags & EPOLLOUT) && session->executor->getWriteFd() == fd)
+	if ((flags & (EPOLLOUT | EPOLLHUP | EPOLLERR)) && session->executor->getWriteFd() == fd)
 	{
 		if (!session->executor->onWriteReady())
 		{
@@ -89,7 +89,7 @@ void CgiOrchestrator::handleEvent(int fd, unsigned int flags)
 			_epoll.removeFd(fd);
 	}
 
-	if ((flags & EPOLLIN) && session->executor->getReadFd() == fd)
+	if ((flags & (EPOLLIN | EPOLLHUP | EPOLLERR)) && session->executor->getReadFd() == fd)
 	{
 		if (!session->executor->onReadReady())
 			_epoll.removeFd(fd);

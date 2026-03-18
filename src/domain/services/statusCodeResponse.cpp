@@ -12,6 +12,7 @@ StatusCodeResponse::StatusCodeResponse()
 	messages[BAD_REQUEST]				 = "Bad request";
 	messages[FORBIDDEN]					 = "Forbidden";
 	messages[NOT_FOUND]					 = "Not found";
+	messages[METHOD_NOT_ALLOWED]		 = "Method not allowed";
 	messages[CONTENT_TOO_LARGE]			 = "Content too large";
 	messages[URI_TOO_LONG]				 = "URI too long";
 	messages[TOO_MANY_REQUESTS]			 = "Too many requests";

@@ -46,6 +46,7 @@ D_CGI_DIR				= $(DOMAIN_DIR)/CGI
 
 APP_DIR					= $(SRCS_DIR)/application
 A_CGI_DIR				= $(APP_DIR)/CGI
+A_METHODS				= $(APP_DIR)/methods
 A_SERVER_NET_DIR		= $(APP_DIR)/network
 APP_USECASES_DIR		= $(APP_DIR)/use_cases
 
@@ -72,13 +73,17 @@ HDRS				= $(shell find . -name "*.hpp")
 INTERFACE_SRCS		= $(CLI_DIR)/main.cpp
 
 APPLICATION_SRCS	= $(A_SERVER_NET_DIR)/connectionManager.cpp \
-						$(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp \
 						$(A_SERVER_NET_DIR)/epollManager.cpp \
 						$(A_SERVER_NET_DIR)/server.cpp \
 						$(A_SERVER_NET_DIR)/serverHandlers.cpp \
 						$(A_CGI_DIR)/CgiHandler.cpp \
 						$(A_CGI_DIR)/CgiOrchestrator.cpp \
 						$(APP_USECASES_DIR)/CompileSourceFile.cpp \
+						$(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp \
+						$(A_METHODS)/HttpMethodOrchestrator.cpp \
+						$(A_METHODS)/DeleteRequestHandler.cpp \
+						$(A_METHODS)/GetRequestHandler.cpp \
+						$(A_METHODS)/PostRequestHandler.cpp \
 						$(APP_USECASES_DIR)/BuildServerConfig.cpp
 						
 
@@ -103,12 +108,14 @@ DOMAIN_SRCS			= $(D_ENTITIES_COMMON_DIR)/SourceLocation.cpp \
 						$(D_VALIDATOR_DIR)/DependencyRuleService.cpp \
 						$(D_VALIDATOR_DIR)/ValueRuleService.cpp \
 						$(D_SERVICES_DIR)/statusCodeResponse.cpp \
+						$(D_SERVICES_DIR)/DirectoryLister.cpp \
 						$(D_AST_DIR)/base/ASTNode.cpp \
 						$(D_AST_DIR)/node/ASTValue.cpp \
 						$(D_AST_DIR)/node/ASTDirective.cpp \
 						$(D_AST_DIR)/node/ASTBlock.cpp \
 						$(D_AST_DIR)/node/ASTRoot.cpp \
 						$(D_VALUE_CONFIG_DIR)/RuleTable.cpp \
+						$(D_VALUE_OBJECTS_DIR)/MimeType.cpp \
 						$(D_CGI_DIR)/CgiEnvironment.cpp \
 						$(D_CGI_DIR)/CgiResponse.cpp
 
@@ -127,7 +134,8 @@ INFRA_SRCS			= $(I_COMMON_CONFIG_DIR)/TokenResult.cpp \
 						$(I_NETWORK_DIR)/clientSocket.cpp \
 						$(I_NETWORK_DIR)/serverSocket.cpp \
 						$(I_NETWORK_DIR)/fileDescriptor.cpp \
-						$(I_NETWORK_DIR)/testHttpResponse.cpp
+						$(I_NETWORK_DIR)/testHttpResponse.cpp \
+						$(I_IO_DIR)/DirectoryReader.cpp
 
 # TEST DEFINITIONS
 TEST_NAME		= test_http_request
