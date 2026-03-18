@@ -27,7 +27,7 @@ std::string HttpRequestValidator::validate(const HttpRequest& req) const
 
 	if (!isValidVersion(toUpperCase(req.getVersion())))
 	{
-		return "Invalid HTTP version: " + req.getVersion() + ". Only HTTP/1.0 is supported.";
+		return "Invalid HTTP version: " + req.getVersion() + ". Only HTTP/1.0 and HTTP/1.1 are supported.";
 	}
 
 	if (!isValidUri(req.getUri()))
@@ -63,7 +63,10 @@ bool HttpRequestValidator::isValidMethod(const std::string& method) const
 	return (method == "GET" || method == "POST" || method == "DELETE");
 }
 
-bool HttpRequestValidator::isValidVersion(const std::string& version) const { return (version == "HTTP/1.0"); }
+bool HttpRequestValidator::isValidVersion(const std::string& version) const
+{
+	return (version == "HTTP/1.0" || version == "HTTP/1.1");
+}
 
 bool HttpRequestValidator::isValidUri(const std::string& uri) const { return !uri.empty(); }
 

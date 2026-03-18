@@ -55,7 +55,8 @@ void testHttp11Version()
 	std::string						   rawRequest = "GET /index.html HTTP/1.1\r\nHost: localhost\r\n\r\n";
 
 	Result< HttpRequest > result = useCase.execute(rawRequest);
-	assert(result.isErr());
+	assert(result.isOk());
+	assert(result.getValue().getVersion() == "HTTP/1.1");
 	std::cout << "✓ testHttp11Version passed\n";
 }
 
