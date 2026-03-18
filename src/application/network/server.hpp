@@ -4,6 +4,7 @@
 #include "../../domain/events/epollEvents.hpp"
 #include "../../domain/network/ipAddr.hpp"
 #include "../../domain/network/port.hpp"
+#include "../../domain/entities/server/ServerBlock.hpp"
 #include "../../infrastructure/network/clientSocket.hpp"
 #include "../../infrastructure/network/fileDescriptor.hpp"
 #include "../../infrastructure/network/serverSocket.hpp"
@@ -37,7 +38,7 @@ class Server
 
 	public:
 		Server();
-		Server(const Port& port, const IpAddr& ipAddr);
+		Server(const Port& port, const IpAddr& ipAddr, const ServerBlock& serverConfig);
 		~Server();
 
 		bool isValid() const;

@@ -6,13 +6,14 @@ Server::Server()
 {
 }
 
-Server::Server(const Port& port, const IpAddr& ipAddr)
+Server::Server(const Port& port, const IpAddr& ipAddr, const ServerBlock& serverConfig)
 	: _serverSocket(port, ipAddr), _epollManager(NULL), _connectionManager(NULL),
 	  _cgiOrchestrator(NULL), _isValid(false)
 {
 	PollCapacity maxEvents(1024);
 	_epollManager	   = new EpollManager(maxEvents);
 	_connectionManager = new ConnectionManager(*_epollManager, maxEvents);
+	_connectionManager->configureMethodOrchestrator(serverConfig);
 	_cgiOrchestrator   = new CgiOrchestrator(*_epollManager);
 	_connectionManager->setCgiOrchestrator(_cgiOrchestrator);
 

@@ -233,6 +233,7 @@ int main(int argc, const char** argv)
 	}
 
 	int configuredPort = config->server.port;
+	ServerBlock serverConfig = config->server;
 
 	logger.log("Successfully built configuration from AST for source file: " + std::string(argv[1]), INFO);
 	// Debugger::logHttpBlock(config);
@@ -245,7 +246,7 @@ int main(int argc, const char** argv)
 	    Port port(configuredPort);
 	    IpAddr ipAddr("127.0.0.1"); // hardcoded só para teste
 
-	    Server server(port, ipAddr);
+	    Server server(port, ipAddr, serverConfig);
 	    if (!server.isValid())
 	    {
 	        logger.log("Server initialization failed.", ERROR);
