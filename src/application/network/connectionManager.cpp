@@ -36,14 +36,13 @@ static CgiRouteConfig buildCgiConfig(const HttpRequest& request)
 
 	config.scriptPath = "./www" + uriPath;
 	config.interpreterPath = getInterpreter(request.getUri());
-	config.serverName = "localhost";
-	config.serverPort = 8080;
+	config.serverName	   = "localhost";
+	config.serverPort	   = 8080;
 	return config;
 }
 
 ConnectionManager::ConnectionManager(EpollManager& epollManager, const PollCapacity& maxEvents)
-	: _epollManager(epollManager), _clients(maxEvents.getAmount(), (ClientSocket*)NULL),
-	  _cgiOrchestrator(NULL)
+	: _epollManager(epollManager), _clients(maxEvents.getAmount(), (ClientSocket*)NULL), _cgiOrchestrator(NULL)
 {
 }
 
@@ -80,7 +79,7 @@ void ConnectionManager::acceptNewClient(ServerSocket& serverSocket)
 	}
 
 	_epollManager.addFd(newClient, POLLIN);
-	if (static_cast<size_t>(newClient) >= _clients.size())
+	if (static_cast< size_t >(newClient) >= _clients.size())
 		_clients.resize(newClient + 128, (ClientSocket*)NULL);
 
 	_clients[newClient] = client;
@@ -130,8 +129,7 @@ bool ConnectionManager::parseRequestOrRespondBadRequest(int fd,
 
 	if (result.isErr())
 	{
-		std::cerr << "[Validation Error] FD: " << fd << " | Error: " << result.getError()
-				  << std::endl;
+		std::cerr << "[Validation Error] FD: " << fd << " | Error: " << result.getError() << std::endl;
 
 		HttpResponse response;
 		response.setStatusCode(400);
@@ -230,12 +228,12 @@ void ConnectionManager::dispatchCgiResponses()
 	if (_cgiOrchestrator == NULL)
 		return;
 
-	std::vector<std::pair<int, HttpResponse> > results = _cgiOrchestrator->collectFinished();
+	std::vector< std::pair< int, HttpResponse > > results = _cgiOrchestrator->collectFinished();
 
 	for (size_t i = 0; i < results.size(); ++i)
 	{
 		int clientFd = results[i].first;
-		if (clientFd < 0 || static_cast<size_t>(clientFd) >= _clients.size())
+		if (clientFd < 0 || static_cast< size_t >(clientFd) >= _clients.size())
 			continue;
 
 		ClientSocket* client = _clients[clientFd];

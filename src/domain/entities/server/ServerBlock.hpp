@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 05:12:02 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/13 05:17:57 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/17 18:43:38 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 struct ServerBlock
 {
 		int			port;
+		std::string host;
 		std::string serverName;
 
 		std::string				   root;

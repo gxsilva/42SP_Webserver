@@ -30,8 +30,7 @@ void HttpRequest::setBody(const std::string& body) { _body = body; }
 
 std::string HttpRequest::getHeader(const std::string& name) const
 {
-	std::map<std::string, std::string>::const_iterator it =
-		_headers.find(normalizeHeaderName(name));
+	std::map< std::string, std::string >::const_iterator it = _headers.find(normalizeHeaderName(name));
 	if (it != _headers.end())
 		return (it->second);
 	return ("");

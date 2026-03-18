@@ -1,6 +1,14 @@
 # Webserv - Status do Projeto
 
-**Última atualização:** 2026-03-17
+**Última atualização:** 2026-03-18
+
+## Atualização de Hoje (2026-03-18)
+
+- Erro crítico de sintaxe no Makefile resolvido (`recipe commences before first target` na linha 88).
+- Conflito lógico em `src/interfaces/cli/main.cpp` resolvido (fluxos de bootstrap duplicados/remanescentes de desenvolvimento).
+- Build principal validada com sucesso: `make` conclui link de `webserver`.
+- Testes atuais validados com sucesso: `make test` (HttpRequest, HttpRequestValidation e ParseAndValidateHttpRequestUseCase).
+- Pendências funcionais de subject continuam, especialmente multi-porta/multi-server block, semântica HTTP/1.1 no validador e integração CGI totalmente orientada a event loop.
 
 ## 📊 Resumo Executivo
 
@@ -37,7 +45,7 @@
 ### Core do Servidor
 | # | Requisito | Status | Notas |
 |---|-----------|--------|-------|
-| 1 | Compilar com `-Wall -Wextra -Werror -std=c++98` | ✅ FEITO | Makefile configurado |
+| 1 | Compilar com `-Wall -Wextra -Werror -std=c++98` | ✅ FEITO | Makefile corrigido e build principal (`make`) validada em 2026-03-18 |
 | 2 | Arquivo de configuracao como argumento | ✅ FEITO | `main` carrega arquivo, valida e constrói config em runtime |
 | 3 | Servidor nao-bloqueante | ⚠️ PARCIAL | epoll + sockets non-blocking + dispatch básico; falta hardening de edge cases |
 | 4 | Usar apenas 1 poll/epoll para TODAS operacoes I/O | ⚠️ PARCIAL | EpollManager existe, mas CGI pipes nao estao integrados |
@@ -66,7 +74,7 @@
 | 15 | Lexer (tokenizacao) | ✅ FEITO | Lexer.cpp completo e testado |
 | 16 | Parser (tokens -> AST) | ✅ FEITO | Parser.cpp completo, gera ASTNode tree |
 | 17 | AST -> objeto Config | ✅ FEITO | ConfigBuilder gera HttpBlock/ServerBlock e main usa config em runtime |
-| 18 | Definir interface:porta | ⚠️ PARCIAL | `listen` é aplicado; `host` ainda hardcoded em `127.0.0.1` |
+| 18 | Definir interface:porta | ⚠️ PARCIAL | `listen`/`host` são aplicados a partir da config; ainda sem suporte multi-server/multi-porta |
 | 19 | Paginas de erro customizadas (por config) | ❌ NAO FEITO | Sem Config para mapear error_page |
 | 20 | Tamanho max do corpo (client_max_body_size) | ⚠️ PARCIAL | POST handler usa config; validator global ainda hardcoded em 1MB |
 | 21 | Rotas com metodos aceitos | ✅ FEITO (BÁSICO) | Prefix match por location + allow_methods em GET/POST/DELETE |
@@ -106,7 +114,7 @@ Sockets -> epoll -> accept -> handleClientRead -> dispatch (CGI / GET / POST / D
 ✅ AST -> Config (ConfigBuilder)
      |
      v
-❌ Config -> Server multi-porta (atualmente 1 porta hardcoded)
+❌ Config -> Server multi-porta (atualmente 1 porta por processo)
      |
      v
 ✅ Request chega -> epoll ready
@@ -168,12 +176,16 @@ Sockets -> epoll -> accept -> handleClientRead -> dispatch (CGI / GET / POST / D
 | 2 | `ipAddr.cpp` | `isValidIp()` so verifica non-empty, sem validacao real | MEDIA |
 | 3 | `TokenResult.cpp` | Destructor nao deleta tokens (comentado) | BAIXA (leak) |
 | 4 | `HttpRequestValidator.cpp` | Limite de `Content-Length` fixo (1MB), ignora `client_max_body_size` por server | ALTA |
-| 5 | `main.cpp` | `IpAddr` ainda hardcoded (`127.0.0.1`), sem usar `host` de config | MEDIA |
-| 6 | `connectionManager.cpp` | Dispatcher HTTP ainda acoplado no connection manager (SRP fraco) | MEDIA |
-| 7 | `Server.cpp:5` | Construtor aceita 1 Port, sem suporte multi-porta | ALTA |
-| 8 | `CgiProcessExecutor` | fork/exec nao integrado ao epoll, bloqueia event loop | CRITICA |
-| 9 | `interfaces/old_main.cpp` | Codigo morto | BAIXA |
-| 10 | `ErrorPageGenerator` | Existe mas nunca usado no pipeline real | MEDIA |
+| 5 | `connectionManager.cpp` | Dispatcher HTTP ainda acoplado no connection manager (SRP fraco) | MEDIA |
+| 6 | `server.cpp` | Instancia de server ainda limitada a 1 socket/porta por processo | ALTA |
+| 7 | `CgiProcessExecutor` | fork/exec nao integrado ao epoll, bloqueia event loop | CRITICA |
+| 8 | `interfaces/old_main.cpp` | Codigo morto | BAIXA |
+| 9 | `ErrorPageGenerator` | Existe mas nunca usado no pipeline real | MEDIA |
+
+### Conflitos Resolvidos (2026-03-18)
+
+1. Makefile: continuação de linha em `APPLICATION_SRCS` corrigida para restaurar parsing do make.
+2. main.cpp: removido fluxo duplicado e referências inválidas (`ConfigBuilder`, `astRoot`, construtor antigo de `Server`).
 
 ---
 

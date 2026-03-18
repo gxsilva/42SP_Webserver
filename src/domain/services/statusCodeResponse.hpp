@@ -9,7 +9,7 @@
 class StatusCodeResponse
 {
 	private:
-		std::map<HttpStatusCode, std::string> messages;
+		std::map< HttpStatusCode, std::string > messages;
 
 	public:
 		StatusCodeResponse();

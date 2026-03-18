@@ -83,7 +83,9 @@ APPLICATION_SRCS	= $(A_SERVER_NET_DIR)/connectionManager.cpp \
 						$(A_METHODS)/HttpMethodOrchestrator.cpp \
 						$(A_METHODS)/DeleteRequestHandler.cpp \
 						$(A_METHODS)/GetRequestHandler.cpp \
-						$(A_METHODS)/PostRequestHandler.cpp
+						$(A_METHODS)/PostRequestHandler.cpp \
+						$(APP_USECASES_DIR)/BuildServerConfig.cpp
+						
 
 DOMAIN_SRCS			= $(D_ENTITIES_COMMON_DIR)/SourceLocation.cpp \
 						$(D_ENTITIES_CONFIG_DIR)/Token.cpp \
@@ -120,6 +122,7 @@ DOMAIN_SRCS			= $(D_ENTITIES_COMMON_DIR)/SourceLocation.cpp \
 INFRA_SRCS			= $(I_COMMON_CONFIG_DIR)/TokenResult.cpp \
 						$(I_COMMON_CONFIG_DIR)/LexerResult.cpp \
 						$(I_COMMON_CONFIG_DIR)/ASTResult.cpp \
+						$(I_COMMON_CONFIG_DIR)/ConfigResult.cpp \
 						$(I_COMMON_CONFIG_DIR)/ValidatorResult.cpp \
 						$(I_COMMON_CONFIG_DIR)/RuleRegistry.cpp \
 						$(I_IO_CONFIG_DIR)/FileReader.cpp \

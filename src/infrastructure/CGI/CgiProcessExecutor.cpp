@@ -3,8 +3,7 @@
 static const std::size_t READ_BUFFER_SIZE = 4096;
 
 CgiProcessExecutor::CgiProcessExecutor(std::size_t timeoutSeconds)
-	: _childPid(-1), _bodyBytesSent(0), _startTime(0), _timeoutSeconds(timeoutSeconds),
-	  _finished(false)
+	: _childPid(-1), _bodyBytesSent(0), _startTime(0), _timeoutSeconds(timeoutSeconds), _finished(false)
 {
 	_pipeToChild[0]	  = -1;
 	_pipeToChild[1]	  = -1;
@@ -17,9 +16,9 @@ CgiProcessExecutor::~CgiProcessExecutor() { cleanup(); }
 bool CgiProcessExecutor::start(const std::string& scriptPath, const std::string& interpreterPath,
 							   const CgiEnvironment& env, const std::string& requestBody)
 {
-	if (_childPid > 0 || _pipeToChild[0] != -1 || _pipeToChild[1] != -1 
-		|| _pipeFromChild[0] != -1 || _pipeFromChild[1] != -1)
- 		cleanup();
+	if (_childPid > 0 || _pipeToChild[0] != -1 || _pipeToChild[1] != -1 || _pipeFromChild[0] != -1 ||
+		_pipeFromChild[1] != -1)
+		cleanup();
 	_requestBody   = requestBody;
 	_bodyBytesSent = 0;
 	_outputBuffer.clear();
@@ -40,10 +39,10 @@ bool CgiProcessExecutor::start(const std::string& scriptPath, const std::string&
 	if (flagsToChild != -1)
 		fcntl(_pipeToChild[1], F_SETFL, flagsToChild | O_NONBLOCK);
 	if (flagsToChild == -1 || fcntl(_pipeToChild[1], F_SETFL, flagsToChild | O_NONBLOCK) == -1)
- 	{
- 		cleanup();
- 		return (false);
- 	}
+	{
+		cleanup();
+		return (false);
+	}
 	int flagsFromChild = fcntl(_pipeFromChild[0], F_GETFL, 0);
 	if (flagsFromChild != -1)
 		fcntl(_pipeFromChild[0], F_SETFL, flagsFromChild | O_NONBLOCK);
@@ -75,8 +74,8 @@ bool CgiProcessExecutor::start(const std::string& scriptPath, const std::string&
 		close(_pipeFromChild[1]);
 
 		char* argv[3];
-		argv[0] = const_cast<char*>(interpreterPath.c_str());
-		argv[1] = const_cast<char*>(scriptPath.c_str());
+		argv[0] = const_cast< char* >(interpreterPath.c_str());
+		argv[1] = const_cast< char* >(scriptPath.c_str());
 		argv[2] = NULL;
 
 		execve(interpreterPath.c_str(), argv, envp);
@@ -119,7 +118,7 @@ bool CgiProcessExecutor::onWriteReady()
 	ssize_t written = write(_pipeToChild[1], _requestBody.c_str() + _bodyBytesSent, remaining);
 	if (written > 0)
 	{
-		_bodyBytesSent += static_cast<std::size_t>(written);
+		_bodyBytesSent += static_cast< std::size_t >(written);
 		if (_bodyBytesSent >= _requestBody.size())
 			closeFdIfOpen(_pipeToChild[1]);
 		return (true);
@@ -141,7 +140,7 @@ bool CgiProcessExecutor::onReadReady()
 
 	if (bytesRead > 0)
 	{
-		_outputBuffer.append(buf, static_cast<std::size_t>(bytesRead));
+		_outputBuffer.append(buf, static_cast< std::size_t >(bytesRead));
 		return (true);
 	}
 	if (bytesRead == 0)
@@ -150,10 +149,10 @@ bool CgiProcessExecutor::onReadReady()
 		closeFdIfOpen(_pipeFromChild[0]);
 		return (false);
 	}
-	_finished = true; /*talvez troque*/
+	_finished = true;				  /*talvez troque*/
 	closeFdIfOpen(_pipeFromChild[0]); /*talvez troque*/
-	//if (written < 0)
- 	//	return (true);
+	// if (written < 0)
+	//	return (true);
 	return (false);
 }
 
@@ -163,7 +162,7 @@ CgiProcessState CgiProcessExecutor::checkState()
 		return (CGI_FINISHED);
 
 	std::time_t elapsed = std::time(NULL) - _startTime;
-	if (static_cast<std::size_t>(elapsed) >= _timeoutSeconds)
+	if (static_cast< std::size_t >(elapsed) >= _timeoutSeconds)
 	{
 		killChildIfAlive();
 		cleanup();

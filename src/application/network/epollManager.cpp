@@ -52,8 +52,7 @@ int EpollManager::waitForEvents()
 
 int EpollManager::waitForEvents(int timeoutMs)
 {
-	_readyEventsCount =
-		epoll_wait(_epollFd, _triggeredEvents.data(), _maxEvents.getAmount(), timeoutMs);
+	_readyEventsCount = epoll_wait(_epollFd, _triggeredEvents.data(), _maxEvents.getAmount(), timeoutMs);
 	return (_readyEventsCount);
 }
 

@@ -17,12 +17,10 @@ CgiOrchestrator::~CgiOrchestrator()
 	_sessions.clear();
 }
 
-bool CgiOrchestrator::startCgi(int clientFd,
-								const HttpRequest& request,
-								const CgiRouteConfig& config)
+bool CgiOrchestrator::startCgi(int clientFd, const HttpRequest& request, const CgiRouteConfig& config)
 {
 	CgiProcessExecutor* executor = new CgiProcessExecutor(CGI_TIMEOUT_SECONDS);
-	CgiHandler* handler = new CgiHandler(*executor, config);
+	CgiHandler*			handler	 = new CgiHandler(*executor, config);
 
 	if (!handler->startCgi(request))
 	{
@@ -42,11 +40,11 @@ bool CgiOrchestrator::startCgi(int clientFd,
 	CgiSession session;
 	session.clientFd = clientFd;
 	session.executor = executor;
-	session.handler = handler;
+	session.handler	 = handler;
 	_sessions.push_back(session);
 
-	std::cout << "[CGI] Started for client fd " << clientFd
-			  << " | readFd=" << readFd << " writeFd=" << writeFd << std::endl;
+	std::cout << "[CGI] Started for client fd " << clientFd << " | readFd=" << readFd << " writeFd=" << writeFd
+			  << std::endl;
 	return (true);
 }
 
@@ -98,9 +96,9 @@ void CgiOrchestrator::handleEvent(int fd, unsigned int flags)
 	}
 }
 
-std::vector<std::pair<int, HttpResponse> > CgiOrchestrator::collectFinished()
+std::vector< std::pair< int, HttpResponse > > CgiOrchestrator::collectFinished()
 {
-	std::vector<std::pair<int, HttpResponse> > results;
+	std::vector< std::pair< int, HttpResponse > > results;
 
 	for (size_t i = 0; i < _sessions.size();)
 	{
@@ -112,7 +110,7 @@ std::vector<std::pair<int, HttpResponse> > CgiOrchestrator::collectFinished()
 			continue;
 		}
 
-		int clientFd = _sessions[i].clientFd;
+		int			 clientFd = _sessions[i].clientFd;
 		HttpResponse response;
 
 		if (state == CGI_FINISHED)
@@ -152,7 +150,7 @@ void CgiOrchestrator::cancelForClient(int clientFd)
 
 void CgiOrchestrator::removeSession(size_t index)
 {
-	int readFd = _sessions[index].executor->getReadFd();
+	int readFd	= _sessions[index].executor->getReadFd();
 	int writeFd = _sessions[index].executor->getWriteFd();
 
 	if (readFd >= 0)
@@ -164,7 +162,7 @@ void CgiOrchestrator::removeSession(size_t index)
 	delete _sessions[index].handler;
 	delete _sessions[index].executor;
 
-	_sessions.erase(_sessions.begin() + static_cast<long>(index));
+	_sessions.erase(_sessions.begin() + static_cast< long >(index));
 }
 
 HttpResponse CgiOrchestrator::buildErrorResponse(int statusCode, const std::string& body)

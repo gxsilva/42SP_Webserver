@@ -1,30 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ResultBase.hpp                                     :+:      :+:    :+:   */
+/*   BuildServerConfig.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/25 00:37:58 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/17 20:26:48 by lsilva-x         ###   ########.fr       */
+/*   Created: 2026/03/17 16:01:02 by lsilva-x          #+#    #+#             */
+/*   Updated: 2026/03/17 20:33:45 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef RESULTBASE_HPP
-#define RESULTBASE_HPP
+#ifndef BUILDSERVERCONFIG_HPP
+#define BUILDSERVERCONFIG_HPP
 
-class ResultBase
+#include "../../infrastructure/common/config/ConfigResult.hpp"
+#include "../../infrastructure/logging/Logger.hpp"
+
+class BuildServerConfig
 {
-	protected:
-		bool _is_ok;
-
-		ResultBase(bool ok) : _is_ok(ok) {}
-
 	public:
-		virtual ~ResultBase() {}
-
-		bool isOk() const { return _is_ok; }
-		bool isErr() const { return !_is_ok; }
+		static ConfigResult execute(const std::string& filePath, Logger* logger);
 };
 
-#endif /* RESULT_BASE_HPP */
+#endif /* BUILDSERVERCONFIG_HPP */

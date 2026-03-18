@@ -19,22 +19,22 @@ class CgiOrchestrator
 		bool startCgi(int clientFd, const HttpRequest& request, const CgiRouteConfig& config);
 		bool isCgiFd(int fd) const;
 		void handleEvent(int fd, unsigned int flags);
-		std::vector<std::pair<int, HttpResponse> > collectFinished();
-		void cancelForClient(int clientFd);
+		std::vector< std::pair< int, HttpResponse > > collectFinished();
+		void										  cancelForClient(int clientFd);
 
 	private:
 		struct CgiSession
 		{
-			int					clientFd;
-			CgiProcessExecutor* executor;
-			CgiHandler*			handler;
+				int					clientFd;
+				CgiProcessExecutor* executor;
+				CgiHandler*			handler;
 		};
 
-		EpollManager&			_epoll;
-		std::vector<CgiSession> _sessions;
+		EpollManager&			  _epoll;
+		std::vector< CgiSession > _sessions;
 
-		CgiSession* findByPipeFd(int fd);
-		void		removeSession(size_t index);
+		CgiSession*	 findByPipeFd(int fd);
+		void		 removeSession(size_t index);
 		HttpResponse buildErrorResponse(int statusCode, const std::string& body);
 
 		CgiOrchestrator();

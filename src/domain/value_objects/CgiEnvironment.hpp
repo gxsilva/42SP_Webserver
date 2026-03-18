@@ -14,23 +14,23 @@ class HttpRequest;
 class CgiEnvironment
 {
 	public:
-		CgiEnvironment(const HttpRequest& request, const std::string& scriptPath,
-					   const std::string& serverName, int port);
+		CgiEnvironment(const HttpRequest& request, const std::string& scriptPath, const std::string& serverName,
+					   int port);
 		~CgiEnvironment();
 
 		char**		toEnvArray() const;
 		static void freeEnvArray(char** envp);
 
 	private:
-		std::vector<std::string> _var;
+		std::vector< std::string > _var;
 
 		CgiEnvironment();
 		CgiEnvironment(const CgiEnvironment&);
 		CgiEnvironment& operator=(const CgiEnvironment&);
 
 		void addVariable(const std::string& key, const std::string& value);
-		void buildFromRequest(const HttpRequest& request, const std::string& scriptPath,
-							  const std::string& serverName, int port);
+		void buildFromRequest(const HttpRequest& request, const std::string& scriptPath, const std::string& serverName,
+							  int port);
 };
 
 #endif
