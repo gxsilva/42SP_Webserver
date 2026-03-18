@@ -8,7 +8,10 @@
 - Conflito lógico em `src/interfaces/cli/main.cpp` resolvido (fluxos de bootstrap duplicados/remanescentes de desenvolvimento).
 - Build principal validada com sucesso: `make` conclui link de `webserver`.
 - Testes atuais validados com sucesso: `make test` (HttpRequest, HttpRequestValidation e ParseAndValidateHttpRequestUseCase).
-- Pendências funcionais de subject continuam, especialmente multi-porta/multi-server block, semântica HTTP/1.1 no validador e integração CGI totalmente orientada a event loop.
+- Suporte a HTTP/1.1 habilitado no validador e testes atualizados para aceitar 1.1.
+- Configuração de `root` ajustada para diretório existente (`./www/`) e smoke test validado em runtime.
+- Validação runtime (HTTP/1.1): `GET /` -> 200, `GET /tours` -> 200, `GET /cgi-bin/hello.py` -> 200.
+- Pendências funcionais do subject continuam, especialmente multi-porta/multi-server block e integração CGI totalmente orientada a event loop.
 
 ## 📊 Resumo Executivo
 
@@ -172,15 +175,14 @@ Sockets -> epoll -> accept -> handleClientRead -> dispatch (CGI / GET / POST / D
 
 | # | Arquivo | Issue | Severidade |
 |---|---------|-------|------------|
-| 1 | `HttpRequestValidator.cpp` | Valida `HTTP/1.0` mas servidor e HTTP/1.1 | MEDIA |
-| 2 | `ipAddr.cpp` | `isValidIp()` so verifica non-empty, sem validacao real | MEDIA |
-| 3 | `TokenResult.cpp` | Destructor nao deleta tokens (comentado) | BAIXA (leak) |
-| 4 | `HttpRequestValidator.cpp` | Limite de `Content-Length` fixo (1MB), ignora `client_max_body_size` por server | ALTA |
-| 5 | `connectionManager.cpp` | Dispatcher HTTP ainda acoplado no connection manager (SRP fraco) | MEDIA |
-| 6 | `server.cpp` | Instancia de server ainda limitada a 1 socket/porta por processo | ALTA |
-| 7 | `CgiProcessExecutor` | fork/exec nao integrado ao epoll, bloqueia event loop | CRITICA |
-| 8 | `interfaces/old_main.cpp` | Codigo morto | BAIXA |
-| 9 | `ErrorPageGenerator` | Existe mas nunca usado no pipeline real | MEDIA |
+| 1 | `ipAddr.cpp` | `isValidIp()` so verifica non-empty, sem validacao real | MEDIA |
+| 2 | `TokenResult.cpp` | Destructor nao deleta tokens (comentado) | BAIXA (leak) |
+| 3 | `HttpRequestValidator.cpp` | Limite de `Content-Length` fixo (1MB), ignora `client_max_body_size` por server | ALTA |
+| 4 | `connectionManager.cpp` | Dispatcher HTTP ainda acoplado no connection manager (SRP fraco) | MEDIA |
+| 5 | `server.cpp` | Instancia de server ainda limitada a 1 socket/porta por processo | ALTA |
+| 6 | `CgiProcessExecutor` | fork/exec nao integrado ao epoll, bloqueia event loop | CRITICA |
+| 7 | `interfaces/old_main.cpp` | Codigo morto | BAIXA |
+| 8 | `ErrorPageGenerator` | Existe mas nunca usado no pipeline real | MEDIA |
 
 ### Conflitos Resolvidos (2026-03-18)
 
