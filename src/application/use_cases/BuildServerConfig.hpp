@@ -1,33 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpBlock.hpp                                      :+:      :+:    :+:   */
+/*   BuildServerConfig.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 05:06:17 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/17 18:43:50 by lsilva-x         ###   ########.fr       */
+/*   Created: 2026/03/17 16:01:02 by lsilva-x          #+#    #+#             */
+/*   Updated: 2026/03/17 20:33:45 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HTTPBLOCK_HPP
-#define HTTPBLOCK_HPP
+#ifndef BUILDSERVERCONFIG_HPP
+#define BUILDSERVERCONFIG_HPP
 
-#include <map>
-#include <set>
-#include <string>
-#include <vector>
+#include "../../infrastructure/common/config/ConfigResult.hpp"
+#include "../../infrastructure/logging/Logger.hpp"
 
-#include "ServerBlock.hpp"
-
-struct HttpBlock
+class BuildServerConfig
 {
-		size_t						 clientMaxBodySize;
-		std::string					 host;
-		std::map< int, std::string > errorPages;
-
-		ServerBlock server;
-		// std::vector<ServerBlock>        servers;
+	public:
+		static ConfigResult execute(const std::string& filePath, Logger* logger);
 };
 
-#endif /* HTTPBLOCK_HPP */
+#endif /* BUILDSERVERCONFIG_HPP */

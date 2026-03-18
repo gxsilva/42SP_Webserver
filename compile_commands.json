@@ -11,50 +11,12 @@
       "-O0",
       "-c",
       "-o",
-      "obj/domain/entities/config/Token.o",
-      "src/domain/entities/config/Token.cpp"
+      "obj/application/network/connectionManager.o",
+      "src/application/network/connectionManager.cpp"
     ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/entities/config/Token.cpp",
-    "output": "/home/gxil/webserver/obj/domain/entities/config/Token.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/services/config/Lexer.o",
-      "src/domain/services/config/Lexer.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/services/config/Lexer.cpp",
-    "output": "/home/gxil/webserver/obj/domain/services/config/Lexer.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/errors/common/CompilerError.o",
-      "src/domain/errors/common/CompilerError.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/errors/common/CompilerError.cpp",
-    "output": "/home/gxil/webserver/obj/domain/errors/common/CompilerError.o"
+    "directory": "/home/gxsilva/webserver",
+    "file": "/home/gxsilva/webserver/src/application/network/connectionManager.cpp",
+    "output": "/home/gxsilva/webserver/obj/application/network/connectionManager.o"
   },
   {
     "arguments": [
@@ -71,560 +33,9 @@
       "obj/application/use_cases/CompileSourceFile.o",
       "src/application/use_cases/CompileSourceFile.cpp"
     ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/application/use_cases/CompileSourceFile.cpp",
-    "output": "/home/gxil/webserver/obj/application/use_cases/CompileSourceFile.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/interfaces/cli/main.o",
-      "src/interfaces/cli/main.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/interfaces/cli/main.cpp",
-    "output": "/home/gxil/webserver/obj/interfaces/cli/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/services/validator/CardinalityRuleService.o",
-      "src/domain/services/validator/CardinalityRuleService.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/services/validator/CardinalityRuleService.cpp",
-    "output": "/home/gxil/webserver/obj/domain/services/validator/CardinalityRuleService.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/services/config/Parser.o",
-      "src/domain/services/config/Parser.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/services/config/Parser.cpp",
-    "output": "/home/gxil/webserver/obj/domain/services/config/Parser.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/services/validator/DependencyRuleService.o",
-      "src/domain/services/validator/DependencyRuleService.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/services/validator/DependencyRuleService.cpp",
-    "output": "/home/gxil/webserver/obj/domain/services/validator/DependencyRuleService.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/errors/common/ErrorList.o",
-      "src/domain/errors/common/ErrorList.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/errors/common/ErrorList.cpp",
-    "output": "/home/gxil/webserver/obj/domain/errors/common/ErrorList.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/services/validator/ContextRuleService.o",
-      "src/domain/services/validator/ContextRuleService.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/services/validator/ContextRuleService.cpp",
-    "output": "/home/gxil/webserver/obj/domain/services/validator/ContextRuleService.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/services/validator/ConflictRuleService.o",
-      "src/domain/services/validator/ConflictRuleService.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/services/validator/ConflictRuleService.cpp",
-    "output": "/home/gxil/webserver/obj/domain/services/validator/ConflictRuleService.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/services/validator/ValueRuleService.o",
-      "src/domain/services/validator/ValueRuleService.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/services/validator/ValueRuleService.cpp",
-    "output": "/home/gxil/webserver/obj/domain/services/validator/ValueRuleService.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/services/config/Validator.o",
-      "src/domain/services/config/Validator.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/services/config/Validator.cpp",
-    "output": "/home/gxil/webserver/obj/domain/services/config/Validator.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/services/config/ConfigBuilder.o",
-      "src/domain/services/config/ConfigBuilder.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/services/config/ConfigBuilder.cpp",
-    "output": "/home/gxil/webserver/obj/domain/services/config/ConfigBuilder.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/entities/ast/node/ASTValue.o",
-      "src/domain/entities/ast/node/ASTValue.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/entities/ast/node/ASTValue.cpp",
-    "output": "/home/gxil/webserver/obj/domain/entities/ast/node/ASTValue.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/entities/ast/base/ASTNode.o",
-      "src/domain/entities/ast/base/ASTNode.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/entities/ast/base/ASTNode.cpp",
-    "output": "/home/gxil/webserver/obj/domain/entities/ast/base/ASTNode.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/entities/ast/node/ASTDirective.o",
-      "src/domain/entities/ast/node/ASTDirective.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/entities/ast/node/ASTDirective.cpp",
-    "output": "/home/gxil/webserver/obj/domain/entities/ast/node/ASTDirective.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/entities/ast/node/ASTBlock.o",
-      "src/domain/entities/ast/node/ASTBlock.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/entities/ast/node/ASTBlock.cpp",
-    "output": "/home/gxil/webserver/obj/domain/entities/ast/node/ASTBlock.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/entities/ast/node/ASTRoot.o",
-      "src/domain/entities/ast/node/ASTRoot.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/entities/ast/node/ASTRoot.cpp",
-    "output": "/home/gxil/webserver/obj/domain/entities/ast/node/ASTRoot.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/entities/common/SourceLocation.o",
-      "src/domain/entities/common/SourceLocation.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/entities/common/SourceLocation.cpp",
-    "output": "/home/gxil/webserver/obj/domain/entities/common/SourceLocation.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/domain/value_objects/config/RuleTable.o",
-      "src/domain/value_objects/config/RuleTable.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/value_objects/config/RuleTable.cpp",
-    "output": "/home/gxil/webserver/obj/domain/value_objects/config/RuleTable.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/infrastructure/common/config/TokenResult.o",
-      "src/infrastructure/common/config/TokenResult.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/infrastructure/common/config/TokenResult.cpp",
-    "output": "/home/gxil/webserver/obj/infrastructure/common/config/TokenResult.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/infrastructure/common/config/LexerResult.o",
-      "src/infrastructure/common/config/LexerResult.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/infrastructure/common/config/LexerResult.cpp",
-    "output": "/home/gxil/webserver/obj/infrastructure/common/config/LexerResult.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/infrastructure/common/config/ASTResult.o",
-      "src/infrastructure/common/config/ASTResult.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/infrastructure/common/config/ASTResult.cpp",
-    "output": "/home/gxil/webserver/obj/infrastructure/common/config/ASTResult.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/infrastructure/io/config/FileReader.o",
-      "src/infrastructure/io/config/FileReader.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/infrastructure/io/config/FileReader.cpp",
-    "output": "/home/gxil/webserver/obj/infrastructure/io/config/FileReader.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/infrastructure/common/config/ValidatorResult.o",
-      "src/infrastructure/common/config/ValidatorResult.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/infrastructure/common/config/ValidatorResult.cpp",
-    "output": "/home/gxil/webserver/obj/infrastructure/common/config/ValidatorResult.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/infrastructure/io/config/FileValidator.o",
-      "src/infrastructure/io/config/FileValidator.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/infrastructure/io/config/FileValidator.cpp",
-    "output": "/home/gxil/webserver/obj/infrastructure/io/config/FileValidator.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/infrastructure/io/config/SemanticAnalyzer.o",
-      "src/infrastructure/io/config/SemanticAnalyzer.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/infrastructure/io/config/SemanticAnalyzer.cpp",
-    "output": "/home/gxil/webserver/obj/infrastructure/io/config/SemanticAnalyzer.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/infrastructure/logging/Logger.o",
-      "src/infrastructure/logging/Logger.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/infrastructure/logging/Logger.cpp",
-    "output": "/home/gxil/webserver/obj/infrastructure/logging/Logger.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/infrastructure/common/config/RuleRegistry.o",
-      "src/infrastructure/common/config/RuleRegistry.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/infrastructure/common/config/RuleRegistry.cpp",
-    "output": "/home/gxil/webserver/obj/infrastructure/common/config/RuleRegistry.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/application/network/epollManager.o",
-      "src/application/network/epollManager.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/application/network/epollManager.cpp",
-    "output": "/home/gxil/webserver/obj/application/network/epollManager.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/application/network/connectionManager.o",
-      "src/application/network/connectionManager.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/application/network/connectionManager.cpp",
-    "output": "/home/gxil/webserver/obj/application/network/connectionManager.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/c++",
-      "-std=c++98",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wshadow",
-      "-g",
-      "-O0",
-      "-c",
-      "-o",
-      "obj/application/network/server.o",
-      "src/application/network/server.cpp"
-    ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/application/network/server.cpp",
-    "output": "/home/gxil/webserver/obj/application/network/server.o"
+    "directory": "/home/gxsilva/webserver",
+    "file": "/home/gxsilva/webserver/src/application/use_cases/CompileSourceFile.cpp",
+    "output": "/home/gxsilva/webserver/obj/application/use_cases/CompileSourceFile.o"
   },
   {
     "arguments": [
@@ -641,9 +52,9 @@
       "obj/application/network/serverHandlers.o",
       "src/application/network/serverHandlers.cpp"
     ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/application/network/serverHandlers.cpp",
-    "output": "/home/gxil/webserver/obj/application/network/serverHandlers.o"
+    "directory": "/home/gxsilva/webserver",
+    "file": "/home/gxsilva/webserver/src/application/network/serverHandlers.cpp",
+    "output": "/home/gxsilva/webserver/obj/application/network/serverHandlers.o"
   },
   {
     "arguments": [
@@ -657,12 +68,12 @@
       "-O0",
       "-c",
       "-o",
-      "obj/domain/events/epollEvents.o",
-      "src/domain/events/epollEvents.cpp"
+      "obj/application/CGI/CgiOrchestrator.o",
+      "src/application/CGI/CgiOrchestrator.cpp"
     ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/events/epollEvents.cpp",
-    "output": "/home/gxil/webserver/obj/domain/events/epollEvents.o"
+    "directory": "/home/gxsilva/webserver",
+    "file": "/home/gxsilva/webserver/src/application/CGI/CgiOrchestrator.cpp",
+    "output": "/home/gxsilva/webserver/obj/application/CGI/CgiOrchestrator.o"
   },
   {
     "arguments": [
@@ -676,12 +87,12 @@
       "-O0",
       "-c",
       "-o",
-      "obj/domain/network/ipAddr.o",
-      "src/domain/network/ipAddr.cpp"
+      "obj/application/use_cases/ParseAndValidateHttpRequestUseCase.o",
+      "src/application/use_cases/ParseAndValidateHttpRequestUseCase.cpp"
     ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/network/ipAddr.cpp",
-    "output": "/home/gxil/webserver/obj/domain/network/ipAddr.o"
+    "directory": "/home/gxsilva/webserver",
+    "file": "/home/gxsilva/webserver/src/application/use_cases/ParseAndValidateHttpRequestUseCase.cpp",
+    "output": "/home/gxsilva/webserver/obj/application/use_cases/ParseAndValidateHttpRequestUseCase.o"
   },
   {
     "arguments": [
@@ -695,12 +106,12 @@
       "-O0",
       "-c",
       "-o",
-      "obj/domain/network/port.o",
-      "src/domain/network/port.cpp"
+      "obj/application/network/epollManager.o",
+      "src/application/network/epollManager.cpp"
     ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/domain/network/port.cpp",
-    "output": "/home/gxil/webserver/obj/domain/network/port.o"
+    "directory": "/home/gxsilva/webserver",
+    "file": "/home/gxsilva/webserver/src/application/network/epollManager.cpp",
+    "output": "/home/gxsilva/webserver/obj/application/network/epollManager.o"
   },
   {
     "arguments": [
@@ -714,12 +125,12 @@
       "-O0",
       "-c",
       "-o",
-      "obj/infrastructure/network/clientSocket.o",
-      "src/infrastructure/network/clientSocket.cpp"
+      "obj/interfaces/cli/main.o",
+      "src/interfaces/cli/main.cpp"
     ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/infrastructure/network/clientSocket.cpp",
-    "output": "/home/gxil/webserver/obj/infrastructure/network/clientSocket.o"
+    "directory": "/home/gxsilva/webserver",
+    "file": "/home/gxsilva/webserver/src/interfaces/cli/main.cpp",
+    "output": "/home/gxsilva/webserver/obj/interfaces/cli/main.o"
   },
   {
     "arguments": [
@@ -733,12 +144,12 @@
       "-O0",
       "-c",
       "-o",
-      "obj/infrastructure/network/fileDescriptor.o",
-      "src/infrastructure/network/fileDescriptor.cpp"
+      "obj/application/use_cases/BuildServerConfig.o",
+      "src/application/use_cases/BuildServerConfig.cpp"
     ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/infrastructure/network/fileDescriptor.cpp",
-    "output": "/home/gxil/webserver/obj/infrastructure/network/fileDescriptor.o"
+    "directory": "/home/gxsilva/webserver",
+    "file": "/home/gxsilva/webserver/src/application/use_cases/BuildServerConfig.cpp",
+    "output": "/home/gxsilva/webserver/obj/application/use_cases/BuildServerConfig.o"
   },
   {
     "arguments": [
@@ -752,12 +163,12 @@
       "-O0",
       "-c",
       "-o",
-      "obj/infrastructure/network/serverSocket.o",
-      "src/infrastructure/network/serverSocket.cpp"
+      "obj/application/network/server.o",
+      "src/application/network/server.cpp"
     ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/infrastructure/network/serverSocket.cpp",
-    "output": "/home/gxil/webserver/obj/infrastructure/network/serverSocket.o"
+    "directory": "/home/gxsilva/webserver",
+    "file": "/home/gxsilva/webserver/src/application/network/server.cpp",
+    "output": "/home/gxsilva/webserver/obj/application/network/server.o"
   },
   {
     "arguments": [
@@ -771,11 +182,30 @@
       "-O0",
       "-c",
       "-o",
-      "obj/infrastructure/network/testHttpResponse.o",
-      "src/infrastructure/network/testHttpResponse.cpp"
+      "obj/application/CGI/CgiHandler.o",
+      "src/application/CGI/CgiHandler.cpp"
     ],
-    "directory": "/home/gxil/webserver",
-    "file": "/home/gxil/webserver/src/infrastructure/network/testHttpResponse.cpp",
-    "output": "/home/gxil/webserver/obj/infrastructure/network/testHttpResponse.o"
+    "directory": "/home/gxsilva/webserver",
+    "file": "/home/gxsilva/webserver/src/application/CGI/CgiHandler.cpp",
+    "output": "/home/gxsilva/webserver/obj/application/CGI/CgiHandler.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-std=c++98",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wshadow",
+      "-g",
+      "-O0",
+      "-c",
+      "-o",
+      "obj/domain/entities/common/SourceLocation.o",
+      "src/domain/entities/common/SourceLocation.cpp"
+    ],
+    "directory": "/home/gxsilva/webserver",
+    "file": "/home/gxsilva/webserver/src/domain/entities/common/SourceLocation.cpp",
+    "output": "/home/gxsilva/webserver/obj/domain/entities/common/SourceLocation.o"
   }
 ]

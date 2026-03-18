@@ -72,13 +72,15 @@ HDRS				= $(shell find . -name "*.hpp")
 INTERFACE_SRCS		= $(CLI_DIR)/main.cpp
 
 APPLICATION_SRCS	= $(A_SERVER_NET_DIR)/connectionManager.cpp \
+						$(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp \
 						$(A_SERVER_NET_DIR)/epollManager.cpp \
 						$(A_SERVER_NET_DIR)/server.cpp \
 						$(A_SERVER_NET_DIR)/serverHandlers.cpp \
 						$(A_CGI_DIR)/CgiHandler.cpp \
 						$(A_CGI_DIR)/CgiOrchestrator.cpp \
 						$(APP_USECASES_DIR)/CompileSourceFile.cpp \
-						$(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp
+						$(APP_USECASES_DIR)/BuildServerConfig.cpp
+						
 
 DOMAIN_SRCS			= $(D_ENTITIES_COMMON_DIR)/SourceLocation.cpp \
 						$(D_ENTITIES_CONFIG_DIR)/Token.cpp \
@@ -113,6 +115,7 @@ DOMAIN_SRCS			= $(D_ENTITIES_COMMON_DIR)/SourceLocation.cpp \
 INFRA_SRCS			= $(I_COMMON_CONFIG_DIR)/TokenResult.cpp \
 						$(I_COMMON_CONFIG_DIR)/LexerResult.cpp \
 						$(I_COMMON_CONFIG_DIR)/ASTResult.cpp \
+						$(I_COMMON_CONFIG_DIR)/ConfigResult.cpp \
 						$(I_COMMON_CONFIG_DIR)/ValidatorResult.cpp \
 						$(I_COMMON_CONFIG_DIR)/RuleRegistry.cpp \
 						$(I_IO_CONFIG_DIR)/FileReader.cpp \

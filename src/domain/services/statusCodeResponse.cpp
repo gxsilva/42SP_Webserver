@@ -25,7 +25,7 @@ StatusCodeResponse::~StatusCodeResponse() {}
 
 std::string StatusCodeResponse::findMsg(HttpStatusCode code)
 {
-	std::map<HttpStatusCode, std::string>::iterator it = messages.find(code);
+	std::map< HttpStatusCode, std::string >::iterator it = messages.find(code);
 	if (it == messages.end())
 		return ("Unknown Status");
 	return (it->second);
@@ -35,6 +35,6 @@ std::string StatusCodeResponse::statusReturn(HttpStatusCode code)
 {
 	std::stringstream ss;
 
-	ss << static_cast<int>(code) << " " << findMsg(code);
+	ss << static_cast< int >(code) << " " << findMsg(code);
 	return (ss.str());
 }

@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 05:32:37 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/13 18:37:43 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/17 18:52:24 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ ServerBlock ConfigBuilder::_buildServer(const ASTNode& node) const
 
 	std::string portStr = _directive(node, "listen");
 	srv.port			= portStr.empty() ? 80 : std::atoi(portStr.c_str());
+	srv.host			= _directive(node, "server_name");
 	srv.serverName		= _directive(node, "server_name");
 	srv.root			= _directive(node, "root");
 	srv.index			= _directiveArgs(node, "index");
@@ -178,7 +179,10 @@ HttpBlock ConfigBuilder::_buildHttp(const ASTNode& node) const
 		{
 			const ASTBlock& child = static_cast< const ASTBlock& >(*children[i]);
 			if (child.getName() == "server")
+			{
 				http.server = _buildServer(*children[i]);
+				http.host	= http.server.host;
+			}
 		}
 	}
 
@@ -211,6 +215,7 @@ HttpBlock* ConfigBuilder::build(const ASTNode* ast)
 		{
 			HttpBlock* result		  = new HttpBlock();
 			result->server			  = _buildServer(*stmts[i]);
+			result->host			  = result->server.host;
 			result->clientMaxBodySize = result->server.clientMaxBodySize;
 			result->errorPages		  = result->server.errorPages;
 			return result;

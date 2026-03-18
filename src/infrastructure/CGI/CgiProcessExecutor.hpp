@@ -18,8 +18,8 @@ class CgiProcessExecutor : public InitCgiGateway
 		explicit CgiProcessExecutor(std::size_t timeoutSeconds);
 		~CgiProcessExecutor();
 
-		bool start(const std::string& scriptPath, const std::string& interpreterPath,
-				   const CgiEnvironment& env, const std::string& requestBody);
+		bool start(const std::string& scriptPath, const std::string& interpreterPath, const CgiEnvironment& env,
+				   const std::string& requestBody);
 
 		int getReadFd() const;
 		int getWriteFd() const;
