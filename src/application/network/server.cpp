@@ -40,7 +40,7 @@ Server::~Server()
 	delete _cgiOrchestrator;
 	delete _connectionManager;
 	delete _epollManager;
-	delete _config;
+	// delete _config;
 }
 
 bool Server::isValid() const { return _isValid; }

@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:59:27 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/17 21:52:38 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/17 22:06:40 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int main(int argc, const char** argv)
 	logger.log("Server initialized successfully on " + ip.getValue() + ":" + port.toString(), INFO);
 	webServer.displayServerStatus();
 	webServer.run();
-	// delete server;
+	delete server;
 	// --------------------------------------------------------- //
 	return 0;
 }
