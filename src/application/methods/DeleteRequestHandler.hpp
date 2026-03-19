@@ -26,6 +26,7 @@ class DeleteRequestHandler
 		std::string			 resolveFilePath(const std::string& root, const std::string& uriPath) const;
 		std::string			 parentDirectory(const std::string& path) const;
 		bool				 isMethodAllowed(const LocationBlock* location) const;
+		HttpResponse		 buildErrorResponse(HttpStatusCode code, const LocationBlock* location) const;
 		HttpResponse		 buildNoContentResponse() const;
 
 		DeleteRequestHandler(const DeleteRequestHandler&);

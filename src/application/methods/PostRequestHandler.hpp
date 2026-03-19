@@ -27,7 +27,10 @@ class PostRequestHandler
 		std::string			 parentDirectory(const std::string& path) const;
 		std::string			 buildUploadTarget(const std::string& filePath) const;
 		bool				 isMethodAllowed(const LocationBlock* location) const;
-		HttpResponse		 writeRequestBody(const HttpRequest& request, const std::string& targetPath) const;
+		HttpResponse		 buildErrorResponse(HttpStatusCode code, const LocationBlock* location) const;
+		HttpResponse		 writeRequestBody(const HttpRequest& request,
+			const std::string& targetPath,
+			const LocationBlock* location) const;
 		HttpResponse		 buildCreatedResponse(const std::string& targetPath) const;
 
 		PostRequestHandler(const PostRequestHandler&);

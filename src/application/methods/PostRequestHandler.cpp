@@ -109,19 +109,27 @@ bool PostRequestHandler::isMethodAllowed(const LocationBlock* location) const
 	return location->allowedMethods.find("POST") != location->allowedMethods.end();
 }
 
+HttpResponse PostRequestHandler::buildErrorResponse(HttpStatusCode code, const LocationBlock* location) const
+{
+	if (_hasServerConfig)
+		return buildHtmlErrorResponse(code, _serverConfig, location);
+	return buildHtmlErrorResponse(code);
+}
+
 HttpResponse PostRequestHandler::writeRequestBody(const HttpRequest& request,
-	const std::string& targetPath) const
+	const std::string& targetPath,
+	const LocationBlock* location) const
 {
 	std::string dirPath = parentDirectory(targetPath);
 	if (!DirectoryReader::isDirectory(dirPath))
-		return (buildHtmlErrorResponse(NOT_FOUND));
+		return (buildErrorResponse(NOT_FOUND, location));
 
 	if (access(dirPath.c_str(), W_OK) != 0)
-		return (buildHtmlErrorResponse(FORBIDDEN));
+		return (buildErrorResponse(FORBIDDEN, location));
 
 	int fd = open(targetPath.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)
-		return (buildHtmlErrorResponse(INTERNAL_SERVER_ERROR));
+		return (buildErrorResponse(INTERNAL_SERVER_ERROR, location));
 
 	const std::string& body = request.getBody();
 	ssize_t			   totalWritten = 0;
@@ -132,7 +140,7 @@ HttpResponse PostRequestHandler::writeRequestBody(const HttpRequest& request,
 		if (written <= 0)
 		{
 			close(fd);
-			return (buildHtmlErrorResponse(INTERNAL_SERVER_ERROR));
+			return (buildErrorResponse(INTERNAL_SERVER_ERROR, location));
 		}
 		totalWritten += written;
 	}
@@ -156,22 +164,22 @@ HttpResponse PostRequestHandler::handle(const HttpRequest& request)
 	std::string uriPath = stripUriQuery(request.getUri());
 
 	if (uriPath.find("..") != std::string::npos)
-		return (buildHtmlErrorResponse(FORBIDDEN));
+		return (buildErrorResponse(FORBIDDEN, NULL));
 
 	const LocationBlock* location = findBestLocation(uriPath);
 	if (location != NULL && !location->redirectUri.empty())
 		return (buildPlainTextRedirectResponse(location->redirectCode, location->redirectUri));
 
 	if (!isMethodAllowed(location))
-		return (buildHtmlErrorResponse(METHOD_NOT_ALLOWED));
+		return (buildErrorResponse(METHOD_NOT_ALLOWED, location));
 
 	if (_hasServerConfig && _serverConfig.clientMaxBodySize > 0
 		&& request.getBody().size() > _serverConfig.clientMaxBodySize)
-		return (buildHtmlErrorResponse(CONTENT_TOO_LARGE));
+		return (buildErrorResponse(CONTENT_TOO_LARGE, location));
 
 	std::string root = resolveRoot(location);
 	std::string filePath = resolveFilePath(root, uriPath);
 	std::string targetPath = buildUploadTarget(filePath);
 
-	return (writeRequestBody(request, targetPath));
+	return (writeRequestBody(request, targetPath, location));
 }
