@@ -1,6 +1,7 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#include "../../domain/entities/server/HttpBlock.hpp"
 #include "../../domain/entities/server/ServerBlock.hpp"
 #include "../../domain/events/epollEvents.hpp"
 #include "../../domain/network/ipAddr.hpp"
@@ -48,6 +49,7 @@ class Server
 
 		static void requestStop();
 		static bool shouldStop();
+		void		displayServerStatus(const std::vector< ServerBlock >& serverConfigs) const;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:59:27 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/17 20:34:49 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/19 20:08:26 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,12 +76,8 @@ int main(int argc, const char** argv)
 			return 1;
 		}
 
-		std::stringstream ss;
-		ss << "Server running at http://" << ipAddr.getValue() << ":" << port.getValue();
-		if (serverConfigs.size() > 1)
-			ss << " (+" << (serverConfigs.size() - 1) << " listener(s))";
-		std::cout << ss.str() << std::endl;
-		logger.log(ss.str(), INFO);
+		logger.log("Server initialized successfully on " + ipAddr.getValue() + ":" + port.toString(), INFO);
+		server.displayServerStatus(serverConfigs);
 		server.run();
 	}
 	catch (const std::exception& e)

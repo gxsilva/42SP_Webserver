@@ -1,5 +1,6 @@
 #include "server.hpp"
 #include "../CGI/CgiOrchestrator.hpp"
+#include <sstream>
 
 namespace
 {
@@ -132,3 +133,38 @@ ServerSocket* Server::findServerSocketByFd(int fd) const
 void Server::requestStop() { g_stopRequested = 1; }
 
 bool Server::shouldStop() { return g_stopRequested != 0; }
+
+void Server::displayServerStatus(const std::vector< ServerBlock >& serverConfigs) const
+{
+	std::stringstream ss;
+	std::string		  line(70, '=');
+	std::string		  separator(70, '-');
+
+	std::cout << line << std::endl;
+	std::cout << "                         SERVER STATUS                          " << std::endl;
+	std::cout << line << std::endl;
+
+	for (size_t i = 0; i < serverConfigs.size(); ++i)
+	{
+		ss.str("");
+		ss << serverConfigs[i].port;
+		std::string host = serverConfigs[i].host;
+		std::string port = ss.str();
+
+		if (host.empty())
+			host = "0.0.0.0";
+
+		std::string url = "http://" + host + ":" + port + "/";
+
+		std::cout << std::endl;
+		std::cout << "  Server " << (i + 1) << std::endl;
+		std::cout << separator << std::endl;
+		std::cout << "    Host:   " << host << std::endl;
+		std::cout << "    Port:   " << port << std::endl;
+		std::cout << "    URL:    " << url << std::endl;
+		std::cout << "    Status: " << (_isValid ? "Running" : "Stopped") << std::endl;
+	}
+
+	std::cout << std::endl;
+	std::cout << line << std::endl;
+}

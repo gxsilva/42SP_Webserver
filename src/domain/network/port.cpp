@@ -1,4 +1,5 @@
 #include "port.hpp"
+#include <sstream>
 
 Port::Port() : _value(8080) {}
 
@@ -12,3 +13,10 @@ Port::Port(int v)
 Port::~Port() {}
 
 int Port::getValue() const { return (_value); }
+
+std::string Port::toString() const
+{
+	std::stringstream ss;
+	ss << _value;
+	return ss.str();
+}
