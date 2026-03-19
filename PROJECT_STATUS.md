@@ -2,20 +2,6 @@
 
 **Última atualização:** 2026-03-18
 
-## Atualização de Hoje (2026-03-18)
-
-- Erro crítico de sintaxe no Makefile resolvido (`recipe commences before first target` na linha 88).
-- Conflito lógico em `src/interfaces/cli/main.cpp` resolvido (fluxos de bootstrap duplicados/remanescentes de desenvolvimento).
-- Build principal validada com sucesso: `make` conclui link de `webserver`.
-- Testes atuais validados com sucesso: `make test` (HttpRequest, HttpRequestValidation e ParseAndValidateHttpRequestUseCase).
-- Suporte a HTTP/1.1 habilitado no validador e testes atualizados para aceitar 1.1.
-- Configuração de `root` ajustada para diretório existente (`./www/`) e smoke test validado em runtime.
-- Validação runtime (HTTP/1.1): `GET /` -> 200, `GET /tours` -> 200, `GET /cgi-bin/hello.py` -> 200.
-- Diretiva `return` implementada por location (`/red` retorna `302` com header `Location: /tours`).
-- Integração CGI no event loop consolidada (pipes de CGI registrados no epoll com tratamento EPOLLIN/EPOLLOUT).
-- Validação de concorrência: `GET /cgi-bin/slow.py` em execução e `GET /` respondendo em paralelo sem bloquear o loop.
-- Pendências funcionais do subject continuam, especialmente multi-porta/multi-server block e `error_page` custom por config.
-
 ## 📊 Resumo Executivo
 
 ### Progresso Geral: ~68% (21/31 requisitos obrigatórios)
@@ -37,6 +23,17 @@
 3. **Config incompleta para subject** → páginas de erro custom por rota pendentes
 4. **POST ainda simplificado** → sem multipart/form-data
 
+### Diagnóstico de não-bloqueio (2026-03-18)
+- Estruturalmente o servidor está em modo não-bloqueante: sockets e pipes CGI em `O_NONBLOCK` + I/O dirigido por epoll.
+- Resultado de carga informado (`siege -c1000 -r100`) reforça que o loop não bloqueia no cenário de resposta simples.
+- O status "PARCIAL" no requisito de não-bloqueio ficou relacionado a **hardening de edge cases**, não a bloqueio estrutural atual.
+- Hardening aplicado: `accept` em lote por evento e tratamento mais resiliente para `recv/send/read/write` negativos em fluxos non-blocking.
+
+### Edge Cases de hardening (pendentes)
+- Leitura de request em chunk único (buffer fixo de 4096) pode quebrar requests fragmentadas (slow clients / headers grandes / body parcial).
+- `epoll_ctl` lança exceções (`runtime_error`) em falhas e pode encerrar o processo sem fallback de recuperação.
+- Fluxo de parsing/stream ainda não faz montagem incremental completa de request (headers/body em múltiplos chunks).
+
 **📋 Resumo por Categoria:**
 - **Core do Servidor:** 4/8 completos
 - **Métodos HTTP:** 3/3 implementados (versão básica)
@@ -53,9 +50,9 @@
 |---|-----------|--------|-------|
 | 1 | Compilar com `-Wall -Wextra -Werror -std=c++98` | ✅ FEITO | Makefile corrigido e build principal (`make`) validada em 2026-03-18 |
 | 2 | Arquivo de configuracao como argumento | ✅ FEITO | `main` carrega arquivo, valida e constrói config em runtime |
-| 3 | Servidor nao-bloqueante | ⚠️ PARCIAL | epoll + sockets non-blocking + dispatch básico; falta hardening de edge cases |
+| 3 | Servidor nao-bloqueante | ✅ FEITO (com hardening pendente) | epoll + sockets/CGI non-blocking validados em carga; edge cases de robustez ainda pendentes |
 | 4 | Usar apenas 1 poll/epoll para TODAS operacoes I/O | ✅ FEITO | Sockets de servidor/cliente e pipes de CGI passam pelo mesmo EpollManager |
-| 5 | Nunca fazer read/write sem poll() | ✅ FEITO (PIPELINE REDE/CGI) | Leitura/escrita de sockets e pipes CGI é dirigida por eventos EPOLLIN/EPOLLOUT |
+| 5 | Nunca fazer read/write sem poll() | ✅ FEITO (PIPELINE REDE/CGI) | Leitura/escrita de sockets e pipes CGI é dirigida por eventos EPOLLIN/EPOLLOUT; hardening de I/O transitório aplicado |
 | 6 | fork() apenas para CGI | ✅ FEITO | fork() so esta em CgiProcessExecutor.cpp |
 | 7 | Servidor nunca deve crashar | ⏸️ A TESTAR | Falta stress test, mas protecoes basicas existem |
 | 8 | Ouvir em multiplas portas | ❌ NAO FEITO | Server.cpp linha 5 aceita 1 Port/IpAddr, sem suporte multi-porta |

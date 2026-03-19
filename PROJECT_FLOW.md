@@ -1,6 +1,6 @@
 # Fluxo atual do projeto (estado até agora)
 
-Última atualização: 2026-03-16
+Última atualização: 2026-03-18
 Este documento descreve o fluxo **como o código está hoje** e o fluxo-alvo para chegar ao comportamento esperado do webserver.
 
 ## 1) Fluxo de configuração
@@ -21,10 +21,10 @@ Arquivo .conf
 
 ```text
 ConfigBuilder produz HttpBlock, mas:
-  -> main.cpp ainda NÃO inicializa o Server com base na config
+  -> main.cpp já inicializa o Server com base na config
   -> HttpBlock suporta apenas 1 ServerBlock (sem multi-server) //suave
   -> Valores hardcoded no ConnectionManager (porta 8080, paths de interpreters)
-  -> Config precisa alimentar o Server no bootstrap
+  -> Falta expansão para múltiplos server blocks/portas
 ```
 
 ## 2) Fluxo de rede (runtime atual)
@@ -38,13 +38,13 @@ ServerSocket (listen, non-blocking, SO_REUSEADDR)
           -> EPOLLIN: ConnectionManager.handleClientRead()
               -> ParseAndValidateHttpRequestUseCase
               -> isCgiRequest(.py/.php)? -> CgiOrchestrator.startCgi()
-              -> senão -> resposta stub "Static file logic goes here!"
+              -> senão -> HttpMethodOrchestrator (GET/POST/DELETE)
           -> EPOLLOUT: ConnectionManager.handleClientWrite()
               -> ClientSocket.flushWriteBuffer()
       -> CgiOrchestrator.collectFinished() -> dispatchCgiResponses()
 ```
 
-O pipeline HTTP está conectado: request é parseado e validado. CGI funciona end-to-end via CgiOrchestrator. O gap principal é **servir arquivos estáticos** (GET/POST/DELETE handlers reais).
+      O pipeline HTTP está conectado: request é parseado e validado. CGI funciona end-to-end via CgiOrchestrator. GET/POST/DELETE estão implementados em versão básica.
 
 ## 3) Fluxo HTTP (integrado ao runtime)
 
@@ -54,7 +54,7 @@ Raw HTTP request (dados do ClientSocket)
   -> HttpRequest (método, URI, headers, body)
   -> HttpRequestValidator.validate()
       - métodos: GET, POST, DELETE
-      - versão: HTTP/1.0 apenas (rejeita HTTP/1.1 — precisa corrigir)
+      - versão: HTTP/1.0 e HTTP/1.1
       - valida URI, Host header, Content-Length
   -> Se válido: roteamento (CGI ou estático)
   -> HttpResponse.serialize() -> ClientSocket write buffer
@@ -116,11 +116,11 @@ Cliente conecta
 | I/O apenas via poll/epoll | OK — toda leitura/escrita passa pelo epoll |
 | Sem uso de `errno` pós-I/O | OK — não encontrado no src/ |
 | CGI integrado ao event loop | OK — CgiOrchestrator registra pipes no epoll |
-| Métodos GET/POST/DELETE | PARCIAL — parser aceita, handlers não implementados |
+| Métodos GET/POST/DELETE | OK (versão básica) |
 | Múltiplas portas | PENDENTE — Server usa porta única hardcoded |
 | Páginas de erro padrão | PENDENTE — structs existem mas não conectadas |
-| Arquivo de configuração usado no bootstrap | PENDENTE — main.cpp não inicia Server |
-| HTTP/1.1 suportado | PENDENTE — validator rejeita HTTP/1.1 |
+| Arquivo de configuração usado no bootstrap | OK — main.cpp inicia via BuildServerConfig |
+| HTTP/1.1 suportado | OK |
 
 ## 7) Leitura rápida de maturidade
 
@@ -128,7 +128,15 @@ Cliente conecta
 - **Rede + Event Loop**: COMPLETO (epoll + CGI integrado)
 - **HTTP parse/validate/response**: COMPLETO (base)
 - **CGI end-to-end**: COMPLETO (fork, pipes, timeout, cleanup)
-- **Handlers de arquivo estático**: STUB — resposta hardcoded
-- **Config -> Server bootstrap**: PENDENTE — gap principal
+- **Handlers de arquivo estático**: FUNCIONAL (básico)
+- **Config -> Server bootstrap**: FUNCIONAL
 - **Multi-server/porta**: PENDENTE
 - **Integração final end-to-end**: foco das próximas entregas
+
+## 8) Edge Cases de Não-Bloqueio (hardening pendente)
+
+- `accept` agora drena em lote por evento (melhorando comportamento em burst de conexões).
+- Fluxos non-blocking de `send/recv` e pipes CGI foram endurecidos para não encerrar sessão imediatamente em falhas transitórias.
+- Leitura de request em buffer fixo (4096) sem acumular stream completo pode falhar em requests fragmentadas ou maiores.
+- Falhas de `epoll_ctl` levantam exceção e podem encerrar processo sem estratégia de recuperação.
+- Parsing HTTP ainda precisa de montagem incremental completa de headers/body para cenários de fragmentação.
