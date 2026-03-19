@@ -199,8 +199,13 @@ HttpBlock ConfigBuilder::_buildHttp(const ASTNode& node) const
 			const ASTBlock& child = static_cast< const ASTBlock& >(*children[i]);
 			if (child.getName() == "server")
 			{
-				http.server = _buildServer(*children[i]);
-				http.host	= http.server.host;
+				ServerBlock server = _buildServer(*children[i]);
+				http.servers.push_back(server);
+				if (http.servers.size() == 1)
+				{
+					http.server = server;
+					http.host   = server.host;
+				}
 			}
 		}
 	}
@@ -217,6 +222,7 @@ HttpBlock* ConfigBuilder::build(const ASTNode* ast)
 
 	const ASTRoot&				   root	 = static_cast< const ASTRoot& >(*ast);
 	const std::vector< ASTNode* >& stmts = root.getStatements();
+	HttpBlock*                  result = NULL;
 
 	for (size_t i = 0; i < stmts.size(); ++i)
 	{
@@ -226,20 +232,31 @@ HttpBlock* ConfigBuilder::build(const ASTNode* ast)
 
 		if (block.getName() == "http")
 		{
-			HttpBlock* result = new HttpBlock();
-			*result			  = _buildHttp(*stmts[i]);
-			return result;
+			HttpBlock* httpResult = new HttpBlock();
+			*httpResult			  = _buildHttp(*stmts[i]);
+			return httpResult;
 		}
 		if (block.getName() == "server")
 		{
-			HttpBlock* result		  = new HttpBlock();
-			result->server			  = _buildServer(*stmts[i]);
-			result->host			  = result->server.host;
-			result->clientMaxBodySize = result->server.clientMaxBodySize;
-			result->errorPages		  = result->server.errorPages;
-			return result;
+			if (result == NULL)
+				result = new HttpBlock();
+
+			ServerBlock server = _buildServer(*stmts[i]);
+			result->servers.push_back(server);
+
+			if (result->servers.size() == 1)
+			{
+				result->server             = server;
+				result->host               = server.host;
+				result->clientMaxBodySize  = server.clientMaxBodySize;
+				result->errorPages         = server.errorPages;
+			}
 		}
 	}
 
+	if (result != NULL && !result->servers.empty())
+		return result;
+
+	delete result;
 	return NULL;
 }

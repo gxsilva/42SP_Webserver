@@ -29,11 +29,13 @@ class GetRequestHandler
 		std::string	 resolveRoot(const LocationBlock* location) const;
 		std::vector<std::string> resolveIndexFiles() const;
 		bool		 resolveAutoIndex(const LocationBlock* location) const;
-		HttpResponse serveFile(const std::string& filePath);
+		HttpResponse buildErrorResponse(HttpStatusCode code, const LocationBlock* location) const;
+		HttpResponse serveFile(const std::string& filePath, const LocationBlock* location);
 		HttpResponse serveDirectory(const std::string& dirPath,
 			const std::string& uri,
 			const std::vector<std::string>& indexFiles,
-			bool autoIndex);
+			bool autoIndex,
+			const LocationBlock* location);
 		bool		 isTextFile(const std::string& mimeType) const;
 
 		GetRequestHandler(const GetRequestHandler&);

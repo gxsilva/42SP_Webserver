@@ -112,12 +112,19 @@ bool GetRequestHandler::isTextFile(const std::string& mimeType) const
 	return (false);
 }
 
+HttpResponse GetRequestHandler::buildErrorResponse(HttpStatusCode code, const LocationBlock* location) const
+{
+	if (_hasServerConfig)
+		return buildHtmlErrorResponse(code, _serverConfig, location);
+	return buildHtmlErrorResponse(code);
+}
+
 HttpResponse GetRequestHandler::handle(const HttpRequest& request)
 {
 	std::string uriPath = stripUriQuery(request.getUri());
 
 	if (uriPath.find("..") != std::string::npos)
-		return (buildHtmlErrorResponse(FORBIDDEN));
+		return (buildErrorResponse(FORBIDDEN, NULL));
 
 	const LocationBlock*   location = findBestLocation(uriPath);
 	if (location != NULL && !location->redirectUri.empty())
@@ -125,7 +132,7 @@ HttpResponse GetRequestHandler::handle(const HttpRequest& request)
 
 	if (location != NULL && !location->allowedMethods.empty()
 		&& location->allowedMethods.find("GET") == location->allowedMethods.end())
-		return (buildHtmlErrorResponse(METHOD_NOT_ALLOWED));
+		return (buildErrorResponse(METHOD_NOT_ALLOWED, location));
 
 	std::string			 root = resolveRoot(location);
 	std::vector< std::string > indexFiles = resolveIndexFiles();
@@ -133,18 +140,18 @@ HttpResponse GetRequestHandler::handle(const HttpRequest& request)
 	std::string			 filePath = resolveFilePath(root, uriPath);
 
 	if (DirectoryReader::isDirectory(filePath))
-		return (serveDirectory(filePath, uriPath, indexFiles, autoIndex));
+		return (serveDirectory(filePath, uriPath, indexFiles, autoIndex, location));
 
 	if (access(filePath.c_str(), F_OK) != 0)
-		return (buildHtmlErrorResponse(NOT_FOUND));
+		return (buildErrorResponse(NOT_FOUND, location));
 
 	if (access(filePath.c_str(), R_OK) != 0)
-		return (buildHtmlErrorResponse(FORBIDDEN));
+		return (buildErrorResponse(FORBIDDEN, location));
 
-	return (serveFile(filePath));
+	return (serveFile(filePath, location));
 }
 
-HttpResponse GetRequestHandler::serveFile(const std::string& filePath)
+HttpResponse GetRequestHandler::serveFile(const std::string& filePath, const LocationBlock* location)
 {
 	MimeType	mimeType(filePath);
 	std::string content;
@@ -156,7 +163,7 @@ HttpResponse GetRequestHandler::serveFile(const std::string& filePath)
 		readOk = FileReader::readBinaryFile(filePath, content);
 
 	if (!readOk)
-		return (buildHtmlErrorResponse(INTERNAL_SERVER_ERROR));
+		return (buildErrorResponse(INTERNAL_SERVER_ERROR, location));
 
 	HttpResponse response;
 	response.setStatusCode(static_cast<int>(OK));
@@ -168,7 +175,8 @@ HttpResponse GetRequestHandler::serveFile(const std::string& filePath)
 HttpResponse GetRequestHandler::serveDirectory(const std::string& dirPath,
 										   const std::string& uri,
 										   const std::vector<std::string>& indexFiles,
-										   bool autoIndex)
+									   bool autoIndex,
+									   const LocationBlock* location)
 {
 	std::string base = dirPath;
 	if (!base.empty() && base[base.size() - 1] != '/')
@@ -178,15 +186,15 @@ HttpResponse GetRequestHandler::serveDirectory(const std::string& dirPath,
 	{
 		std::string indexPath = base + indexFiles[i];
 		if (access(indexPath.c_str(), F_OK) == 0 && !DirectoryReader::isDirectory(indexPath))
-			return (serveFile(indexPath));
+			return (serveFile(indexPath, location));
 	}
 
 	if (!autoIndex)
-		return (buildHtmlErrorResponse(FORBIDDEN));
+		return (buildErrorResponse(FORBIDDEN, location));
 
 	std::vector<std::string> entries;
 	if (!DirectoryReader::readDirectory(dirPath, entries))
-		return (buildHtmlErrorResponse(FORBIDDEN));
+		return (buildErrorResponse(FORBIDDEN, location));
 
 	std::string html = _directoryLister.generateHtml(uri, entries);
 

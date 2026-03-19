@@ -27,7 +27,7 @@ struct HttpBlock
 		std::map< int, std::string > errorPages;
 
 		ServerBlock server;
-		// std::vector<ServerBlock>        servers;
+		std::vector< ServerBlock > servers;
 };
 
 #endif /* HTTPBLOCK_HPP */

@@ -1,6 +1,6 @@
 # Fluxo atual do projeto (estado até agora)
 
-Última atualização: 2026-03-18
+Última atualização: 2026-03-19
 Este documento descreve o fluxo **como o código está hoje** e o fluxo-alvo para chegar ao comportamento esperado do webserver.
 
 ## 1) Fluxo de configuração
@@ -22,9 +22,9 @@ Arquivo .conf
 ```text
 ConfigBuilder produz HttpBlock, mas:
   -> main.cpp já inicializa o Server com base na config
-  -> HttpBlock suporta apenas 1 ServerBlock (sem multi-server) //suave
+  -> HttpBlock agora agrega múltiplos ServerBlock (`servers`)
   -> Valores hardcoded no ConnectionManager (porta 8080, paths de interpreters)
-  -> Falta expansão para múltiplos server blocks/portas
+  -> Falta selecionar config por listener/fd no ConnectionManager
 ```
 
 ## 2) Fluxo de rede (runtime atual)
@@ -117,7 +117,7 @@ Cliente conecta
 | Sem uso de `errno` pós-I/O | OK — não encontrado no src/ |
 | CGI integrado ao event loop | OK — CgiOrchestrator registra pipes no epoll |
 | Métodos GET/POST/DELETE | OK (versão básica) |
-| Múltiplas portas | PENDENTE — Server usa porta única hardcoded |
+| Múltiplas portas | OK — Server registra múltiplos listen sockets no mesmo epoll |
 | Páginas de erro padrão | PENDENTE — structs existem mas não conectadas |
 | Arquivo de configuração usado no bootstrap | OK — main.cpp inicia via BuildServerConfig |
 | HTTP/1.1 suportado | OK |
@@ -130,7 +130,7 @@ Cliente conecta
 - **CGI end-to-end**: COMPLETO (fork, pipes, timeout, cleanup)
 - **Handlers de arquivo estático**: FUNCIONAL (básico)
 - **Config -> Server bootstrap**: FUNCIONAL
-- **Multi-server/porta**: PENDENTE
+- **Multi-server/porta**: FUNCIONAL (listen multi-porta)
 - **Integração final end-to-end**: foco das próximas entregas
 
 ## 8) Edge Cases de Não-Bloqueio (hardening pendente)

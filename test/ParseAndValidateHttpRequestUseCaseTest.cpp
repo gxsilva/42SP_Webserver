@@ -60,6 +60,30 @@ void testHttp11Version()
 	std::cout << "✓ testHttp11Version passed\n";
 }
 
+void testContentLengthMismatchReturns413()
+{
+	ParseAndValidateHttpRequestUseCase useCase;
+	std::string rawRequest = "POST /upload HTTP/1.1\r\nHost: localhost\r\nContent-Length: 10\r\n\r\nabc";
+
+	Result< HttpRequest > result = useCase.execute(rawRequest, 1024);
+	assert(result.isErr());
+	assert(useCase.getLastIssue().hasError());
+	assert(useCase.getLastIssue().getStatusCode() == 413);
+	std::cout << "✓ testContentLengthMismatchReturns413 passed\n";
+}
+
+void testClientMaxBodySizeReturns413()
+{
+	ParseAndValidateHttpRequestUseCase useCase;
+	std::string rawRequest = "POST /upload HTTP/1.1\r\nHost: localhost\r\nContent-Length: 5\r\n\r\nhello";
+
+	Result< HttpRequest > result = useCase.execute(rawRequest, 3);
+	assert(result.isErr());
+	assert(useCase.getLastIssue().hasError());
+	assert(useCase.getLastIssue().getStatusCode() == 413);
+	std::cout << "✓ testClientMaxBodySizeReturns413 passed\n";
+}
+
 int main()
 {
 	std::cout << "\n=== ParseAndValidateHttpRequestUseCase Tests ===\n\n";
@@ -69,7 +93,9 @@ int main()
 	testMissingHostHeader();
 	testInvalidMethod();
 	testHttp11Version();
+	testContentLengthMismatchReturns413();
+	testClientMaxBodySizeReturns413();
 
-	std::cout << "\n✓ All 5 tests passed!\n\n";
+	std::cout << "\n✓ All 7 tests passed!\n\n";
 	return 0;
 }

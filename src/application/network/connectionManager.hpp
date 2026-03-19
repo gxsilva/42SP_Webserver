@@ -13,6 +13,7 @@
 #include "epollManager.hpp"
 
 #include <iostream>
+#include <map>
 #include <poll.h>
 #include <unistd.h>
 #include <vector>
@@ -25,11 +26,24 @@ class ConnectionManager
 		ParseAndValidateHttpRequestUseCase	 _parseUseCase;
 		CgiOrchestrator*					 _cgiOrchestrator;
 		HttpMethodOrchestrator		 		 _methodOrchestrator;
+		std::map<int, ServerBlock>		 _listenerServerConfigs;
+		std::map<int, ServerBlock>		 _clientServerConfigs;
+		std::map<int, std::string>		 _requestReadBuffers;
+		ServerBlock							 _defaultServerConfig;
+		bool								 _hasDefaultServerConfig;
 
 		void queueResponse(int fd, ClientSocket& client, const HttpResponse& response);
 		bool readRawRequestOrDisconnect(int fd, ClientSocket& client, std::string& rawRequest);
 		bool parseRequestOrRespondBadRequest(int fd, ClientSocket& client, const std::string& rawRequest, HttpRequest& request);
-		bool handleCgiOrRespondBadGateway(int fd, ClientSocket& client, const HttpRequest& request);
+		bool handleCgiOrRespondBadGateway(int fd,
+			ClientSocket& client,
+			const HttpRequest& request,
+			const ServerBlock& serverConfig);
+		const ServerBlock* findClientServerConfig(int clientFd) const;
+		const ServerBlock* findListenerServerConfig(int listenerFd) const;
+		const ServerBlock& resolveServerConfigForClient(int clientFd) const;
+		size_t resolveMaxBodySizeForClient(int clientFd) const;
+		bool popCompleteRequestFromBuffer(int clientFd, std::string& rawRequest);
 		void disconnectClient(int fd);
 
 	public:
@@ -38,6 +52,7 @@ class ConnectionManager
 
 		void setCgiOrchestrator(CgiOrchestrator* orch);
 		void configureMethodOrchestrator(const ServerBlock& serverConfig);
+		void registerListenerConfig(int listenerFd, const ServerBlock& serverConfig);
 
 		void acceptNewClient(ServerSocket& serverSocket);
 		void handleClientRead(int fd);

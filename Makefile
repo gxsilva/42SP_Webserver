@@ -78,6 +78,7 @@ APPLICATION_SRCS	= $(A_SERVER_NET_DIR)/connectionManager.cpp \
 						$(A_SERVER_NET_DIR)/serverHandlers.cpp \
 						$(A_CGI_DIR)/CgiHandler.cpp \
 						$(A_CGI_DIR)/CgiOrchestrator.cpp \
+						$(A_CGI_DIR)/CgiRouteResolver.cpp \
 						$(APP_USECASES_DIR)/CompileSourceFile.cpp \
 						$(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp \
 						$(A_METHODS)/HttpMethodOrchestrator.cpp \
@@ -129,6 +130,7 @@ INFRA_SRCS			= $(I_COMMON_CONFIG_DIR)/TokenResult.cpp \
 						$(I_IO_CONFIG_DIR)/FileValidator.cpp \
 						$(I_IO_CONFIG_DIR)/SemanticAnalyzer.cpp \
 						$(I_IO_REQUEST_DIR)/HttpRequestParser.cpp \
+						$(I_IO_REQUEST_DIR)/HttpRequestFramer.cpp \
 						$(INFRA_DIR)/logging/Logger.cpp \
 						$(INFRA_DIR)/CGI/CgiProcessExecutor.cpp \
 						$(I_NETWORK_DIR)/clientSocket.cpp \
@@ -172,13 +174,18 @@ TEST_PARSE_VALIDATE_USECASE_SRCS		= $(TEST_PARSE_VALIDATE_USECASE_MAIN) \
 											$(D_ERRORS_VALIDATOR_DIR)/ValidationError.cpp \
 											$(APP_USECASES_DIR)/ParseAndValidateHttpRequestUseCase.cpp
 
+TEST_CGI_NAME					= test_cgi
+TEST_CGI_SRC					= $(TEST_DIR)/CgiTest.cpp
+
 TEST_BINS					= $(TEST_HTTP_REQUEST_BIN) \
 						  $(TEST_HTTP_VALIDATION_BIN) \
-						  $(TEST_PARSE_VALIDATE_USECASE_BIN)
+						  $(TEST_PARSE_VALIDATE_USECASE_BIN) \
+						  $(TEST_CGI_NAME)
 
 TEST_FILES					= $(TEST_HTTP_REQUEST_MAIN) \
 						  $(TEST_HTTP_VALIDATION_MAIN) \
-						  $(TEST_PARSE_VALIDATE_USECASE_MAIN)
+						  $(TEST_PARSE_VALIDATE_USECASE_MAIN) \
+						  $(TEST_CGI_SRC)
 
 TEST_OBJ_DIR					= $(OBJ_DIR)/test
 TEST_ALL_SRCS					= $(sort $(TEST_HTTP_REQUEST_SRCS) \
@@ -237,6 +244,9 @@ test: $(TEST_NAME) $(TEST_VALIDATION_NAME) $(TEST_USECASE_NAME) $(TEST_CGI_NAME)
 	@echo ""
 	@echo "🧪 Running use case tests..."
 	@./$(TEST_PARSE_VALIDATE_USECASE_BIN)
+	@echo ""
+	@echo "🧪 Running CGI tests..."
+	@./$(TEST_CGI_NAME)
 
 $(TEST_OBJ_DIR)/%.o: %.cpp | $(TEST_OBJ_DIR)
 	@echo "🛠️  Building test object..."
@@ -245,10 +255,6 @@ $(TEST_OBJ_DIR)/%.o: %.cpp | $(TEST_OBJ_DIR)
 
 $(TEST_OBJ_DIR):
 	@mkdir -p $(TEST_OBJ_DIR)
-	@./$(TEST_USECASE_NAME)
-	@echo ""
-	@echo "🧪 Running CGI tests..."
-	@./$(TEST_CGI_NAME)
 
 $(TEST_HTTP_REQUEST_BIN): $(TEST_HTTP_REQUEST_OBJ) | $(TEST_OBJ_DIR)
 	@echo "🛠️  Building parser test..."
@@ -316,6 +322,6 @@ clean_logs:
 	@rm -f log/log_*
 	@rm -f log_*
 
-.PHONY: all clean fclean re format check-tools tidy compile_commands_json clean_logs test test_http_request test_http_validation test_parse_validate_usecase
+.PHONY: all clean fclean re format check-tools tidy compile_commands_json clean_logs test test_http_request test_http_validation test_parse_validate_usecase test_cgi
 
 -include $(DEPS) $(TEST_DEPS)
