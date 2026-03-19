@@ -18,8 +18,8 @@ class HttpMethodOrchestrator
 		HttpResponse handle(const HttpRequest& request);
 
 	private:
-		GetRequestHandler	_getHandler;
-		PostRequestHandler	_postHandler;
+		GetRequestHandler	 _getHandler;
+		PostRequestHandler	 _postHandler;
 		DeleteRequestHandler _deleteHandler;
 
 		HttpResponse buildMethodNotAllowedResponse() const;

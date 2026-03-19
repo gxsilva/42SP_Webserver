@@ -1,14 +1,12 @@
 #include "connectionManager.hpp"
-#include "../CGI/CgiRouteResolver.hpp"
 #include "../../infrastructure/io/request/HttpRequestFramer.hpp"
+#include "../CGI/CgiRouteResolver.hpp"
 
 ConnectionManager::ConnectionManager(EpollManager& epollManager, const PollCapacity& maxEvents)
-	: _epollManager(epollManager),
-	  _clients(maxEvents.getAmount(), (ClientSocket*)NULL),
-	  _cgiOrchestrator(NULL),
+	: _epollManager(epollManager), _clients(maxEvents.getAmount(), (ClientSocket*)NULL), _cgiOrchestrator(NULL),
 	  _hasDefaultServerConfig(false)
 {
-	_defaultServerConfig.port = 80;
+	_defaultServerConfig.port			   = 80;
 	_defaultServerConfig.clientMaxBodySize = 0;
 }
 
@@ -22,14 +20,11 @@ ConnectionManager::~ConnectionManager()
 	_requestReadBuffers.clear();
 }
 
-void ConnectionManager::setCgiOrchestrator(CgiOrchestrator* orch)
-{
-	_cgiOrchestrator = orch;
-}
+void ConnectionManager::setCgiOrchestrator(CgiOrchestrator* orch) { _cgiOrchestrator = orch; }
 
 void ConnectionManager::configureMethodOrchestrator(const ServerBlock& serverConfig)
 {
-	_defaultServerConfig = serverConfig;
+	_defaultServerConfig	= serverConfig;
 	_hasDefaultServerConfig = true;
 }
 
@@ -61,7 +56,7 @@ void ConnectionManager::acceptNewClient(ServerSocket& serverSocket)
 		if (static_cast< size_t >(newClient) >= _clients.size())
 			_clients.resize(newClient + 128, (ClientSocket*)NULL);
 
-		_clients[newClient] = client;
+		_clients[newClient]				  = client;
 		const ServerBlock* listenerConfig = findListenerServerConfig(serverSocket.getPollFd());
 		if (listenerConfig != NULL)
 			_clientServerConfigs[newClient] = *listenerConfig;
@@ -85,7 +80,7 @@ void ConnectionManager::disconnectClient(int fd)
 
 const ServerBlock* ConnectionManager::findClientServerConfig(int clientFd) const
 {
-	std::map<int, ServerBlock>::const_iterator it = _clientServerConfigs.find(clientFd);
+	std::map< int, ServerBlock >::const_iterator it = _clientServerConfigs.find(clientFd);
 	if (it == _clientServerConfigs.end())
 		return NULL;
 	return &it->second;
@@ -93,7 +88,7 @@ const ServerBlock* ConnectionManager::findClientServerConfig(int clientFd) const
 
 const ServerBlock* ConnectionManager::findListenerServerConfig(int listenerFd) const
 {
-	std::map<int, ServerBlock>::const_iterator it = _listenerServerConfigs.find(listenerFd);
+	std::map< int, ServerBlock >::const_iterator it = _listenerServerConfigs.find(listenerFd);
 	if (it == _listenerServerConfigs.end())
 		return NULL;
 	return &it->second;
@@ -123,9 +118,7 @@ void ConnectionManager::queueResponse(int fd, ClientSocket& client, const HttpRe
 	_epollManager.modifyFd(fd, EPOLLOUT);
 }
 
-bool ConnectionManager::readRawRequestOrDisconnect(int fd,
-	ClientSocket& client,
-	std::string& rawRequest)
+bool ConnectionManager::readRawRequestOrDisconnect(int fd, ClientSocket& client, std::string& rawRequest)
 {
 	char buffer[4096];
 	memset(buffer, 0, sizeof(buffer));
@@ -140,26 +133,24 @@ bool ConnectionManager::readRawRequestOrDisconnect(int fd,
 	if (bytesRead < 0)
 		return false;
 
-	_requestReadBuffers[fd].append(buffer, static_cast<size_t>(bytesRead));
+	_requestReadBuffers[fd].append(buffer, static_cast< size_t >(bytesRead));
 	return popCompleteRequestFromBuffer(fd, rawRequest);
 }
 
 bool ConnectionManager::popCompleteRequestFromBuffer(int clientFd, std::string& rawRequest)
 {
-	std::map<int, std::string>::iterator it = _requestReadBuffers.find(clientFd);
+	std::map< int, std::string >::iterator it = _requestReadBuffers.find(clientFd);
 	if (it == _requestReadBuffers.end())
 		return false;
 
 	return HttpRequestFramer::popCompleteRequestFromBuffer(it->second, rawRequest);
 }
 
-bool ConnectionManager::parseRequestOrRespondBadRequest(int fd,
-	ClientSocket& client,
-	const std::string& rawRequest,
-	HttpRequest& request)
+bool ConnectionManager::parseRequestOrRespondBadRequest(int fd, ClientSocket& client, const std::string& rawRequest,
+														HttpRequest& request)
 {
-	size_t maxBodySize = resolveMaxBodySizeForClient(fd);
-	Result<HttpRequest> result = _parseUseCase.execute(rawRequest, maxBodySize);
+	size_t				  maxBodySize = resolveMaxBodySizeForClient(fd);
+	Result< HttpRequest > result	  = _parseUseCase.execute(rawRequest, maxBodySize);
 
 	if (result.isErr())
 	{
@@ -168,7 +159,7 @@ bool ConnectionManager::parseRequestOrRespondBadRequest(int fd,
 
 		HttpResponse response;
 		if (issue.hasError())
-			response.setStatusCode(static_cast<int>(issue.getStatusCode()));
+			response.setStatusCode(static_cast< int >(issue.getStatusCode()));
 		else
 			response.setStatusCode(400);
 		response.setHeader("Content-Type", "text/plain");
@@ -182,10 +173,8 @@ bool ConnectionManager::parseRequestOrRespondBadRequest(int fd,
 	return true;
 }
 
-bool ConnectionManager::handleCgiOrRespondBadGateway(int fd,
-	ClientSocket& client,
-	const HttpRequest& request,
-	const ServerBlock& serverConfig)
+bool ConnectionManager::handleCgiOrRespondBadGateway(int fd, ClientSocket& client, const HttpRequest& request,
+													 const ServerBlock& serverConfig)
 {
 	if (!CgiRouteResolver::isCgiRequest(request.getUri()) || _cgiOrchestrator == NULL)
 		return false;
@@ -221,8 +210,8 @@ void ConnectionManager::handleClientRead(int fd)
 	const ServerBlock& serverConfig = resolveServerConfigForClient(fd);
 	_methodOrchestrator.configure(serverConfig);
 
-	std::cout << "[Request] FD: " << fd << " | Method: " << request.getMethod()
-			  << " | URI: " << request.getUri() << std::endl;
+	std::cout << "[Request] FD: " << fd << " | Method: " << request.getMethod() << " | URI: " << request.getUri()
+			  << std::endl;
 
 	if (handleCgiOrRespondBadGateway(fd, *client, request, serverConfig))
 		return;

@@ -19,24 +19,22 @@ class GetRequestHandler
 		HttpResponse handle(const HttpRequest& request);
 
 	private:
-		ServerBlock				 _serverConfig;
-		bool					 _hasServerConfig;
-		DirectoryLister			 _directoryLister;
+		ServerBlock		_serverConfig;
+		bool			_hasServerConfig;
+		DirectoryLister _directoryLister;
 
-		std::string	 stripUriQuery(const std::string& uri) const;
-		const LocationBlock* findBestLocation(const std::string& uriPath) const;
-		std::string	 resolveFilePath(const std::string& root, const std::string& uriPath) const;
-		std::string	 resolveRoot(const LocationBlock* location) const;
-		std::vector<std::string> resolveIndexFiles() const;
-		bool		 resolveAutoIndex(const LocationBlock* location) const;
-		HttpResponse buildErrorResponse(HttpStatusCode code, const LocationBlock* location) const;
-		HttpResponse serveFile(const std::string& filePath, const LocationBlock* location);
-		HttpResponse serveDirectory(const std::string& dirPath,
-			const std::string& uri,
-			const std::vector<std::string>& indexFiles,
-			bool autoIndex,
-			const LocationBlock* location);
-		bool		 isTextFile(const std::string& mimeType) const;
+		std::string				   stripUriQuery(const std::string& uri) const;
+		const LocationBlock*	   findBestLocation(const std::string& uriPath) const;
+		std::string				   resolveFilePath(const std::string& root, const std::string& uriPath) const;
+		std::string				   resolveRoot(const LocationBlock* location) const;
+		std::vector< std::string > resolveIndexFiles() const;
+		bool					   resolveAutoIndex(const LocationBlock* location) const;
+		HttpResponse			   buildErrorResponse(HttpStatusCode code, const LocationBlock* location) const;
+		HttpResponse			   serveFile(const std::string& filePath, const LocationBlock* location);
+		HttpResponse			   serveDirectory(const std::string& dirPath, const std::string& uri,
+												  const std::vector< std::string >& indexFiles, bool autoIndex,
+												  const LocationBlock* location);
+		bool					   isTextFile(const std::string& mimeType) const;
 
 		GetRequestHandler(const GetRequestHandler&);
 		GetRequestHandler& operator=(const GetRequestHandler&);

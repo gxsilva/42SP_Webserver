@@ -11,8 +11,7 @@ bool DirectoryReader::isDirectory(const std::string& path)
 	return (S_ISDIR(st.st_mode));
 }
 
-bool DirectoryReader::readDirectory(const std::string& path,
-									std::vector<std::string>& entries)
+bool DirectoryReader::readDirectory(const std::string& path, std::vector< std::string >& entries)
 {
 	DIR* dir = opendir(path.c_str());
 	if (dir == NULL)

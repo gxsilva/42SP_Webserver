@@ -7,16 +7,13 @@
 
 #include <unistd.h>
 
-GetRequestHandler::GetRequestHandler()
-	: _hasServerConfig(false)
-{
-}
+GetRequestHandler::GetRequestHandler() : _hasServerConfig(false) {}
 
 GetRequestHandler::~GetRequestHandler() {}
 
 void GetRequestHandler::configure(const ServerBlock& serverConfig)
 {
-	_serverConfig = serverConfig;
+	_serverConfig	 = serverConfig;
 	_hasServerConfig = true;
 }
 
@@ -37,7 +34,7 @@ const LocationBlock* GetRequestHandler::findBestLocation(const std::string& uriP
 	if (!_hasServerConfig)
 		return NULL;
 
-	const LocationBlock* best = NULL;
+	const LocationBlock* best	 = NULL;
 	size_t				 bestLen = 0;
 
 	for (size_t i = 0; i < _serverConfig.locations.size(); ++i)
@@ -51,7 +48,7 @@ const LocationBlock* GetRequestHandler::findBestLocation(const std::string& uriP
 
 		if (candidate.path.size() > bestLen)
 		{
-			best = &candidate;
+			best	= &candidate;
 			bestLen = candidate.path.size();
 		}
 	}
@@ -126,18 +123,18 @@ HttpResponse GetRequestHandler::handle(const HttpRequest& request)
 	if (uriPath.find("..") != std::string::npos)
 		return (buildErrorResponse(FORBIDDEN, NULL));
 
-	const LocationBlock*   location = findBestLocation(uriPath);
+	const LocationBlock* location = findBestLocation(uriPath);
 	if (location != NULL && !location->redirectUri.empty())
 		return (buildPlainTextRedirectResponse(location->redirectCode, location->redirectUri));
 
-	if (location != NULL && !location->allowedMethods.empty()
-		&& location->allowedMethods.find("GET") == location->allowedMethods.end())
+	if (location != NULL && !location->allowedMethods.empty() &&
+		location->allowedMethods.find("GET") == location->allowedMethods.end())
 		return (buildErrorResponse(METHOD_NOT_ALLOWED, location));
 
-	std::string			 root = resolveRoot(location);
+	std::string				   root		  = resolveRoot(location);
 	std::vector< std::string > indexFiles = resolveIndexFiles();
-	bool				 autoIndex = resolveAutoIndex(location);
-	std::string			 filePath = resolveFilePath(root, uriPath);
+	bool					   autoIndex  = resolveAutoIndex(location);
+	std::string				   filePath	  = resolveFilePath(root, uriPath);
 
 	if (DirectoryReader::isDirectory(filePath))
 		return (serveDirectory(filePath, uriPath, indexFiles, autoIndex, location));
@@ -166,17 +163,15 @@ HttpResponse GetRequestHandler::serveFile(const std::string& filePath, const Loc
 		return (buildErrorResponse(INTERNAL_SERVER_ERROR, location));
 
 	HttpResponse response;
-	response.setStatusCode(static_cast<int>(OK));
+	response.setStatusCode(static_cast< int >(OK));
 	response.setHeader("Content-Type", mimeType.getValue());
 	response.setBody(content);
 	return (response);
 }
 
-HttpResponse GetRequestHandler::serveDirectory(const std::string& dirPath,
-										   const std::string& uri,
-										   const std::vector<std::string>& indexFiles,
-									   bool autoIndex,
-									   const LocationBlock* location)
+HttpResponse GetRequestHandler::serveDirectory(const std::string& dirPath, const std::string& uri,
+											   const std::vector< std::string >& indexFiles, bool autoIndex,
+											   const LocationBlock* location)
 {
 	std::string base = dirPath;
 	if (!base.empty() && base[base.size() - 1] != '/')
@@ -192,16 +187,15 @@ HttpResponse GetRequestHandler::serveDirectory(const std::string& dirPath,
 	if (!autoIndex)
 		return (buildErrorResponse(FORBIDDEN, location));
 
-	std::vector<std::string> entries;
+	std::vector< std::string > entries;
 	if (!DirectoryReader::readDirectory(dirPath, entries))
 		return (buildErrorResponse(FORBIDDEN, location));
 
 	std::string html = _directoryLister.generateHtml(uri, entries);
 
 	HttpResponse response;
-	response.setStatusCode(static_cast<int>(OK));
+	response.setStatusCode(static_cast< int >(OK));
 	response.setHeader("Content-Type", "text/html");
 	response.setBody(html);
 	return (response);
 }
-

@@ -10,8 +10,7 @@ class DirectoryLister
 		DirectoryLister();
 		~DirectoryLister();
 
-		std::string generateHtml(const std::string& uri,
-								 const std::vector<std::string>& entries) const;
+		std::string generateHtml(const std::string& uri, const std::vector< std::string >& entries) const;
 
 	private:
 		std::string escapeHtml(const std::string& text) const;

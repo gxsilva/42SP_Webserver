@@ -15,9 +15,9 @@ class MimeType
 	private:
 		std::string _type;
 
-		static std::map<std::string, std::string> initMimeMap();
-		std::string extractExtension(const std::string& path) const;
-		std::string lookupMime(const std::string& extension) const;
+		static std::map< std::string, std::string > initMimeMap();
+		std::string									extractExtension(const std::string& path) const;
+		std::string									lookupMime(const std::string& extension) const;
 };
 
 #endif

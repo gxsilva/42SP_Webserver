@@ -24,8 +24,7 @@ std::string DirectoryLister::escapeHtml(const std::string& text) const
 	return (result);
 }
 
-std::string DirectoryLister::generateHtml(const std::string& uri,
-										  const std::vector<std::string>& entries) const
+std::string DirectoryLister::generateHtml(const std::string& uri, const std::vector< std::string >& entries) const
 {
 	std::ostringstream oss;
 	oss << "<html>\r\n<head><title>Index of " << escapeHtml(uri) << "</title></head>\r\n"

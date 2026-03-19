@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <csignal>
 #include <iostream>
 #include <sstream>
-#include <csignal>
 
 #include "../../application/network/server.hpp"
 #include "../../domain/entities/server/HttpBlock.hpp"
@@ -26,11 +26,8 @@
 
 namespace
 {
-void handleTerminationSignal(int)
-{
-	Server::requestStop();
-}
-}
+	void handleTerminationSignal(int) { Server::requestStop(); }
+} // namespace
 
 int main(int argc, const char** argv)
 {
@@ -55,12 +52,12 @@ int main(int argc, const char** argv)
 		return 1;
 	}
 
-	HttpBlock* httpConfig = result.unwrap();
+	HttpBlock*				   httpConfig	 = result.unwrap();
 	std::vector< ServerBlock > serverConfigs = httpConfig->servers;
 	if (serverConfigs.empty())
 		serverConfigs.push_back(httpConfig->server);
 
-	int configuredPort = serverConfigs[0].port;
+	int			configuredPort = serverConfigs[0].port;
 	std::string configuredHost = serverConfigs[0].host;
 
 	if (configuredHost.empty())
@@ -68,7 +65,7 @@ int main(int argc, const char** argv)
 
 	try
 	{
-		Port port(configuredPort);
+		Port   port(configuredPort);
 		IpAddr ipAddr(configuredHost);
 
 		Server server(serverConfigs);

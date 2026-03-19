@@ -3,7 +3,7 @@
 
 namespace
 {
-volatile sig_atomic_t g_stopRequested = 0;
+	volatile sig_atomic_t g_stopRequested = 0;
 }
 
 Server::Server() : _epollManager(NULL), _connectionManager(NULL), _cgiOrchestrator(NULL), _isValid(false) {}
@@ -19,7 +19,7 @@ Server::Server(const std::vector< ServerBlock >& serverConfigs)
 	_epollManager	   = new EpollManager(maxEvents);
 	_connectionManager = new ConnectionManager(*_epollManager, maxEvents);
 	_connectionManager->configureMethodOrchestrator(_serverConfigs[0]);
-	_cgiOrchestrator   = new CgiOrchestrator(*_epollManager);
+	_cgiOrchestrator = new CgiOrchestrator(*_epollManager);
 	_connectionManager->setCgiOrchestrator(_cgiOrchestrator);
 
 	for (size_t i = 0; i < _serverConfigs.size(); ++i)
@@ -28,7 +28,7 @@ Server::Server(const std::vector< ServerBlock >& serverConfigs)
 		if (host.empty())
 			host = "0.0.0.0";
 
-		Port port(_serverConfigs[i].port);
+		Port   port(_serverConfigs[i].port);
 		IpAddr ipAddr(host);
 
 		ServerSocket* serverSocket = new ServerSocket(port, ipAddr);
@@ -129,12 +129,6 @@ ServerSocket* Server::findServerSocketByFd(int fd) const
 	return NULL;
 }
 
-void Server::requestStop()
-{
-	g_stopRequested = 1;
-}
+void Server::requestStop() { g_stopRequested = 1; }
 
-bool Server::shouldStop()
-{
-	return g_stopRequested != 0;
-}
+bool Server::shouldStop() { return g_stopRequested != 0; }

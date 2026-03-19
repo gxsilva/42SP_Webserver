@@ -6,8 +6,8 @@
 
 struct DirectoryReader
 {
-	static bool isDirectory(const std::string& path);
-	static bool readDirectory(const std::string& path, std::vector<std::string>& entries);
+		static bool isDirectory(const std::string& path);
+		static bool readDirectory(const std::string& path, std::vector< std::string >& entries);
 };
 
 #endif

@@ -26,8 +26,7 @@ std::string HttpRequestValidator::validate(const HttpRequest& req) const
 	return issue.getMessage();
 }
 
-HttpRequestValidationIssue HttpRequestValidator::validateDetailed(const HttpRequest& req,
-	size_t maxContentLength) const
+HttpRequestValidationIssue HttpRequestValidator::validateDetailed(const HttpRequest& req, size_t maxContentLength) const
 {
 	if (!isValidMethod(toUpperCase(req.getMethod())))
 	{
@@ -36,8 +35,8 @@ HttpRequestValidationIssue HttpRequestValidator::validateDetailed(const HttpRequ
 
 	if (!isValidVersion(toUpperCase(req.getVersion())))
 	{
-		return HttpRequestValidationIssue::badRequest("Invalid HTTP version: " + req.getVersion()
-			+ ". Only HTTP/1.0 and HTTP/1.1 are supported.");
+		return HttpRequestValidationIssue::badRequest("Invalid HTTP version: " + req.getVersion() +
+													  ". Only HTTP/1.0 and HTTP/1.1 are supported.");
 	}
 
 	if (!isValidUri(req.getUri()))
