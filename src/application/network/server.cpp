@@ -1,5 +1,7 @@
 #include "server.hpp"
+#include "../../infrastructure/logging/Logger.hpp"
 #include "../CGI/CgiOrchestrator.hpp"
+
 #include <sstream>
 
 namespace
@@ -7,18 +9,20 @@ namespace
 	volatile sig_atomic_t g_stopRequested = 0;
 }
 
-Server::Server() : _epollManager(NULL), _connectionManager(NULL), _cgiOrchestrator(NULL), _isValid(false) {}
+Server::Server() : _epollManager(NULL), _connectionManager(NULL), _cgiOrchestrator(NULL), _logger(NULL), _isValid(false)
+{
+}
 
-Server::Server(const std::vector< ServerBlock >& serverConfigs)
+Server::Server(const std::vector< ServerBlock >& serverConfigs, Logger* logger)
 	: _serverConfigs(serverConfigs), _epollManager(NULL), _connectionManager(NULL), _cgiOrchestrator(NULL),
-	  _isValid(false)
+	  _logger(logger), _isValid(false)
 {
 	if (_serverConfigs.empty())
 		return;
 
 	PollCapacity maxEvents(1024);
 	_epollManager	   = new EpollManager(maxEvents);
-	_connectionManager = new ConnectionManager(*_epollManager, maxEvents);
+	_connectionManager = new ConnectionManager(*_epollManager, maxEvents, logger);
 	_connectionManager->configureMethodOrchestrator(_serverConfigs[0]);
 	_cgiOrchestrator = new CgiOrchestrator(*_epollManager);
 	_connectionManager->setCgiOrchestrator(_cgiOrchestrator);

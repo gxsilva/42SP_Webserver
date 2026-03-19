@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:59:27 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/19 20:08:26 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/19 20:16:58 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int main(int argc, const char** argv)
 		Port   port(configuredPort);
 		IpAddr ipAddr(configuredHost);
 
-		Server server(serverConfigs);
+		Server server(serverConfigs, &logger);
 		if (!server.isValid())
 		{
 			logger.log("Server initialization failed.", ERROR);

@@ -6,6 +6,7 @@
 #include "../../domain/events/epollEvents.hpp"
 #include "../../domain/network/ipAddr.hpp"
 #include "../../domain/network/port.hpp"
+#include "../../infrastructure/logging/Logger.hpp"
 #include "../../infrastructure/network/clientSocket.hpp"
 #include "../../infrastructure/network/fileDescriptor.hpp"
 #include "../../infrastructure/network/serverSocket.hpp"
@@ -29,6 +30,7 @@ class Server
 		EpollManager*				 _epollManager;
 		ConnectionManager*			 _connectionManager;
 		CgiOrchestrator*			 _cgiOrchestrator;
+		Logger*						 _logger;
 		bool						 _isValid;
 		void						 processEvents(int count);
 		void						 handleEventByIndex(int index);
@@ -41,7 +43,7 @@ class Server
 
 	public:
 		Server();
-		Server(const std::vector< ServerBlock >& serverConfigs);
+		Server(const std::vector< ServerBlock >& serverConfigs, Logger* logger);
 		~Server();
 
 		bool isValid() const;

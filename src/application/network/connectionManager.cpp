@@ -1,10 +1,12 @@
 #include "connectionManager.hpp"
 #include "../../infrastructure/io/request/HttpRequestFramer.hpp"
+#include "../../infrastructure/logging/Logger.hpp"
 #include "../CGI/CgiRouteResolver.hpp"
+#include <sstream>
 
-ConnectionManager::ConnectionManager(EpollManager& epollManager, const PollCapacity& maxEvents)
+ConnectionManager::ConnectionManager(EpollManager& epollManager, const PollCapacity& maxEvents, Logger* logger)
 	: _epollManager(epollManager), _clients(maxEvents.getAmount(), (ClientSocket*)NULL), _cgiOrchestrator(NULL),
-	  _hasDefaultServerConfig(false)
+	  _hasDefaultServerConfig(false), _logger(logger)
 {
 	_defaultServerConfig.port			   = 80;
 	_defaultServerConfig.clientMaxBodySize = 0;
@@ -63,7 +65,9 @@ void ConnectionManager::acceptNewClient(ServerSocket& serverSocket)
 		else if (_hasDefaultServerConfig)
 			_clientServerConfigs[newClient] = _defaultServerConfig;
 
-		std::cout << "New client connected: fd " << newClient << std::endl;
+		std::stringstream ss;
+		ss << newClient;
+		_logger->log("New client connected: FD " + ss.str(), INFO);
 	}
 }
 
@@ -210,8 +214,9 @@ void ConnectionManager::handleClientRead(int fd)
 	const ServerBlock& serverConfig = resolveServerConfigForClient(fd);
 	_methodOrchestrator.configure(serverConfig);
 
-	std::cout << "[Request] FD: " << fd << " | Method: " << request.getMethod() << " | URI: " << request.getUri()
-			  << std::endl;
+	std::stringstream ss;
+	ss << fd << " | " << request.getMethod() << " | " << request.getUri();
+	_logger->log("Received request: FD " + ss.str(), INFO);
 
 	if (handleCgiOrRespondBadGateway(fd, *client, request, serverConfig))
 		return;
@@ -235,7 +240,9 @@ void ConnectionManager::handleClientWrite(int fd)
 
 	if (!client->hasDataToSend())
 	{
-		std::cout << "Response sent to fd " << fd << std::endl;
+		std::stringstream ss;
+		ss << fd;
+		_logger->log("Response sent to FD " + ss.str(), INFO);
 		disconnectClient(fd);
 	}
 }

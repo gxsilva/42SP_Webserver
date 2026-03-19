@@ -4,6 +4,7 @@
 #include "../../domain/entities/HttpRequest.hpp"
 #include "../../domain/entities/server/ServerBlock.hpp"
 #include "../../domain/events/epollEvents.hpp"
+#include "../../infrastructure/logging/Logger.hpp"
 #include "../../infrastructure/network/clientSocket.hpp"
 #include "../../infrastructure/network/serverSocket.hpp"
 #include "../../infrastructure/network/testHttpResponse.hpp"
@@ -31,6 +32,7 @@ class ConnectionManager
 		std::map< int, std::string >	   _requestReadBuffers;
 		ServerBlock						   _defaultServerConfig;
 		bool							   _hasDefaultServerConfig;
+		Logger*							   _logger;
 
 		void			   queueResponse(int fd, ClientSocket& client, const HttpResponse& response);
 		bool			   readRawRequestOrDisconnect(int fd, ClientSocket& client, std::string& rawRequest);
@@ -46,7 +48,7 @@ class ConnectionManager
 		void			   disconnectClient(int fd);
 
 	public:
-		ConnectionManager(EpollManager& epollManager, const PollCapacity& maxEvents);
+		ConnectionManager(EpollManager& epollManager, const PollCapacity& maxEvents, Logger* logger);
 		~ConnectionManager();
 
 		void setCgiOrchestrator(CgiOrchestrator* orch);
