@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <csignal>
 
 #include "../../application/network/server.hpp"
 #include "../../domain/entities/server/HttpBlock.hpp"
@@ -23,8 +24,19 @@
 #include "../../domain/network/ipAddr.hpp"
 #include "../../domain/network/port.hpp"
 
+namespace
+{
+void handleTerminationSignal(int)
+{
+	Server::requestStop();
+}
+}
+
 int main(int argc, const char** argv)
 {
+	std::signal(SIGINT, handleTerminationSignal);
+	std::signal(SIGTERM, handleTerminationSignal);
+
 	Logger logger;
 	logger.enableFileLogging();
 
