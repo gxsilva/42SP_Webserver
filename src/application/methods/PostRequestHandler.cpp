@@ -3,19 +3,17 @@
 #include "../../infrastructure/io/DirectoryReader.hpp"
 #include "HttpResponseBuilders.hpp"
 
+#include <cctype>
 #include <fcntl.h>
 #include <unistd.h>
 
-PostRequestHandler::PostRequestHandler()
-	: _hasServerConfig(false)
-{
-}
+PostRequestHandler::PostRequestHandler() : _hasServerConfig(false) {}
 
 PostRequestHandler::~PostRequestHandler() {}
 
 void PostRequestHandler::configure(const ServerBlock& serverConfig)
 {
-	_serverConfig = serverConfig;
+	_serverConfig	 = serverConfig;
 	_hasServerConfig = true;
 }
 
@@ -36,7 +34,7 @@ const LocationBlock* PostRequestHandler::findBestLocation(const std::string& uri
 	if (!_hasServerConfig)
 		return NULL;
 
-	const LocationBlock* best = NULL;
+	const LocationBlock* best	 = NULL;
 	size_t				 bestLen = 0;
 
 	for (size_t i = 0; i < _serverConfig.locations.size(); ++i)
@@ -50,7 +48,7 @@ const LocationBlock* PostRequestHandler::findBestLocation(const std::string& uri
 
 		if (candidate.path.size() > bestLen)
 		{
-			best = &candidate;
+			best	= &candidate;
 			bestLen = candidate.path.size();
 		}
 	}
@@ -88,7 +86,70 @@ std::string PostRequestHandler::parentDirectory(const std::string& path) const
 	return (path.substr(0, pos));
 }
 
-std::string PostRequestHandler::buildUploadTarget(const std::string& filePath) const
+bool PostRequestHandler::isSafeUploadFileName(const std::string& fileName) const
+{
+	if (fileName.empty())
+		return (false);
+
+	if (fileName == "." || fileName == "..")
+		return (false);
+
+	if (fileName.find('/') != std::string::npos || fileName.find('\\') != std::string::npos)
+		return (false);
+
+	if (fileName.find("..") != std::string::npos)
+		return (false);
+
+	for (size_t i = 0; i < fileName.size(); ++i)
+	{
+		unsigned char c = static_cast< unsigned char >(fileName[i]);
+		if (std::isalnum(c) || c == '.' || c == '_' || c == '-')
+			continue;
+		return (false);
+	}
+
+	return (true);
+}
+
+bool PostRequestHandler::extractUploadFileName(const std::string& uri, std::string& uploadFileName) const
+{
+	uploadFileName.clear();
+
+	std::string::size_type queryStart = uri.find('?');
+	if (queryStart == std::string::npos)
+		return (true);
+
+	std::string::size_type fragStart = uri.find('#', queryStart + 1);
+	std::string			   query =
+		uri.substr(queryStart + 1, (fragStart == std::string::npos) ? std::string::npos : fragStart - queryStart - 1);
+
+	std::string::size_type pos = 0;
+	while (pos <= query.size())
+	{
+		std::string::size_type amp	= query.find('&', pos);
+		std::string			   pair = query.substr(pos, (amp == std::string::npos) ? std::string::npos : amp - pos);
+
+		std::string::size_type eq	 = pair.find('=');
+		std::string			   key	 = pair.substr(0, eq);
+		std::string			   value = (eq == std::string::npos) ? "" : pair.substr(eq + 1);
+
+		if (key == "filename")
+		{
+			if (!isSafeUploadFileName(value))
+				return (false);
+			uploadFileName = value;
+			return (true);
+		}
+
+		if (amp == std::string::npos)
+			break;
+		pos = amp + 1;
+	}
+
+	return (true);
+}
+
+std::string PostRequestHandler::buildUploadTarget(const std::string& filePath, const std::string& uploadFileName) const
 {
 	if (!DirectoryReader::isDirectory(filePath))
 		return (filePath);
@@ -96,7 +157,10 @@ std::string PostRequestHandler::buildUploadTarget(const std::string& filePath) c
 	std::string target = filePath;
 	if (!target.empty() && target[target.size() - 1] != '/')
 		target += "/";
-	target += "post_upload.txt";
+	if (uploadFileName.empty())
+		target += "post_upload.txt";
+	else
+		target += uploadFileName;
 	return (target);
 }
 
@@ -116,9 +180,8 @@ HttpResponse PostRequestHandler::buildErrorResponse(HttpStatusCode code, const L
 	return buildHtmlErrorResponse(code);
 }
 
-HttpResponse PostRequestHandler::writeRequestBody(const HttpRequest& request,
-	const std::string& targetPath,
-	const LocationBlock* location) const
+HttpResponse PostRequestHandler::writeRequestBody(const HttpRequest& request, const std::string& targetPath,
+												  const LocationBlock* location) const
 {
 	std::string dirPath = parentDirectory(targetPath);
 	if (!DirectoryReader::isDirectory(dirPath))
@@ -131,7 +194,7 @@ HttpResponse PostRequestHandler::writeRequestBody(const HttpRequest& request,
 	if (fd < 0)
 		return (buildErrorResponse(INTERNAL_SERVER_ERROR, location));
 
-	const std::string& body = request.getBody();
+	const std::string& body			= request.getBody();
 	ssize_t			   totalWritten = 0;
 
 	while (totalWritten < static_cast< ssize_t >(body.size()))
@@ -170,16 +233,20 @@ HttpResponse PostRequestHandler::handle(const HttpRequest& request)
 	if (location != NULL && !location->redirectUri.empty())
 		return (buildPlainTextRedirectResponse(location->redirectCode, location->redirectUri));
 
+	std::string uploadFileName;
+	if (!extractUploadFileName(request.getUri(), uploadFileName))
+		return (buildErrorResponse(BAD_REQUEST, location));
+
 	if (!isMethodAllowed(location))
 		return (buildErrorResponse(METHOD_NOT_ALLOWED, location));
 
-	if (_hasServerConfig && _serverConfig.clientMaxBodySize > 0
-		&& request.getBody().size() > _serverConfig.clientMaxBodySize)
+	if (_hasServerConfig && _serverConfig.clientMaxBodySize > 0 &&
+		request.getBody().size() > _serverConfig.clientMaxBodySize)
 		return (buildErrorResponse(CONTENT_TOO_LARGE, location));
 
-	std::string root = resolveRoot(location);
-	std::string filePath = resolveFilePath(root, uriPath);
-	std::string targetPath = buildUploadTarget(filePath);
+	std::string root	   = resolveRoot(location);
+	std::string filePath   = resolveFilePath(root, uriPath);
+	std::string targetPath = buildUploadTarget(filePath, uploadFileName);
 
 	return (writeRequestBody(request, targetPath, location));
 }
