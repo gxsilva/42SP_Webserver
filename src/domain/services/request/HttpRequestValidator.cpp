@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <sstream>
 
-const size_t HttpRequestValidator::MAX_CONTENT_LENGTH;
+const size_t HttpRequestValidator::DEFAULT_MAX_CONTENT_LENGTH = 1048576;
 
 HttpRequestValidator::HttpRequestValidator() {}
 
@@ -20,42 +20,61 @@ std::string HttpRequestValidator::toUpperCase(const std::string& str) const
 
 std::string HttpRequestValidator::validate(const HttpRequest& req) const
 {
+	HttpRequestValidationIssue issue = validateDetailed(req, DEFAULT_MAX_CONTENT_LENGTH);
+	if (!issue.hasError())
+		return std::string();
+	return issue.getMessage();
+}
+
+HttpRequestValidationIssue HttpRequestValidator::validateDetailed(const HttpRequest& req,
+	size_t maxContentLength) const
+{
 	if (!isValidMethod(toUpperCase(req.getMethod())))
 	{
-		return "Invalid HTTP method: " + req.getMethod();
+		return HttpRequestValidationIssue::badRequest("Invalid HTTP method: " + req.getMethod());
 	}
 
 	if (!isValidVersion(toUpperCase(req.getVersion())))
 	{
-		return "Invalid HTTP version: " + req.getVersion() + ". Only HTTP/1.0 and HTTP/1.1 are supported.";
+		return HttpRequestValidationIssue::badRequest("Invalid HTTP version: " + req.getVersion()
+			+ ". Only HTTP/1.0 and HTTP/1.1 are supported.");
 	}
 
 	if (!isValidUri(req.getUri()))
 	{
-		return "Invalid URI: URI cannot be empty.";
+		return HttpRequestValidationIssue::badRequest("Invalid URI: URI cannot be empty.");
 	}
 
 	if (!hasRequiredHeaders(req))
 	{
-		return "Missing required header: Host is required.";
+		return HttpRequestValidationIssue::badRequest("Missing required header: Host is required.");
 	}
 
 	if (isPostWithoutContentLength(req))
 	{
-		return "400 Bad Request: POST requires Content-Length header";
+		return HttpRequestValidationIssue::badRequest("POST requires Content-Length header");
 	}
 
 	if (!isValidContentLength(req))
 	{
-		return "Invalid Content-Length header value.";
+		return HttpRequestValidationIssue::badRequest("Invalid Content-Length header value.");
+	}
+
+	if (isContentTooLarge(req, maxContentLength))
+	{
+		std::ostringstream oss;
+		oss << "Content-Length exceeds configured limit";
+		if (maxContentLength > 0)
+			oss << " (limit=" << maxContentLength << " bytes)";
+		return HttpRequestValidationIssue::contentTooLarge(oss.str());
 	}
 
 	if (!isBodyLengthValid(req))
 	{
-		return "400 Bad Request: Content-Length mismatch with actual body size";
+		return HttpRequestValidationIssue::contentTooLarge("Content-Length mismatch with actual body size");
 	}
 
-	return std::string();
+	return HttpRequestValidationIssue::none();
 }
 
 bool HttpRequestValidator::isValidMethod(const std::string& method) const
@@ -126,12 +145,23 @@ bool HttpRequestValidator::isValidContentLength(const HttpRequest& req) const
 		return false;
 	}
 
-	if (static_cast< size_t >(contentLength) > MAX_CONTENT_LENGTH)
-	{
+	return true;
+}
+bool HttpRequestValidator::isContentTooLarge(const HttpRequest& req, size_t maxContentLength) const
+{
+	if (maxContentLength == 0 || !hasContentLengthHeader(req))
 		return false;
+
+	long contentLength = getContentLengthValue(req);
+	if (contentLength < 0)
+		return false;
+
+	if (static_cast< size_t >(contentLength) > maxContentLength)
+	{
+		return true;
 	}
 
-	return true;
+	return false;
 }
 
 bool HttpRequestValidator::isBodyLengthValid(const HttpRequest& req) const
