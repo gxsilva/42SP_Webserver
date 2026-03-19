@@ -264,7 +264,11 @@ slowhttptest -c 1000 -H -g -o slow.html -i 10 -r 200 -t GET -u http://localhost:
 ## 🚀 Próxima Sessão de Trabalho
 
 **Prioridade 1:** Implementar suporte completo a `error_page` no pipeline de resposta
+
 **Prioridade 2:** Consumir `cgi_path`/`cgi_ext` no pipeline de CGI (resolver + execução)
+
 **Prioridade 3:** Fechar suporte de `listen interface:porta` no parse/build/runtime
+
 **Prioridade 4:** Expandir parser incremental para `Transfer-Encoding: chunked`
+
 **Prioridade 5:** Endurecer tratamento de falhas de `epoll_ctl` e adicionar stress/chaos tests
