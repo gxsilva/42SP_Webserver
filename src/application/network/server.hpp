@@ -22,14 +22,15 @@ class CgiOrchestrator;
 class Server
 {
 	private:
-		ServerSocket	   _serverSocket;
+		std::vector< ServerSocket* > _serverSockets;
+		std::vector< ServerBlock >   _serverConfigs;
 		EpollManager*	   _epollManager;
 		ConnectionManager* _connectionManager;
 		CgiOrchestrator*   _cgiOrchestrator;
 		bool			   _isValid;
 		void			   processEvents(int count);
 		void			   handleEventByIndex(int index);
-		bool			   isServerSocket(int fd) const;
+		ServerSocket*       findServerSocketByFd(int fd) const;
 
 		bool handleError(const std::string& msg);
 
@@ -38,7 +39,7 @@ class Server
 
 	public:
 		Server();
-		Server(const Port& port, const IpAddr& ipAddr, const ServerBlock& serverConfig);
+		Server(const std::vector< ServerBlock >& serverConfigs);
 		~Server();
 
 		bool isValid() const;

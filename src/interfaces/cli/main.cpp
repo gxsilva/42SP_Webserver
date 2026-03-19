@@ -44,9 +44,12 @@ int main(int argc, const char** argv)
 	}
 
 	HttpBlock* httpConfig = result.unwrap();
-	ServerBlock serverConfig = httpConfig->server;
-	int configuredPort = serverConfig.port;
-	std::string configuredHost = serverConfig.host;
+	std::vector< ServerBlock > serverConfigs = httpConfig->servers;
+	if (serverConfigs.empty())
+		serverConfigs.push_back(httpConfig->server);
+
+	int configuredPort = serverConfigs[0].port;
+	std::string configuredHost = serverConfigs[0].host;
 
 	if (configuredHost.empty())
 		configuredHost = "127.0.0.1";
@@ -56,7 +59,7 @@ int main(int argc, const char** argv)
 		Port port(configuredPort);
 		IpAddr ipAddr(configuredHost);
 
-		Server server(port, ipAddr, serverConfig);
+		Server server(serverConfigs);
 		if (!server.isValid())
 		{
 			logger.log("Server initialization failed.", ERROR);
@@ -66,6 +69,8 @@ int main(int argc, const char** argv)
 
 		std::stringstream ss;
 		ss << "Server running at http://" << ipAddr.getValue() << ":" << port.getValue();
+		if (serverConfigs.size() > 1)
+			ss << " (+" << (serverConfigs.size() - 1) << " listener(s))";
 		std::cout << ss.str() << std::endl;
 		logger.log(ss.str(), INFO);
 		server.run();
