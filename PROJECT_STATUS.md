@@ -1,10 +1,10 @@
 # Webserv - Status do Projeto
 
-**Última atualização:** 2026-03-18
+**Última atualização:** 2026-03-19
 
 ## 📊 Resumo Executivo
 
-### Progresso Geral: ~68% (21/31 requisitos obrigatórios)
+### Progresso Geral: ~71% (22/31 requisitos obrigatórios)
 
 **✅ COMPLETO (68%):**
 - Infraestrutura de rede (epoll, sockets non-blocking)
@@ -18,10 +18,9 @@
 - CGI básico (CgiHandler, CgiEnvironment, CgiProcessExecutor)
 
 **🔴 BLOQUEIOS CRÍTICOS:**
-1. **Suporte multi-porta/server blocks** → servidor ainda roda com um server socket por processo
-2. **client_max_body_size inconsistente** → validador ainda usa limite fixo de 1MB
-3. **Config incompleta para subject** → páginas de erro custom por rota pendentes
-4. **POST ainda simplificado** → sem multipart/form-data
+1. **client_max_body_size inconsistente** → validador ainda usa limite fixo de 1MB
+2. **Config incompleta para subject** → páginas de erro custom por rota pendentes
+3. **POST ainda simplificado** → sem multipart/form-data
 
 ### Diagnóstico de não-bloqueio (2026-03-18)
 - Estruturalmente o servidor está em modo não-bloqueante: sockets e pipes CGI em `O_NONBLOCK` + I/O dirigido por epoll.
@@ -35,7 +34,7 @@
 - Fluxo de parsing/stream ainda não faz montagem incremental completa de request (headers/body em múltiplos chunks).
 
 **📋 Resumo por Categoria:**
-- **Core do Servidor:** 4/8 completos
+- **Core do Servidor:** 5/8 completos
 - **Métodos HTTP:** 3/3 implementados (versão básica)
 - **Responses:** 2/3 funcionais
 - **Config:** 8/11 completos
@@ -55,7 +54,7 @@
 | 5 | Nunca fazer read/write sem poll() | ✅ FEITO (PIPELINE REDE/CGI) | Leitura/escrita de sockets e pipes CGI é dirigida por eventos EPOLLIN/EPOLLOUT; hardening de I/O transitório aplicado |
 | 6 | fork() apenas para CGI | ✅ FEITO | fork() so esta em CgiProcessExecutor.cpp |
 | 7 | Servidor nunca deve crashar | ⏸️ A TESTAR | Falta stress test, mas protecoes basicas existem |
-| 8 | Ouvir em multiplas portas | ❌ NAO FEITO | Server.cpp linha 5 aceita 1 Port/IpAddr, sem suporte multi-porta |
+| 8 | Ouvir em multiplas portas | ✅ FEITO | `Server` registra múltiplos sockets de listen no mesmo epoll e aceita conexões em portas distintas (validado em 8091/8092) |
 
 ### Metodos HTTP
 | # | Requisito | Status | Notas |
@@ -77,7 +76,7 @@
 | 15 | Lexer (tokenizacao) | ✅ FEITO | Lexer.cpp completo e testado |
 | 16 | Parser (tokens -> AST) | ✅ FEITO | Parser.cpp completo, gera ASTNode tree |
 | 17 | AST -> objeto Config | ✅ FEITO | ConfigBuilder gera HttpBlock/ServerBlock e main usa config em runtime |
-| 18 | Definir interface:porta | ⚠️ PARCIAL | `listen`/`host` são aplicados a partir da config; ainda sem suporte multi-server/multi-porta |
+| 18 | Definir interface:porta | ✅ FEITO (base) | `ConfigBuilder` agrega múltiplos `server` blocks e `main` inicializa listeners múltiplos no mesmo processo |
 | 19 | Paginas de erro customizadas (por config) | ❌ NAO FEITO | Sem Config para mapear error_page |
 | 20 | Tamanho max do corpo (client_max_body_size) | ⚠️ PARCIAL | POST handler usa config; validator global ainda hardcoded em 1MB |
 | 21 | Rotas com metodos aceitos | ✅ FEITO (BÁSICO) | Prefix match por location + allow_methods em GET/POST/DELETE |
@@ -117,7 +116,7 @@ Sockets -> epoll -> accept -> handleClientRead -> dispatch (CGI / GET / POST / D
 ✅ AST -> Config (ConfigBuilder)
      |
      v
-❌ Config -> Server multi-porta (atualmente 1 porta por processo)
+✅ Config -> Server multi-porta (múltiplos listeners por processo)
      |
      v
 ✅ Request chega -> epoll ready
@@ -157,10 +156,10 @@ Sockets -> epoll -> accept -> handleClientRead -> dispatch (CGI / GET / POST / D
 - GET/POST/DELETE: aplicar `error_page` custom quando configurado
 
 ### 5. Multiplas portas/server blocks
-- Config retornar vector<ServerConfig>
-- main.cpp criar vector<Server*>, cada um com sua porta
-- Adicionar todos ServerSocket fds no mesmo EpollManager
-- connectionManager identificar qual Config usar por fd
+- ✅ Config retorna múltiplos `ServerBlock` em `HttpBlock.servers`
+- ✅ `main.cpp` inicializa `Server` com vetor de server blocks
+- ✅ `Server` adiciona todos os listen fds no mesmo `EpollManager`
+- ⚠️ pendente: `ConnectionManager` selecionar config específica por listener/fd quando as portas tiverem regras diferentes
 
 ---
 
@@ -172,7 +171,7 @@ Sockets -> epoll -> accept -> handleClientRead -> dispatch (CGI / GET / POST / D
 | 2 | `TokenResult.cpp` | Destructor nao deleta tokens (comentado) | BAIXA (leak) |
 | 3 | `HttpRequestValidator.cpp` | Limite de `Content-Length` fixo (1MB), ignora `client_max_body_size` por server | ALTA |
 | 4 | `connectionManager.cpp` | Dispatcher HTTP ainda acoplado no connection manager (SRP fraco) | MEDIA |
-| 5 | `server.cpp` | Instancia de server ainda limitada a 1 socket/porta por processo | ALTA |
+| 5 | `connectionManager.cpp` | Falta associar conexão -> `ServerBlock` por listener, podendo aplicar regras da porta errada em setups divergentes | ALTA |
 | 6 | `connectionManager.cpp` | Roteamento de CGI ainda baseado em extensão fixa (.py/.php), sem usar integralmente `cgi_path`/`cgi_ext` da config | MEDIA |
 | 7 | `interfaces/old_main.cpp` | Codigo morto | BAIXA |
 | 8 | `ErrorPageGenerator` | Existe mas nunca usado no pipeline real | MEDIA |
@@ -253,6 +252,6 @@ slowhttptest -c 1000 -H -g -o slow.html -i 10 -r 200 -t GET -u http://localhost:
 
 ## 🚀 Próxima Sessão de Trabalho
 
-**Prioridade 1:** Suporte multi-porta + múltiplos server blocks
+**Prioridade 1:** Associar conexão à config do listener (porta) no `ConnectionManager`
 **Prioridade 2:** Unificar `client_max_body_size` no validator/handler (retorno 413 consistente)
 **Prioridade 3:** Implementar `error_page` custom por location e alinhar roteamento CGI com config (`cgi_path`/`cgi_ext`)
