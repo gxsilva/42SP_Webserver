@@ -6,12 +6,20 @@ ParseAndValidateHttpRequestUseCase::~ParseAndValidateHttpRequestUseCase() {}
 
 Result< HttpRequest > ParseAndValidateHttpRequestUseCase::execute(const std::string& rawRequest)
 {
+	return execute(rawRequest, 0);
+}
+
+Result< HttpRequest > ParseAndValidateHttpRequestUseCase::execute(const std::string& rawRequest,
+	size_t maxBodySize)
+{
 	HttpRequest request = _parser.parse(rawRequest);
 
-	std::string validationError = _validator.validate(request);
+	_lastIssue = _validator.validateDetailed(request, maxBodySize);
 
-	if (validationError.empty())
+	if (!_lastIssue.hasError())
 		return Result< HttpRequest >(request);
-	else
-		return Result< HttpRequest >(validationError);
+
+	return Result< HttpRequest >(_lastIssue.getMessage());
 }
+
+const HttpRequestValidationIssue& ParseAndValidateHttpRequestUseCase::getLastIssue() const { return _lastIssue; }

@@ -11,6 +11,7 @@
 #include "connectionManager.hpp"
 #include "epollManager.hpp"
 #include <cstddef>
+#include <csignal>
 #include <iostream>
 #include <stdio.h>
 #include <string>
@@ -44,6 +45,9 @@ class Server
 
 		bool isValid() const;
 		void run();
+
+		static void requestStop();
+		static bool shouldStop();
 };
 
 #endif

@@ -1,6 +1,11 @@
 #include "server.hpp"
 #include "../CGI/CgiOrchestrator.hpp"
 
+namespace
+{
+volatile sig_atomic_t g_stopRequested = 0;
+}
+
 Server::Server() : _epollManager(NULL), _connectionManager(NULL), _cgiOrchestrator(NULL), _isValid(false) {}
 
 Server::Server(const std::vector< ServerBlock >& serverConfigs)
@@ -46,7 +51,8 @@ Server::Server(const std::vector< ServerBlock >& serverConfigs)
 			return;
 		}
 
-		_epollManager->addFd(serverSocket->getPollFd(), POLLIN);
+		_epollManager->addFd(serverSocket->getPollFd(), EPOLLIN);
+		_connectionManager->registerListenerConfig(serverSocket->getPollFd(), _serverConfigs[i]);
 		_serverSockets.push_back(serverSocket);
 	}
 
@@ -68,12 +74,12 @@ bool Server::isValid() const { return _isValid; }
 
 void Server::run()
 {
-	while (true)
+	while (!shouldStop())
 	{
-		int count = _epollManager->waitForEvents(1000);
+		int count = _epollManager->waitForEvents();
 
 		if (count < 0)
-			break;
+			continue;
 		processEvents(count);
 	}
 }
@@ -121,4 +127,14 @@ ServerSocket* Server::findServerSocketByFd(int fd) const
 			return _serverSockets[i];
 	}
 	return NULL;
+}
+
+void Server::requestStop()
+{
+	g_stopRequested = 1;
+}
+
+bool Server::shouldStop()
+{
+	return g_stopRequested != 0;
 }

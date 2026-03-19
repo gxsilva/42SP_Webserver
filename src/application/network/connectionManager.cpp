@@ -1,49 +1,15 @@
 #include "connectionManager.hpp"
-
-static bool isCgiRequest(const std::string& uri)
-{
-	std::string path = uri;
-	std::string::size_type queryPos = path.find('?');
-	if (queryPos != std::string::npos)
-		path = path.substr(0, queryPos);
-
-	if (path.size() >= 3 && path.substr(path.size() - 3) == ".py")
-		return true;
-	if (path.size() >= 4 && path.substr(path.size() - 4) == ".php")
-		return true;
-	return false;
-}
-
-static std::string getInterpreter(const std::string& uri)
-{
-	std::string path = uri;
-	std::string::size_type queryPos = path.find('?');
-	if (queryPos != std::string::npos)
-		path = path.substr(0, queryPos);
-
-	if (path.size() >= 3 && path.substr(path.size() - 3) == ".py")
-		return "/usr/bin/python3";
-	return "/usr/bin/php-cgi";
-}
-
-static CgiRouteConfig buildCgiConfig(const HttpRequest& request)
-{
-	CgiRouteConfig config;
-	std::string uriPath = request.getUri();
-	std::string::size_type queryPos = uriPath.find('?');
-	if (queryPos != std::string::npos)
-		uriPath = uriPath.substr(0, queryPos);
-
-	config.scriptPath = "./www" + uriPath;
-	config.interpreterPath = getInterpreter(request.getUri());
-	config.serverName	   = "localhost";
-	config.serverPort	   = 8080;
-	return config;
-}
+#include "../CGI/CgiRouteResolver.hpp"
+#include "../../infrastructure/io/request/HttpRequestFramer.hpp"
 
 ConnectionManager::ConnectionManager(EpollManager& epollManager, const PollCapacity& maxEvents)
-	: _epollManager(epollManager), _clients(maxEvents.getAmount(), (ClientSocket*)NULL), _cgiOrchestrator(NULL)
+	: _epollManager(epollManager),
+	  _clients(maxEvents.getAmount(), (ClientSocket*)NULL),
+	  _cgiOrchestrator(NULL),
+	  _hasDefaultServerConfig(false)
 {
+	_defaultServerConfig.port = 80;
+	_defaultServerConfig.clientMaxBodySize = 0;
 }
 
 ConnectionManager::~ConnectionManager()
@@ -51,6 +17,9 @@ ConnectionManager::~ConnectionManager()
 	for (size_t i = 0; i < _clients.size(); i++)
 		delete _clients[i];
 	_clients.clear();
+	_clientServerConfigs.clear();
+	_listenerServerConfigs.clear();
+	_requestReadBuffers.clear();
 }
 
 void ConnectionManager::setCgiOrchestrator(CgiOrchestrator* orch)
@@ -60,7 +29,15 @@ void ConnectionManager::setCgiOrchestrator(CgiOrchestrator* orch)
 
 void ConnectionManager::configureMethodOrchestrator(const ServerBlock& serverConfig)
 {
-	_methodOrchestrator.configure(serverConfig);
+	_defaultServerConfig = serverConfig;
+	_hasDefaultServerConfig = true;
+}
+
+void ConnectionManager::registerListenerConfig(int listenerFd, const ServerBlock& serverConfig)
+{
+	if (listenerFd < 0)
+		return;
+	_listenerServerConfigs[listenerFd] = serverConfig;
 }
 
 void ConnectionManager::acceptNewClient(ServerSocket& serverSocket)
@@ -80,11 +57,16 @@ void ConnectionManager::acceptNewClient(ServerSocket& serverSocket)
 			continue;
 		}
 
-		_epollManager.addFd(newClient, POLLIN);
+		_epollManager.addFd(newClient, EPOLLIN);
 		if (static_cast< size_t >(newClient) >= _clients.size())
 			_clients.resize(newClient + 128, (ClientSocket*)NULL);
 
 		_clients[newClient] = client;
+		const ServerBlock* listenerConfig = findListenerServerConfig(serverSocket.getPollFd());
+		if (listenerConfig != NULL)
+			_clientServerConfigs[newClient] = *listenerConfig;
+		else if (_hasDefaultServerConfig)
+			_clientServerConfigs[newClient] = _defaultServerConfig;
 
 		std::cout << "New client connected: fd " << newClient << std::endl;
 	}
@@ -95,8 +77,44 @@ void ConnectionManager::disconnectClient(int fd)
 	if (_cgiOrchestrator != NULL)
 		_cgiOrchestrator->cancelForClient(fd);
 	_epollManager.removeFd(fd);
+	_clientServerConfigs.erase(fd);
+	_requestReadBuffers.erase(fd);
 	delete _clients[fd];
 	_clients[fd] = NULL;
+}
+
+const ServerBlock* ConnectionManager::findClientServerConfig(int clientFd) const
+{
+	std::map<int, ServerBlock>::const_iterator it = _clientServerConfigs.find(clientFd);
+	if (it == _clientServerConfigs.end())
+		return NULL;
+	return &it->second;
+}
+
+const ServerBlock* ConnectionManager::findListenerServerConfig(int listenerFd) const
+{
+	std::map<int, ServerBlock>::const_iterator it = _listenerServerConfigs.find(listenerFd);
+	if (it == _listenerServerConfigs.end())
+		return NULL;
+	return &it->second;
+}
+
+const ServerBlock& ConnectionManager::resolveServerConfigForClient(int clientFd) const
+{
+	const ServerBlock* clientConfig = findClientServerConfig(clientFd);
+	if (clientConfig != NULL)
+		return *clientConfig;
+	return _defaultServerConfig;
+}
+
+size_t ConnectionManager::resolveMaxBodySizeForClient(int clientFd) const
+{
+	const ServerBlock* clientConfig = findClientServerConfig(clientFd);
+	if (clientConfig != NULL)
+		return clientConfig->clientMaxBodySize;
+	if (_hasDefaultServerConfig)
+		return _defaultServerConfig.clientMaxBodySize;
+	return 0;
 }
 
 void ConnectionManager::queueResponse(int fd, ClientSocket& client, const HttpResponse& response)
@@ -122,8 +140,17 @@ bool ConnectionManager::readRawRequestOrDisconnect(int fd,
 	if (bytesRead < 0)
 		return false;
 
-	rawRequest.assign(buffer, bytesRead);
-	return true;
+	_requestReadBuffers[fd].append(buffer, static_cast<size_t>(bytesRead));
+	return popCompleteRequestFromBuffer(fd, rawRequest);
+}
+
+bool ConnectionManager::popCompleteRequestFromBuffer(int clientFd, std::string& rawRequest)
+{
+	std::map<int, std::string>::iterator it = _requestReadBuffers.find(clientFd);
+	if (it == _requestReadBuffers.end())
+		return false;
+
+	return HttpRequestFramer::popCompleteRequestFromBuffer(it->second, rawRequest);
 }
 
 bool ConnectionManager::parseRequestOrRespondBadRequest(int fd,
@@ -131,17 +158,22 @@ bool ConnectionManager::parseRequestOrRespondBadRequest(int fd,
 	const std::string& rawRequest,
 	HttpRequest& request)
 {
-	Result<HttpRequest> result = _parseUseCase.execute(rawRequest);
+	size_t maxBodySize = resolveMaxBodySizeForClient(fd);
+	Result<HttpRequest> result = _parseUseCase.execute(rawRequest, maxBodySize);
 
 	if (result.isErr())
 	{
 		std::cerr << "[Validation Error] FD: " << fd << " | Error: " << result.getError() << std::endl;
+		const HttpRequestValidationIssue& issue = _parseUseCase.getLastIssue();
 
 		HttpResponse response;
-		response.setStatusCode(400);
+		if (issue.hasError())
+			response.setStatusCode(static_cast<int>(issue.getStatusCode()));
+		else
+			response.setStatusCode(400);
 		response.setHeader("Content-Type", "text/plain");
 		response.setHeader("Connection", "close");
-		response.setBody("Invalid Request: " + result.getError());
+		response.setBody("Invalid Request: " + result.getError() + "\n");
 		queueResponse(fd, client, response);
 		return false;
 	}
@@ -152,12 +184,13 @@ bool ConnectionManager::parseRequestOrRespondBadRequest(int fd,
 
 bool ConnectionManager::handleCgiOrRespondBadGateway(int fd,
 	ClientSocket& client,
-	const HttpRequest& request)
+	const HttpRequest& request,
+	const ServerBlock& serverConfig)
 {
-	if (!isCgiRequest(request.getUri()) || _cgiOrchestrator == NULL)
+	if (!CgiRouteResolver::isCgiRequest(request.getUri()) || _cgiOrchestrator == NULL)
 		return false;
 
-	CgiRouteConfig config = buildCgiConfig(request);
+	CgiRouteConfig config = CgiRouteResolver::buildConfig(request, serverConfig);
 	if (_cgiOrchestrator->startCgi(fd, request, config))
 		return true;
 
@@ -185,10 +218,13 @@ void ConnectionManager::handleClientRead(int fd)
 	if (!parseRequestOrRespondBadRequest(fd, *client, rawRequest, request))
 		return;
 
+	const ServerBlock& serverConfig = resolveServerConfigForClient(fd);
+	_methodOrchestrator.configure(serverConfig);
+
 	std::cout << "[Request] FD: " << fd << " | Method: " << request.getMethod()
 			  << " | URI: " << request.getUri() << std::endl;
 
-	if (handleCgiOrRespondBadGateway(fd, *client, request))
+	if (handleCgiOrRespondBadGateway(fd, *client, request, serverConfig))
 		return;
 
 	HttpResponse response = _methodOrchestrator.handle(request);
