@@ -4,7 +4,6 @@
 #include "../../domain/entities/HttpRequest.hpp"
 #include "../../domain/entities/HttpResponse.hpp"
 #include "../../domain/entities/server/ServerBlock.hpp"
-#include "../../domain/value_objects/HttpStatusCode.hpp"
 
 #include <string>
 
@@ -30,7 +29,6 @@ class PostRequestHandler
 		bool				 isMethodAllowed(const LocationBlock* location) const;
 		HttpResponse		 writeRequestBody(const HttpRequest& request, const std::string& targetPath) const;
 		HttpResponse		 buildCreatedResponse(const std::string& targetPath) const;
-		HttpResponse		 buildErrorResponse(HttpStatusCode code) const;
 
 		PostRequestHandler(const PostRequestHandler&);
 		PostRequestHandler& operator=(const PostRequestHandler&);

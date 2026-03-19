@@ -132,10 +132,10 @@ class TestInvalidMethod : public TestCase
 		}
 };
 
-class TestInvalidVersion : public TestCase
+class TestHttp11VersionAccepted : public TestCase
 {
 	public:
-		TestInvalidVersion() : TestCase("HTTP/1.1 version is rejected") {}
+		TestHttp11VersionAccepted() : TestCase("HTTP/1.1 version is accepted") {}
 
 		void run()
 		{
@@ -145,8 +145,7 @@ class TestInvalidVersion : public TestCase
 			HttpRequestValidator validator;
 
 			std::string error = validator.validate(req);
-			assertTrue(!error.empty(), "HTTP/1.1 should produce error");
-			assertTrue(error.find("Invalid HTTP version") != std::string::npos, "Error should mention invalid version");
+			assertEqual(error, "", "HTTP/1.1 should be accepted");
 		}
 };
 
@@ -267,7 +266,7 @@ int main()
 						 new TestValidPostRequest(),
 						 new TestValidDeleteRequest(),
 						 new TestInvalidMethod(),
-						 new TestInvalidVersion(),
+						 new TestHttp11VersionAccepted(),
 						 new TestMissingHostHeader(),
 						 new TestEmptyUri(),
 						 new TestInvalidContentLengthNegative(),

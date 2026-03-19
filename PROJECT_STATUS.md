@@ -8,13 +8,19 @@
 - Conflito lógico em `src/interfaces/cli/main.cpp` resolvido (fluxos de bootstrap duplicados/remanescentes de desenvolvimento).
 - Build principal validada com sucesso: `make` conclui link de `webserver`.
 - Testes atuais validados com sucesso: `make test` (HttpRequest, HttpRequestValidation e ParseAndValidateHttpRequestUseCase).
-- Pendências funcionais de subject continuam, especialmente multi-porta/multi-server block, semântica HTTP/1.1 no validador e integração CGI totalmente orientada a event loop.
+- Suporte a HTTP/1.1 habilitado no validador e testes atualizados para aceitar 1.1.
+- Configuração de `root` ajustada para diretório existente (`./www/`) e smoke test validado em runtime.
+- Validação runtime (HTTP/1.1): `GET /` -> 200, `GET /tours` -> 200, `GET /cgi-bin/hello.py` -> 200.
+- Diretiva `return` implementada por location (`/red` retorna `302` com header `Location: /tours`).
+- Integração CGI no event loop consolidada (pipes de CGI registrados no epoll com tratamento EPOLLIN/EPOLLOUT).
+- Validação de concorrência: `GET /cgi-bin/slow.py` em execução e `GET /` respondendo em paralelo sem bloquear o loop.
+- Pendências funcionais do subject continuam, especialmente multi-porta/multi-server block e `error_page` custom por config.
 
 ## 📊 Resumo Executivo
 
-### Progresso Geral: ~61% (19/31 requisitos obrigatórios)
+### Progresso Geral: ~68% (21/31 requisitos obrigatórios)
 
-**✅ COMPLETO (61%):**
+**✅ COMPLETO (68%):**
 - Infraestrutura de rede (epoll, sockets non-blocking)
 - Parsing de configuração (Lexer → Parser → AST)
 - Build de Config em runtime (AST -> HttpBlock/ServerBlock)
@@ -28,15 +34,15 @@
 **🔴 BLOQUEIOS CRÍTICOS:**
 1. **Suporte multi-porta/server blocks** → servidor ainda roda com um server socket por processo
 2. **client_max_body_size inconsistente** → validador ainda usa limite fixo de 1MB
-3. **Config incompleta para subject** → redirect (`return`) e páginas de erro custom por rota pendentes
+3. **Config incompleta para subject** → páginas de erro custom por rota pendentes
 4. **POST ainda simplificado** → sem multipart/form-data
 
 **📋 Resumo por Categoria:**
 - **Core do Servidor:** 4/8 completos
 - **Métodos HTTP:** 3/3 implementados (versão básica)
 - **Responses:** 2/3 funcionais
-- **Config:** 7/11 completos
-- **CGI:** 5/6 completos
+- **Config:** 8/11 completos
+- **CGI:** 6/6 completos
 
 ---
 
@@ -48,8 +54,8 @@
 | 1 | Compilar com `-Wall -Wextra -Werror -std=c++98` | ✅ FEITO | Makefile corrigido e build principal (`make`) validada em 2026-03-18 |
 | 2 | Arquivo de configuracao como argumento | ✅ FEITO | `main` carrega arquivo, valida e constrói config em runtime |
 | 3 | Servidor nao-bloqueante | ⚠️ PARCIAL | epoll + sockets non-blocking + dispatch básico; falta hardening de edge cases |
-| 4 | Usar apenas 1 poll/epoll para TODAS operacoes I/O | ⚠️ PARCIAL | EpollManager existe, mas CGI pipes nao estao integrados |
-| 5 | Nunca fazer read/write sem poll() | ⚠️ PARCIAL | Sockets respeitam, CGI nao integrado ao event loop |
+| 4 | Usar apenas 1 poll/epoll para TODAS operacoes I/O | ✅ FEITO | Sockets de servidor/cliente e pipes de CGI passam pelo mesmo EpollManager |
+| 5 | Nunca fazer read/write sem poll() | ✅ FEITO (PIPELINE REDE/CGI) | Leitura/escrita de sockets e pipes CGI é dirigida por eventos EPOLLIN/EPOLLOUT |
 | 6 | fork() apenas para CGI | ✅ FEITO | fork() so esta em CgiProcessExecutor.cpp |
 | 7 | Servidor nunca deve crashar | ⏸️ A TESTAR | Falta stress test, mas protecoes basicas existem |
 | 8 | Ouvir em multiplas portas | ❌ NAO FEITO | Server.cpp linha 5 aceita 1 Port/IpAddr, sem suporte multi-porta |
@@ -78,7 +84,7 @@
 | 19 | Paginas de erro customizadas (por config) | ❌ NAO FEITO | Sem Config para mapear error_page |
 | 20 | Tamanho max do corpo (client_max_body_size) | ⚠️ PARCIAL | POST handler usa config; validator global ainda hardcoded em 1MB |
 | 21 | Rotas com metodos aceitos | ✅ FEITO (BÁSICO) | Prefix match por location + allow_methods em GET/POST/DELETE |
-| 22 | Redirecionamento (return) | ❌ NAO FEITO | HttpStatusCode tem 301/302 mas sem logica de redirect |
+| 22 | Redirecionamento (return) | ✅ FEITO | `return /destino` (302 padrão) e `return <3xx> /destino` por location com header `Location` |
 | 23 | Diretorio raiz (root) | ✅ FEITO | Resolução de path baseada em `root + URI` |
 | 24 | Listagem de diretorios (autoindex) | ✅ FEITO | DirectoryLister integrado ao GET |
 | 25 | Arquivo padrao (index) | ✅ FEITO | Fallback para `index` em diretórios |
@@ -90,7 +96,7 @@
 | 27 | CgiEnvironment (variaveis CGI) | ✅ FEITO | CgiEnvironment.cpp buildFromRequest() completo, toEnvArray() OK |
 | 28 | CgiResponse (parse output) | ✅ FEITO | CgiResponse parse headers + body + status |
 | 29 | CgiHandler (orquestrador) | ✅ FEITO | CgiHandler.cpp/hpp completo, buildResponse() retorna HttpResponse |
-| 30 | Integrar CGI no event loop | ❌ **BLOCKER** | Pipes CGI nao adicionados ao epoll, fork bloqueia |
+| 30 | Integrar CGI no event loop | ✅ FEITO | `CgiOrchestrator` adiciona/remove fds CGI no epoll e processa resposta assíncrona |
 | 31 | Timeout de CGI | ✅ FEITO | checkState() com SIGKILL |
 
 ---
@@ -142,11 +148,10 @@ Sockets -> epoll -> accept -> handleClientRead -> dispatch (CGI / GET / POST / D
 ### 2. Consolidar Config em Runtime
 - Aplicar `host` do arquivo de configuração no bootstrap do Server (hoje hardcoded)
 - Preparar suporte para múltiplos `server` blocks/portas no mesmo processo
-- Finalizar diretivas pendentes (`return`, `error_page` custom por location)
+- Finalizar diretiva pendente (`error_page` custom por location)
 
 ### 3. Evoluir Router / Dispatcher
 - Extrair decisão de rota/método de `ConnectionManager` para componente dedicado
-- Integrar `return` (redirect) no dispatcher
 - Unificar política de `Allow` e respostas 405
 
 ### 4. Hardening de Handlers HTTP
@@ -154,13 +159,7 @@ Sockets -> epoll -> accept -> handleClientRead -> dispatch (CGI / GET / POST / D
 - DELETE: definir política para diretórios (proibir ou remover recursivo por config)
 - GET/POST/DELETE: aplicar `error_page` custom quando configurado
 
-### 5. Integrar CGI no epoll (BLOQUEIO CRITICO)
-- CgiProcessExecutor retornar fds dos pipes (stdin/stdout)
-- ConnectionManager adicionar pipe_stdout ao epoll com EPOLLIN
-- Processar output incremental sem blocking reads
-- Timeout: remover do epoll + SIGKILL
-
-### 6. Multiplas portas/server blocks
+### 5. Multiplas portas/server blocks
 - Config retornar vector<ServerConfig>
 - main.cpp criar vector<Server*>, cada um com sua porta
 - Adicionar todos ServerSocket fds no mesmo EpollManager
@@ -172,20 +171,21 @@ Sockets -> epoll -> accept -> handleClientRead -> dispatch (CGI / GET / POST / D
 
 | # | Arquivo | Issue | Severidade |
 |---|---------|-------|------------|
-| 1 | `HttpRequestValidator.cpp` | Valida `HTTP/1.0` mas servidor e HTTP/1.1 | MEDIA |
-| 2 | `ipAddr.cpp` | `isValidIp()` so verifica non-empty, sem validacao real | MEDIA |
-| 3 | `TokenResult.cpp` | Destructor nao deleta tokens (comentado) | BAIXA (leak) |
-| 4 | `HttpRequestValidator.cpp` | Limite de `Content-Length` fixo (1MB), ignora `client_max_body_size` por server | ALTA |
-| 5 | `connectionManager.cpp` | Dispatcher HTTP ainda acoplado no connection manager (SRP fraco) | MEDIA |
-| 6 | `server.cpp` | Instancia de server ainda limitada a 1 socket/porta por processo | ALTA |
-| 7 | `CgiProcessExecutor` | fork/exec nao integrado ao epoll, bloqueia event loop | CRITICA |
-| 8 | `interfaces/old_main.cpp` | Codigo morto | BAIXA |
-| 9 | `ErrorPageGenerator` | Existe mas nunca usado no pipeline real | MEDIA |
+| 1 | `ipAddr.cpp` | `isValidIp()` so verifica non-empty, sem validacao real | MEDIA |
+| 2 | `TokenResult.cpp` | Destructor nao deleta tokens (comentado) | BAIXA (leak) |
+| 3 | `HttpRequestValidator.cpp` | Limite de `Content-Length` fixo (1MB), ignora `client_max_body_size` por server | ALTA |
+| 4 | `connectionManager.cpp` | Dispatcher HTTP ainda acoplado no connection manager (SRP fraco) | MEDIA |
+| 5 | `server.cpp` | Instancia de server ainda limitada a 1 socket/porta por processo | ALTA |
+| 6 | `connectionManager.cpp` | Roteamento de CGI ainda baseado em extensão fixa (.py/.php), sem usar integralmente `cgi_path`/`cgi_ext` da config | MEDIA |
+| 7 | `interfaces/old_main.cpp` | Codigo morto | BAIXA |
+| 8 | `ErrorPageGenerator` | Existe mas nunca usado no pipeline real | MEDIA |
 
 ### Conflitos Resolvidos (2026-03-18)
 
 1. Makefile: continuação de linha em `APPLICATION_SRCS` corrigida para restaurar parsing do make.
 2. main.cpp: removido fluxo duplicado e referências inválidas (`ConfigBuilder`, `astRoot`, construtor antigo de `Server`).
+3. Redirect por `return` habilitado em handlers HTTP (GET/POST/DELETE).
+4. Integração de pipes CGI no epoll validada em cenário concorrente (`slow.py` + GET estático).
 
 ---
 
@@ -258,4 +258,4 @@ slowhttptest -c 1000 -H -g -o slow.html -i 10 -r 200 -t GET -u http://localhost:
 
 **Prioridade 1:** Suporte multi-porta + múltiplos server blocks
 **Prioridade 2:** Unificar `client_max_body_size` no validator/handler (retorno 413 consistente)
-**Prioridade 3:** Implementar `return` (redirect) e `error_page` custom por location
+**Prioridade 3:** Implementar `error_page` custom por location e alinhar roteamento CGI com config (`cgi_path`/`cgi_ext`)

@@ -91,10 +91,29 @@ LocationBlock ConfigBuilder::_buildLocation(const ASTNode& node) const
 
 	loc.root	  = _directive(node, "root");
 	loc.autoindex = (_directive(node, "autoindex") == "on");
+	loc.redirectUri = "";
+	loc.redirectCode = 302;
 
 	std::vector< std::string > methods = _directiveArgs(node, "allow_methods");
 	for (size_t i = 0; i < methods.size(); ++i)
 		loc.allowedMethods.insert(methods[i]);
+
+	std::vector< std::string > redirectArgs = _directiveArgs(node, "return");
+	if (!redirectArgs.empty())
+	{
+		if (redirectArgs.size() == 1)
+		{
+			loc.redirectUri = redirectArgs[0];
+		}
+		else
+		{
+			char* end = NULL;
+			long parsedCode = std::strtol(redirectArgs[0].c_str(), &end, 10);
+			if (end != NULL && *end == '\0' && parsedCode >= 300 && parsedCode < 400)
+				loc.redirectCode = static_cast< int >(parsedCode);
+			loc.redirectUri = redirectArgs[1];
+		}
+	}
 
 	for (size_t i = 0; i < children.size(); ++i)
 	{

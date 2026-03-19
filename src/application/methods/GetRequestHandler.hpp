@@ -5,7 +5,6 @@
 #include "../../domain/entities/HttpResponse.hpp"
 #include "../../domain/entities/server/ServerBlock.hpp"
 #include "../../domain/services/DirectoryLister.hpp"
-#include "../../domain/value_objects/HttpStatusCode.hpp"
 
 #include <string>
 #include <vector>
@@ -35,7 +34,6 @@ class GetRequestHandler
 			const std::string& uri,
 			const std::vector<std::string>& indexFiles,
 			bool autoIndex);
-		HttpResponse buildErrorResponse(HttpStatusCode code);
 		bool		 isTextFile(const std::string& mimeType) const;
 
 		GetRequestHandler(const GetRequestHandler&);
