@@ -65,26 +65,29 @@ void ConnectionManager::configureMethodOrchestrator(const ServerBlock& serverCon
 
 void ConnectionManager::acceptNewClient(ServerSocket& serverSocket)
 {
-	int newClient = serverSocket.setAccept();
-
-	if (newClient < 0)
-		return;
-
-	ClientSocket* client = new ClientSocket(newClient);
-	if (!client->isValid())
+	while (true)
 	{
-		delete client;
-		close(newClient);
-		return;
+		int newClient = serverSocket.setAccept();
+
+		if (newClient < 0)
+			break;
+
+		ClientSocket* client = new ClientSocket(newClient);
+		if (!client->isValid())
+		{
+			delete client;
+			close(newClient);
+			continue;
+		}
+
+		_epollManager.addFd(newClient, POLLIN);
+		if (static_cast< size_t >(newClient) >= _clients.size())
+			_clients.resize(newClient + 128, (ClientSocket*)NULL);
+
+		_clients[newClient] = client;
+
+		std::cout << "New client connected: fd " << newClient << std::endl;
 	}
-
-	_epollManager.addFd(newClient, POLLIN);
-	if (static_cast< size_t >(newClient) >= _clients.size())
-		_clients.resize(newClient + 128, (ClientSocket*)NULL);
-
-	_clients[newClient] = client;
-
-	std::cout << "New client connected: fd " << newClient << std::endl;
 }
 
 void ConnectionManager::disconnectClient(int fd)
@@ -110,11 +113,14 @@ bool ConnectionManager::readRawRequestOrDisconnect(int fd,
 	memset(buffer, 0, sizeof(buffer));
 	ssize_t bytesRead = client.receiveData(buffer, sizeof(buffer) - 1);
 
-	if (bytesRead <= 0)
+	if (bytesRead == 0)
 	{
 		disconnectClient(fd);
 		return false;
 	}
+
+	if (bytesRead < 0)
+		return false;
 
 	rawRequest.assign(buffer, bytesRead);
 	return true;

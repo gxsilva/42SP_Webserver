@@ -43,7 +43,8 @@ bool ClientSocket::flushWriteBuffer()
 
 	ssize_t sent = sendData(_writeBuffer.c_str(), _writeBuffer.size());
 	if (sent < 0)
-		return (false);
+		// Non-blocking sockets may report transient send failures; keep data queued and retry on next EPOLLOUT.
+		return (true);
 
 	_writeBuffer.erase(0, static_cast< size_t >(sent));
 	return (_writeBuffer.empty());

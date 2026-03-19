@@ -125,9 +125,7 @@ bool CgiProcessExecutor::onWriteReady()
 	}
 	if (written == 0)
 		return (true);
-	closeFdIfOpen(_pipeToChild[1]);
-	_finished = true;
-	return (false);
+	return (true);
 }
 
 bool CgiProcessExecutor::onReadReady()
@@ -149,11 +147,7 @@ bool CgiProcessExecutor::onReadReady()
 		closeFdIfOpen(_pipeFromChild[0]);
 		return (false);
 	}
-	_finished = true;				  /*talvez troque*/
-	closeFdIfOpen(_pipeFromChild[0]); /*talvez troque*/
-	// if (written < 0)
-	//	return (true);
-	return (false);
+	return (true);
 }
 
 CgiProcessState CgiProcessExecutor::checkState()
