@@ -6,7 +6,7 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 23:30:48 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/16 05:00:21 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/19 20:38:01 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,16 @@
 #include "../../entities/ast/node/ASTDirective.hpp"
 #include "../../entities/ast/node/ASTRoot.hpp"
 #include "../../value_objects/config/ASTValueType.hpp"
+
+namespace
+{
+	void cleanupParameters(std::vector< ASTValue* >& parameters)
+	{
+		for (size_t i = 0; i < parameters.size(); ++i)
+			delete parameters[i];
+		parameters.clear();
+	}
+} // namespace
 
 // ------------------------ OCCF ------------------------ //
 Parser::Parser(std::vector< Token >* tokens) : _tokens(tokens), _current(0), _astRoot() {}
@@ -145,6 +155,7 @@ ASTNode* Parser::parseStatement()
 		const std::string	expectedTokens = "'{' for block or ';' for directive";
 		const CompilerError error		   = CompilerError::unepxectedTokenError(expectedTokens, _peek().location);
 		_addError(error);
+		cleanupParameters(parameters);
 
 		_synchronize();
 		return (NULL);
