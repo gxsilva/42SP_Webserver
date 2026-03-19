@@ -4,7 +4,6 @@
 #include "../../domain/entities/HttpRequest.hpp"
 #include "../../domain/entities/HttpResponse.hpp"
 #include "../../domain/entities/server/ServerBlock.hpp"
-#include "../../domain/value_objects/HttpStatusCode.hpp"
 
 #include <string>
 
@@ -27,9 +26,7 @@ class DeleteRequestHandler
 		std::string			 resolveFilePath(const std::string& root, const std::string& uriPath) const;
 		std::string			 parentDirectory(const std::string& path) const;
 		bool				 isMethodAllowed(const LocationBlock* location) const;
-		HttpResponse		 buildRedirectResponse(int statusCode, const std::string& target) const;
 		HttpResponse		 buildNoContentResponse() const;
-		HttpResponse		 buildErrorResponse(HttpStatusCode code) const;
 
 		DeleteRequestHandler(const DeleteRequestHandler&);
 		DeleteRequestHandler& operator=(const DeleteRequestHandler&);

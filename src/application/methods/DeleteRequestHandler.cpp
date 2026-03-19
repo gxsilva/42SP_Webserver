@@ -1,8 +1,7 @@
 #include "DeleteRequestHandler.hpp"
 
-#include "../../domain/services/ErrPage.hpp"
-#include "../../domain/services/statusCodeResponse.hpp"
 #include "../../infrastructure/io/DirectoryReader.hpp"
+#include "HttpResponseBuilders.hpp"
 
 #include <cstdio>
 #include <unistd.h>
@@ -98,17 +97,6 @@ bool DeleteRequestHandler::isMethodAllowed(const LocationBlock* location) const
 	return location->allowedMethods.find("DELETE") != location->allowedMethods.end();
 }
 
-HttpResponse DeleteRequestHandler::buildRedirectResponse(int statusCode, const std::string& target) const
-{
-	HttpResponse response;
-	response.setStatusCode(statusCode);
-	response.setHeader("Location", target);
-	response.setHeader("Content-Type", "text/plain");
-	response.setHeader("Connection", "close");
-	response.setBody("Redirecting to " + target + "\n");
-	return (response);
-}
-
 HttpResponse DeleteRequestHandler::buildNoContentResponse() const
 {
 	HttpResponse response;
@@ -118,46 +106,35 @@ HttpResponse DeleteRequestHandler::buildNoContentResponse() const
 	return (response);
 }
 
-HttpResponse DeleteRequestHandler::buildErrorResponse(HttpStatusCode code) const
-{
-	StatusCodeResponse statusHelper;
-	HttpResponse	   response;
-	response.setStatusCode(static_cast< int >(code));
-	response.setHeader("Content-Type", "text/html");
-	response.setHeader("Connection", "close");
-	response.setBody(ErrorPageGenerator::generate(code, statusHelper));
-	return (response);
-}
-
 HttpResponse DeleteRequestHandler::handle(const HttpRequest& request)
 {
 	std::string uriPath = stripUriQuery(request.getUri());
 
 	if (uriPath.find("..") != std::string::npos)
-		return (buildErrorResponse(FORBIDDEN));
+		return (buildHtmlErrorResponse(FORBIDDEN));
 
 	const LocationBlock* location = findBestLocation(uriPath);
 	if (location != NULL && !location->redirectUri.empty())
-		return (buildRedirectResponse(location->redirectCode, location->redirectUri));
+		return (buildPlainTextRedirectResponse(location->redirectCode, location->redirectUri));
 
 	if (!isMethodAllowed(location))
-		return (buildErrorResponse(METHOD_NOT_ALLOWED));
+		return (buildHtmlErrorResponse(METHOD_NOT_ALLOWED));
 
 	std::string root = resolveRoot(location);
 	std::string filePath = resolveFilePath(root, uriPath);
 
 	if (access(filePath.c_str(), F_OK) != 0)
-		return (buildErrorResponse(NOT_FOUND));
+		return (buildHtmlErrorResponse(NOT_FOUND));
 
 	if (DirectoryReader::isDirectory(filePath))
-		return (buildErrorResponse(FORBIDDEN));
+		return (buildHtmlErrorResponse(FORBIDDEN));
 
 	std::string dirPath = parentDirectory(filePath);
 	if (access(dirPath.c_str(), W_OK) != 0)
-		return (buildErrorResponse(FORBIDDEN));
+		return (buildHtmlErrorResponse(FORBIDDEN));
 
 	if (std::remove(filePath.c_str()) != 0)
-		return (buildErrorResponse(INTERNAL_SERVER_ERROR));
+		return (buildHtmlErrorResponse(INTERNAL_SERVER_ERROR));
 
 	return (buildNoContentResponse());
 }

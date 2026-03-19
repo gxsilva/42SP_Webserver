@@ -1,8 +1,7 @@
 #include "PostRequestHandler.hpp"
 
-#include "../../domain/services/ErrPage.hpp"
-#include "../../domain/services/statusCodeResponse.hpp"
 #include "../../infrastructure/io/DirectoryReader.hpp"
+#include "HttpResponseBuilders.hpp"
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -115,14 +114,14 @@ HttpResponse PostRequestHandler::writeRequestBody(const HttpRequest& request,
 {
 	std::string dirPath = parentDirectory(targetPath);
 	if (!DirectoryReader::isDirectory(dirPath))
-		return (buildErrorResponse(NOT_FOUND));
+		return (buildHtmlErrorResponse(NOT_FOUND));
 
 	if (access(dirPath.c_str(), W_OK) != 0)
-		return (buildErrorResponse(FORBIDDEN));
+		return (buildHtmlErrorResponse(FORBIDDEN));
 
 	int fd = open(targetPath.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)
-		return (buildErrorResponse(INTERNAL_SERVER_ERROR));
+		return (buildHtmlErrorResponse(INTERNAL_SERVER_ERROR));
 
 	const std::string& body = request.getBody();
 	ssize_t			   totalWritten = 0;
@@ -133,7 +132,7 @@ HttpResponse PostRequestHandler::writeRequestBody(const HttpRequest& request,
 		if (written <= 0)
 		{
 			close(fd);
-			return (buildErrorResponse(INTERNAL_SERVER_ERROR));
+			return (buildHtmlErrorResponse(INTERNAL_SERVER_ERROR));
 		}
 		totalWritten += written;
 	}
@@ -152,45 +151,23 @@ HttpResponse PostRequestHandler::buildCreatedResponse(const std::string& targetP
 	return (response);
 }
 
-HttpResponse PostRequestHandler::buildRedirectResponse(int statusCode, const std::string& target) const
-{
-	HttpResponse response;
-	response.setStatusCode(statusCode);
-	response.setHeader("Location", target);
-	response.setHeader("Content-Type", "text/plain");
-	response.setHeader("Connection", "close");
-	response.setBody("Redirecting to " + target + "\n");
-	return (response);
-}
-
-HttpResponse PostRequestHandler::buildErrorResponse(HttpStatusCode code) const
-{
-	StatusCodeResponse statusHelper;
-	HttpResponse	   response;
-	response.setStatusCode(static_cast< int >(code));
-	response.setHeader("Content-Type", "text/html");
-	response.setHeader("Connection", "close");
-	response.setBody(ErrorPageGenerator::generate(code, statusHelper));
-	return (response);
-}
-
 HttpResponse PostRequestHandler::handle(const HttpRequest& request)
 {
 	std::string uriPath = stripUriQuery(request.getUri());
 
 	if (uriPath.find("..") != std::string::npos)
-		return (buildErrorResponse(FORBIDDEN));
+		return (buildHtmlErrorResponse(FORBIDDEN));
 
 	const LocationBlock* location = findBestLocation(uriPath);
 	if (location != NULL && !location->redirectUri.empty())
-		return (buildRedirectResponse(location->redirectCode, location->redirectUri));
+		return (buildPlainTextRedirectResponse(location->redirectCode, location->redirectUri));
 
 	if (!isMethodAllowed(location))
-		return (buildErrorResponse(METHOD_NOT_ALLOWED));
+		return (buildHtmlErrorResponse(METHOD_NOT_ALLOWED));
 
 	if (_hasServerConfig && _serverConfig.clientMaxBodySize > 0
 		&& request.getBody().size() > _serverConfig.clientMaxBodySize)
-		return (buildErrorResponse(CONTENT_TOO_LARGE));
+		return (buildHtmlErrorResponse(CONTENT_TOO_LARGE));
 
 	std::string root = resolveRoot(location);
 	std::string filePath = resolveFilePath(root, uriPath);

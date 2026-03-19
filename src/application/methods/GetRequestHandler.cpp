@@ -1,10 +1,9 @@
 #include "GetRequestHandler.hpp"
 
-#include "../../domain/services/ErrPage.hpp"
-#include "../../domain/services/statusCodeResponse.hpp"
 #include "../../domain/value_objects/MimeType.hpp"
 #include "../../infrastructure/io/DirectoryReader.hpp"
 #include "../../infrastructure/io/config/FileReader.hpp"
+#include "HttpResponseBuilders.hpp"
 
 #include <unistd.h>
 
@@ -118,15 +117,15 @@ HttpResponse GetRequestHandler::handle(const HttpRequest& request)
 	std::string uriPath = stripUriQuery(request.getUri());
 
 	if (uriPath.find("..") != std::string::npos)
-		return (buildErrorResponse(FORBIDDEN));
+		return (buildHtmlErrorResponse(FORBIDDEN));
 
 	const LocationBlock*   location = findBestLocation(uriPath);
 	if (location != NULL && !location->redirectUri.empty())
-		return (buildRedirectResponse(location->redirectCode, location->redirectUri));
+		return (buildPlainTextRedirectResponse(location->redirectCode, location->redirectUri));
 
 	if (location != NULL && !location->allowedMethods.empty()
 		&& location->allowedMethods.find("GET") == location->allowedMethods.end())
-		return (buildErrorResponse(METHOD_NOT_ALLOWED));
+		return (buildHtmlErrorResponse(METHOD_NOT_ALLOWED));
 
 	std::string			 root = resolveRoot(location);
 	std::vector< std::string > indexFiles = resolveIndexFiles();
@@ -137,10 +136,10 @@ HttpResponse GetRequestHandler::handle(const HttpRequest& request)
 		return (serveDirectory(filePath, uriPath, indexFiles, autoIndex));
 
 	if (access(filePath.c_str(), F_OK) != 0)
-		return (buildErrorResponse(NOT_FOUND));
+		return (buildHtmlErrorResponse(NOT_FOUND));
 
 	if (access(filePath.c_str(), R_OK) != 0)
-		return (buildErrorResponse(FORBIDDEN));
+		return (buildHtmlErrorResponse(FORBIDDEN));
 
 	return (serveFile(filePath));
 }
@@ -157,7 +156,7 @@ HttpResponse GetRequestHandler::serveFile(const std::string& filePath)
 		readOk = FileReader::readBinaryFile(filePath, content);
 
 	if (!readOk)
-		return (buildErrorResponse(INTERNAL_SERVER_ERROR));
+		return (buildHtmlErrorResponse(INTERNAL_SERVER_ERROR));
 
 	HttpResponse response;
 	response.setStatusCode(static_cast<int>(OK));
@@ -183,11 +182,11 @@ HttpResponse GetRequestHandler::serveDirectory(const std::string& dirPath,
 	}
 
 	if (!autoIndex)
-		return (buildErrorResponse(FORBIDDEN));
+		return (buildHtmlErrorResponse(FORBIDDEN));
 
 	std::vector<std::string> entries;
 	if (!DirectoryReader::readDirectory(dirPath, entries))
-		return (buildErrorResponse(FORBIDDEN));
+		return (buildHtmlErrorResponse(FORBIDDEN));
 
 	std::string html = _directoryLister.generateHtml(uri, entries);
 
@@ -198,24 +197,3 @@ HttpResponse GetRequestHandler::serveDirectory(const std::string& dirPath,
 	return (response);
 }
 
-HttpResponse GetRequestHandler::buildErrorResponse(HttpStatusCode code)
-{
-	StatusCodeResponse statusHelper;
-	HttpResponse	   response;
-	response.setStatusCode(static_cast<int>(code));
-	response.setHeader("Content-Type", "text/html");
-	response.setHeader("Connection", "close");
-	response.setBody(ErrorPageGenerator::generate(code, statusHelper));
-	return (response);
-}
-
-HttpResponse GetRequestHandler::buildRedirectResponse(int statusCode, const std::string& target) const
-{
-	HttpResponse response;
-	response.setStatusCode(statusCode);
-	response.setHeader("Location", target);
-	response.setHeader("Content-Type", "text/plain");
-	response.setHeader("Connection", "close");
-	response.setBody("Redirecting to " + target + "\n");
-	return (response);
-}
