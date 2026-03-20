@@ -5,52 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 - Not Found</title>
     <style>
+        :root {
+            --bg: #f6f7fb;
+            --card: #ffffff;
+            --line: #d9dce7;
+            --text: #1d2433;
+            --muted: #5a647a;
+            --accent: #0f766e;
+            --accent-dark: #115e59;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 24px;
+            background: radial-gradient(circle at top right, #e7f7f6, #f6f7fb 50%);
+            color: var(--text);
         }
+
         .container {
+            width: min(720px, 100%);
             text-align: center;
-            background: white;
-            padding: 50px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            background: var(--card);
+            padding: 36px 28px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
         }
+
         h1 {
             font-size: 72px;
-            margin: 0;
-            color: #333;
+            margin: 0 0 8px;
+            color: var(--accent);
+            line-height: 1;
         }
+
+        h2 {
+            margin: 0 0 14px;
+            font-size: 28px;
+            color: var(--text);
+        }
+
         p {
             font-size: 18px;
-            color: #666;
-            margin: 20px 0;
+            color: var(--muted);
+            margin: 0 0 10px;
         }
+
         a {
             display: inline-block;
-            margin-top: 20px;
-            padding: 12px 30px;
-            background-color: #667eea;
+            margin-top: 18px;
+            padding: 10px 16px;
+            background-color: var(--accent);
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 8px;
             transition: background-color 0.3s;
+            font-size: 14px;
         }
+
         a:hover {
-            background-color: #764ba2;
+            background-color: var(--accent-dark);
+        }
+
+        .code {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: #f0f4fb;
+            color: #334155;
+            font-size: 13px;
+            font-family: Consolas, Monaco, monospace;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>404</h1>
-        <p>Page Not Found</p>
+        <h2>Page Not Found</h2>
         <p>The resource you requested could not be found on this server.</p>
+        <p class="code">HTTP 404 Not Found</p>
         <a href="/">Go Home</a>
     </div>
 </body>
