@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webserv - HTTP/1.1 Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+        }
+        p {
+            color: #666;
+            line-height: 1.6;
+        }
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #f0f0f0;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Webserv</h1>
+        <p>A custom HTTP/1.1 web server implementation built from scratch in C++98.</p>
+
+        <h2>About This Server</h2>
+        <p>Webserv is a 42 School project showcasing core web server concepts including:</p>
+        <ul class="feature-list">
+            <li>HTTP/1.1 protocol compliance</li>
+            <li>Non-blocking I/O with <code>poll()</code></li>
+            <li>Configuration file support</li>
+            <li>CGI script execution</li>
+            <li>Multiple virtual hosts</li>
+        </ul>
+    </div>
+</body>
+</html>

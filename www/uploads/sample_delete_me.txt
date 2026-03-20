@@ -1,0 +1,2 @@
+You can delete this file with:
+DELETE /uploads/sample_delete_me.txt

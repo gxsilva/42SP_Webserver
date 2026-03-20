@@ -11,16 +11,16 @@
 class ParseAndValidateHttpRequestUseCase
 {
 	private:
-		HttpRequestParser	 _parser;
-		HttpRequestValidator _validator;
+		HttpRequestParser		   _parser;
+		HttpRequestValidator	   _validator;
 		HttpRequestValidationIssue _lastIssue;
 
 	public:
 		ParseAndValidateHttpRequestUseCase();
 		~ParseAndValidateHttpRequestUseCase();
 
-		Result< HttpRequest > execute(const std::string& rawRequest);
-		Result< HttpRequest > execute(const std::string& rawRequest, size_t maxBodySize);
+		Result< HttpRequest >			  execute(const std::string& rawRequest);
+		Result< HttpRequest >			  execute(const std::string& rawRequest, size_t maxBodySize);
 		const HttpRequestValidationIssue& getLastIssue() const;
 };
 

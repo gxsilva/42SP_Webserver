@@ -4,6 +4,7 @@
 #include "../../domain/entities/HttpRequest.hpp"
 #include "../../domain/entities/server/ServerBlock.hpp"
 #include "../../domain/events/epollEvents.hpp"
+#include "../../infrastructure/logging/Logger.hpp"
 #include "../../infrastructure/network/clientSocket.hpp"
 #include "../../infrastructure/network/serverSocket.hpp"
 #include "../../infrastructure/network/testHttpResponse.hpp"
@@ -21,33 +22,33 @@
 class ConnectionManager
 {
 	private:
-		EpollManager&						 _epollManager;
-		std::vector<ClientSocket*>			 _clients;
-		ParseAndValidateHttpRequestUseCase	 _parseUseCase;
-		CgiOrchestrator*					 _cgiOrchestrator;
-		HttpMethodOrchestrator		 		 _methodOrchestrator;
-		std::map<int, ServerBlock>		 _listenerServerConfigs;
-		std::map<int, ServerBlock>		 _clientServerConfigs;
-		std::map<int, std::string>		 _requestReadBuffers;
-		ServerBlock							 _defaultServerConfig;
-		bool								 _hasDefaultServerConfig;
+		EpollManager&					   _epollManager;
+		std::vector< ClientSocket* >	   _clients;
+		ParseAndValidateHttpRequestUseCase _parseUseCase;
+		CgiOrchestrator*				   _cgiOrchestrator;
+		HttpMethodOrchestrator			   _methodOrchestrator;
+		std::map< int, ServerBlock >	   _listenerServerConfigs;
+		std::map< int, ServerBlock >	   _clientServerConfigs;
+		std::map< int, std::string >	   _requestReadBuffers;
+		ServerBlock						   _defaultServerConfig;
+		bool							   _hasDefaultServerConfig;
+		Logger*							   _logger;
 
-		void queueResponse(int fd, ClientSocket& client, const HttpResponse& response);
-		bool readRawRequestOrDisconnect(int fd, ClientSocket& client, std::string& rawRequest);
-		bool parseRequestOrRespondBadRequest(int fd, ClientSocket& client, const std::string& rawRequest, HttpRequest& request);
-		bool handleCgiOrRespondBadGateway(int fd,
-			ClientSocket& client,
-			const HttpRequest& request,
-			const ServerBlock& serverConfig);
+		void			   queueResponse(int fd, ClientSocket& client, const HttpResponse& response);
+		bool			   readRawRequestOrDisconnect(int fd, ClientSocket& client, std::string& rawRequest);
+		bool			   parseRequestOrRespondBadRequest(int fd, ClientSocket& client, const std::string& rawRequest,
+														   HttpRequest& request);
+		bool			   handleCgiOrRespondBadGateway(int fd, ClientSocket& client, const HttpRequest& request,
+														const ServerBlock& serverConfig);
 		const ServerBlock* findClientServerConfig(int clientFd) const;
 		const ServerBlock* findListenerServerConfig(int listenerFd) const;
 		const ServerBlock& resolveServerConfigForClient(int clientFd) const;
-		size_t resolveMaxBodySizeForClient(int clientFd) const;
-		bool popCompleteRequestFromBuffer(int clientFd, std::string& rawRequest);
-		void disconnectClient(int fd);
+		size_t			   resolveMaxBodySizeForClient(int clientFd) const;
+		bool			   popCompleteRequestFromBuffer(int clientFd, std::string& rawRequest);
+		void			   disconnectClient(int fd);
 
 	public:
-		ConnectionManager(EpollManager& epollManager, const PollCapacity& maxEvents);
+		ConnectionManager(EpollManager& epollManager, const PollCapacity& maxEvents, Logger* logger);
 		~ConnectionManager();
 
 		void setCgiOrchestrator(CgiOrchestrator* orch);

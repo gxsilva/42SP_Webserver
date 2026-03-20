@@ -6,13 +6,13 @@
 /*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 15:59:27 by lsilva-x          #+#    #+#             */
-/*   Updated: 2026/03/17 20:34:49 by lsilva-x         ###   ########.fr       */
+/*   Updated: 2026/03/19 20:35:39 by lsilva-x         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <csignal>
 #include <iostream>
 #include <sstream>
-#include <csignal>
 
 #include "../../application/network/server.hpp"
 #include "../../domain/entities/server/HttpBlock.hpp"
@@ -26,11 +26,8 @@
 
 namespace
 {
-void handleTerminationSignal(int)
-{
-	Server::requestStop();
-}
-}
+	void handleTerminationSignal(int) { Server::requestStop(); }
+} // namespace
 
 int main(int argc, const char** argv)
 {
@@ -55,12 +52,12 @@ int main(int argc, const char** argv)
 		return 1;
 	}
 
-	HttpBlock* httpConfig = result.unwrap();
+	HttpBlock*				   httpConfig	 = result.unwrap();
 	std::vector< ServerBlock > serverConfigs = httpConfig->servers;
 	if (serverConfigs.empty())
 		serverConfigs.push_back(httpConfig->server);
 
-	int configuredPort = serverConfigs[0].port;
+	int			configuredPort = serverConfigs[0].port;
 	std::string configuredHost = serverConfigs[0].host;
 
 	if (configuredHost.empty())
@@ -68,10 +65,10 @@ int main(int argc, const char** argv)
 
 	try
 	{
-		Port port(configuredPort);
+		Port   port(configuredPort);
 		IpAddr ipAddr(configuredHost);
 
-		Server server(serverConfigs);
+		Server server(serverConfigs, &logger);
 		if (!server.isValid())
 		{
 			logger.log("Server initialization failed.", ERROR);
@@ -79,12 +76,8 @@ int main(int argc, const char** argv)
 			return 1;
 		}
 
-		std::stringstream ss;
-		ss << "Server running at http://" << ipAddr.getValue() << ":" << port.getValue();
-		if (serverConfigs.size() > 1)
-			ss << " (+" << (serverConfigs.size() - 1) << " listener(s))";
-		std::cout << ss.str() << std::endl;
-		logger.log(ss.str(), INFO);
+		logger.log("Server initialized successfully on " + ipAddr.getValue() + ":" + port.toString(), INFO);
+		server.displayServerStatus(serverConfigs);
 		server.run();
 	}
 	catch (const std::exception& e)

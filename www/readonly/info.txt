@@ -1,0 +1,3 @@
+This file is read-only from HTTP method perspective.
+Allowed method on /readonly is GET only.
+Try POST /readonly/info.txt to trigger 405.

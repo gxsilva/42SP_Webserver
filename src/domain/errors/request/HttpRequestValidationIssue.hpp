@@ -17,12 +17,11 @@ class HttpRequestValidationIssue
 		HttpRequestValidationIssue() : _type(NONE), _statusCode(OK), _message("") {}
 
 		HttpRequestValidationIssue(Type type, HttpStatusCode statusCode, const std::string& message)
-			: _type(type), _statusCode(statusCode), _message(message) {}
-
-		static HttpRequestValidationIssue none()
+			: _type(type), _statusCode(statusCode), _message(message)
 		{
-			return HttpRequestValidationIssue();
 		}
+
+		static HttpRequestValidationIssue none() { return HttpRequestValidationIssue(); }
 
 		static HttpRequestValidationIssue badRequest(const std::string& message)
 		{
@@ -34,15 +33,15 @@ class HttpRequestValidationIssue
 			return HttpRequestValidationIssue(CONTENT_TOO_LARGE, ::CONTENT_TOO_LARGE, message);
 		}
 
-		bool hasError() const { return _type != NONE; }
-		Type getType() const { return _type; }
-		HttpStatusCode getStatusCode() const { return _statusCode; }
+		bool			   hasError() const { return _type != NONE; }
+		Type			   getType() const { return _type; }
+		HttpStatusCode	   getStatusCode() const { return _statusCode; }
 		const std::string& getMessage() const { return _message; }
 
 	private:
-		Type		 _type;
+		Type		   _type;
 		HttpStatusCode _statusCode;
-		std::string _message;
+		std::string	   _message;
 };
 
 #endif

@@ -89,9 +89,9 @@ LocationBlock ConfigBuilder::_buildLocation(const ASTNode& node) const
 	if (!params.empty())
 		loc.path = params[0]->getValue();
 
-	loc.root	  = _directive(node, "root");
-	loc.autoindex = (_directive(node, "autoindex") == "on");
-	loc.redirectUri = "";
+	loc.root		 = _directive(node, "root");
+	loc.autoindex	 = (_directive(node, "autoindex") == "on");
+	loc.redirectUri	 = "";
 	loc.redirectCode = 302;
 
 	std::vector< std::string > methods = _directiveArgs(node, "allow_methods");
@@ -107,8 +107,8 @@ LocationBlock ConfigBuilder::_buildLocation(const ASTNode& node) const
 		}
 		else
 		{
-			char* end = NULL;
-			long parsedCode = std::strtol(redirectArgs[0].c_str(), &end, 10);
+			char* end		 = NULL;
+			long  parsedCode = std::strtol(redirectArgs[0].c_str(), &end, 10);
 			if (end != NULL && *end == '\0' && parsedCode >= 300 && parsedCode < 400)
 				loc.redirectCode = static_cast< int >(parsedCode);
 			loc.redirectUri = redirectArgs[1];
@@ -204,7 +204,7 @@ HttpBlock ConfigBuilder::_buildHttp(const ASTNode& node) const
 				if (http.servers.size() == 1)
 				{
 					http.server = server;
-					http.host   = server.host;
+					http.host	= server.host;
 				}
 			}
 		}
@@ -220,9 +220,9 @@ HttpBlock* ConfigBuilder::build(const ASTNode* ast)
 	if (!ast)
 		return NULL;
 
-	const ASTRoot&				   root	 = static_cast< const ASTRoot& >(*ast);
-	const std::vector< ASTNode* >& stmts = root.getStatements();
-	HttpBlock*                  result = NULL;
+	const ASTRoot&				   root	  = static_cast< const ASTRoot& >(*ast);
+	const std::vector< ASTNode* >& stmts  = root.getStatements();
+	HttpBlock*					   result = NULL;
 
 	for (size_t i = 0; i < stmts.size(); ++i)
 	{
@@ -246,10 +246,10 @@ HttpBlock* ConfigBuilder::build(const ASTNode* ast)
 
 			if (result->servers.size() == 1)
 			{
-				result->server             = server;
-				result->host               = server.host;
-				result->clientMaxBodySize  = server.clientMaxBodySize;
-				result->errorPages         = server.errorPages;
+				result->server			  = server;
+				result->host			  = server.host;
+				result->clientMaxBodySize = server.clientMaxBodySize;
+				result->errorPages		  = server.errorPages;
 			}
 		}
 	}

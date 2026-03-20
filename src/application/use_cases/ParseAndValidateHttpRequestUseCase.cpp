@@ -9,8 +9,7 @@ Result< HttpRequest > ParseAndValidateHttpRequestUseCase::execute(const std::str
 	return execute(rawRequest, 0);
 }
 
-Result< HttpRequest > ParseAndValidateHttpRequestUseCase::execute(const std::string& rawRequest,
-	size_t maxBodySize)
+Result< HttpRequest > ParseAndValidateHttpRequestUseCase::execute(const std::string& rawRequest, size_t maxBodySize)
 {
 	HttpRequest request = _parser.parse(rawRequest);
 

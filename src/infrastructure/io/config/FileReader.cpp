@@ -48,7 +48,7 @@ bool FileReader::readBinaryFile(const std::string& filepath, std::string& conten
 		return (true);
 	}
 
-	content.resize(static_cast<size_t>(size));
+	content.resize(static_cast< size_t >(size));
 	file.read(&content[0], size);
 	file.close();
 	return (true);

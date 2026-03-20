@@ -1,25 +1,30 @@
 #include "server.hpp"
+#include "../../infrastructure/logging/Logger.hpp"
 #include "../CGI/CgiOrchestrator.hpp"
+
+#include <sstream>
 
 namespace
 {
-volatile sig_atomic_t g_stopRequested = 0;
+	volatile sig_atomic_t g_stopRequested = 0;
 }
 
-Server::Server() : _epollManager(NULL), _connectionManager(NULL), _cgiOrchestrator(NULL), _isValid(false) {}
+Server::Server() : _epollManager(NULL), _connectionManager(NULL), _cgiOrchestrator(NULL), _logger(NULL), _isValid(false)
+{
+}
 
-Server::Server(const std::vector< ServerBlock >& serverConfigs)
+Server::Server(const std::vector< ServerBlock >& serverConfigs, Logger* logger)
 	: _serverConfigs(serverConfigs), _epollManager(NULL), _connectionManager(NULL), _cgiOrchestrator(NULL),
-	  _isValid(false)
+	  _logger(logger), _isValid(false)
 {
 	if (_serverConfigs.empty())
 		return;
 
 	PollCapacity maxEvents(1024);
 	_epollManager	   = new EpollManager(maxEvents);
-	_connectionManager = new ConnectionManager(*_epollManager, maxEvents);
+	_connectionManager = new ConnectionManager(*_epollManager, maxEvents, logger);
 	_connectionManager->configureMethodOrchestrator(_serverConfigs[0]);
-	_cgiOrchestrator   = new CgiOrchestrator(*_epollManager);
+	_cgiOrchestrator = new CgiOrchestrator(*_epollManager);
 	_connectionManager->setCgiOrchestrator(_cgiOrchestrator);
 
 	for (size_t i = 0; i < _serverConfigs.size(); ++i)
@@ -28,7 +33,7 @@ Server::Server(const std::vector< ServerBlock >& serverConfigs)
 		if (host.empty())
 			host = "0.0.0.0";
 
-		Port port(_serverConfigs[i].port);
+		Port   port(_serverConfigs[i].port);
 		IpAddr ipAddr(host);
 
 		ServerSocket* serverSocket = new ServerSocket(port, ipAddr);
@@ -129,12 +134,41 @@ ServerSocket* Server::findServerSocketByFd(int fd) const
 	return NULL;
 }
 
-void Server::requestStop()
-{
-	g_stopRequested = 1;
-}
+void Server::requestStop() { g_stopRequested = 1; }
 
-bool Server::shouldStop()
+bool Server::shouldStop() { return g_stopRequested != 0; }
+
+void Server::displayServerStatus(const std::vector< ServerBlock >& serverConfigs) const
 {
-	return g_stopRequested != 0;
+	std::stringstream ss;
+	std::string		  line(70, '=');
+	std::string		  separator(70, '-');
+
+	std::cout << line << std::endl;
+	std::cout << "                         SERVER STATUS                          " << std::endl;
+	std::cout << line << std::endl;
+
+	for (size_t i = 0; i < serverConfigs.size(); ++i)
+	{
+		ss.str("");
+		ss << serverConfigs[i].port;
+		std::string host = serverConfigs[i].host;
+		std::string port = ss.str();
+
+		if (host.empty())
+			host = "0.0.0.0";
+
+		std::string url = "http://" + host + ":" + port + "/";
+
+		std::cout << std::endl;
+		std::cout << "  Server " << (i + 1) << std::endl;
+		std::cout << separator << std::endl;
+		std::cout << "    Host:   " << host << std::endl;
+		std::cout << "    Port:   " << port << std::endl;
+		std::cout << "    URL:    " << url << std::endl;
+		std::cout << "    Status: " << (_isValid ? "Running" : "Stopped") << std::endl;
+	}
+
+	std::cout << std::endl;
+	std::cout << line << std::endl;
 }

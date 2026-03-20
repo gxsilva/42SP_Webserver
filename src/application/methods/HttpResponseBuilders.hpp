@@ -24,23 +24,22 @@ inline std::string joinPath(const std::string& base, const std::string& suffix)
 	return base + suffix;
 }
 
-inline std::string resolveConfiguredErrorPagePath(HttpStatusCode code,
-	const ServerBlock& serverConfig,
-	const LocationBlock* location)
+inline std::string resolveConfiguredErrorPagePath(HttpStatusCode code, const ServerBlock& serverConfig,
+												  const LocationBlock* location)
 {
 	std::string configured;
-	int statusCode = static_cast<int>(code);
+	int			statusCode = static_cast< int >(code);
 
 	if (location != NULL)
 	{
-		std::map<int, std::string>::const_iterator it = location->errorPages.find(statusCode);
+		std::map< int, std::string >::const_iterator it = location->errorPages.find(statusCode);
 		if (it != location->errorPages.end())
 			configured = it->second;
 	}
 
 	if (configured.empty())
 	{
-		std::map<int, std::string>::const_iterator it = serverConfig.errorPages.find(statusCode);
+		std::map< int, std::string >::const_iterator it = serverConfig.errorPages.find(statusCode);
 		if (it != serverConfig.errorPages.end())
 			configured = it->second;
 	}
@@ -69,14 +68,13 @@ inline HttpResponse buildPlainTextRedirectResponse(int statusCode, const std::st
 	return (response);
 }
 
-inline HttpResponse buildHtmlErrorResponse(HttpStatusCode code,
-	const ServerBlock& serverConfig,
-	const LocationBlock* location)
+inline HttpResponse buildHtmlErrorResponse(HttpStatusCode code, const ServerBlock& serverConfig,
+										   const LocationBlock* location)
 {
 	StatusCodeResponse statusHelper;
-	HttpResponse response;
-	std::string body;
-	std::string customPagePath = resolveConfiguredErrorPagePath(code, serverConfig, location);
+	HttpResponse	   response;
+	std::string		   body;
+	std::string		   customPagePath = resolveConfiguredErrorPagePath(code, serverConfig, location);
 
 	if (!customPagePath.empty() && FileReader::readFile(customPagePath, body))
 	{
@@ -86,7 +84,7 @@ inline HttpResponse buildHtmlErrorResponse(HttpStatusCode code,
 	else
 		body = ErrorPageGenerator::generate(code, statusHelper);
 
-	response.setStatusCode(static_cast<int>(code));
+	response.setStatusCode(static_cast< int >(code));
 	response.setHeader("Content-Type", "text/html");
 	response.setHeader("Connection", "close");
 	response.setBody(body);

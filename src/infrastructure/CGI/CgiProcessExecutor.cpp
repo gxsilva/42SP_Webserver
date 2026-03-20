@@ -47,10 +47,10 @@ bool CgiProcessExecutor::start(const std::string& scriptPath, const std::string&
 	if (flagsFromChild != -1)
 		fcntl(_pipeFromChild[0], F_SETFL, flagsFromChild | O_NONBLOCK);
 	if (flagsFromChild == -1 || fcntl(_pipeFromChild[0], F_SETFL, flagsFromChild | O_NONBLOCK) == -1)
- 	{
- 		cleanup();
- 		return (false);
- 	}
+	{
+		cleanup();
+		return (false);
+	}
 	char** envp = env.toEnvArray();
 
 	_childPid = fork();

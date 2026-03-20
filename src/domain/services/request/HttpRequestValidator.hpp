@@ -15,7 +15,7 @@ class HttpRequestValidator
 		HttpRequestValidator();
 		~HttpRequestValidator();
 
-		std::string validate(const HttpRequest& req) const;
+		std::string				   validate(const HttpRequest& req) const;
 		HttpRequestValidationIssue validateDetailed(const HttpRequest& req, size_t maxContentLength) const;
 
 	private:

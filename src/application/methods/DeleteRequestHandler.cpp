@@ -6,16 +6,13 @@
 #include <cstdio>
 #include <unistd.h>
 
-DeleteRequestHandler::DeleteRequestHandler()
-	: _hasServerConfig(false)
-{
-}
+DeleteRequestHandler::DeleteRequestHandler() : _hasServerConfig(false) {}
 
 DeleteRequestHandler::~DeleteRequestHandler() {}
 
 void DeleteRequestHandler::configure(const ServerBlock& serverConfig)
 {
-	_serverConfig = serverConfig;
+	_serverConfig	 = serverConfig;
 	_hasServerConfig = true;
 }
 
@@ -36,7 +33,7 @@ const LocationBlock* DeleteRequestHandler::findBestLocation(const std::string& u
 	if (!_hasServerConfig)
 		return NULL;
 
-	const LocationBlock* best = NULL;
+	const LocationBlock* best	 = NULL;
 	size_t				 bestLen = 0;
 
 	for (size_t i = 0; i < _serverConfig.locations.size(); ++i)
@@ -50,7 +47,7 @@ const LocationBlock* DeleteRequestHandler::findBestLocation(const std::string& u
 
 		if (candidate.path.size() > bestLen)
 		{
-			best = &candidate;
+			best	= &candidate;
 			bestLen = candidate.path.size();
 		}
 	}
@@ -127,7 +124,7 @@ HttpResponse DeleteRequestHandler::handle(const HttpRequest& request)
 	if (!isMethodAllowed(location))
 		return (buildErrorResponse(METHOD_NOT_ALLOWED, location));
 
-	std::string root = resolveRoot(location);
+	std::string root	 = resolveRoot(location);
 	std::string filePath = resolveFilePath(root, uriPath);
 
 	if (access(filePath.c_str(), F_OK) != 0)
