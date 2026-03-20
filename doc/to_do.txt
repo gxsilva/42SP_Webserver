@@ -1,5 +1,0 @@
-Lexer
- - Tentar recuperar casos de aspas duplas não fechadas [ ]
-
-Parser
-- Suporte para variáveis $host @uri
