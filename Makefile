@@ -8,10 +8,9 @@
 #  \_____/\___/  \_______/|_______//$$$$$$|_______/  \_______/|__/          \_/    \_______/|__/         
 #                                 |______/                                                               
 #                                                                                                        
-#    by: @gxsilva & @ailton-bezerra                                                                      
+#    by: @gxsilva, @ailton-bezerra & @Guildguy                                                          
 
-# DEFINES
-NAME		= webserver
+NAME		= webserv
 
 CXX			= c++
 CXXSTD		= -std=c++98
