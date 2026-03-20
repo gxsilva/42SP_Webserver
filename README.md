@@ -1,99 +1,127 @@
-# 42SP_Webserver
-42 SP | Web Server Project — HTTP/1.1 server implemented from scratch in **C++98**.
+*Este projeto foi criado como parte do curriculo da 42 por lsilva-x, ailbezer, fleite-j*
 
----
+# Webserv
 
-## Project Status
+## Descrição
 
-> **Phase:** Config pipeline complete — Lexer → Parser → AST ✅  
-> **Next:** Config semantic validation → Server bootstrap → HTTP request handling
+`webserv` e um servidor HTTP/1.1 implementado do zero em **C++98** como projeto da 42.
 
-The project is being built incrementally following a compiler-style pipeline:
+O objetivo principal e reproduzir o comportamento essencial de um servidor web real (inspirado no NGINX), com foco em:
 
-```
-config.conf → Lexer → [Token] → Parser → AST → Semantic Validator → ServerConfig → HTTP Server
-```
+- I/O nao bloqueante orientado a eventos (epoll)
+- Parsing e validacao de configuracao
+- Parsing e validacao de requisicoes HTTP
+- Suporte a metodos HTTP principais (`GET`, `POST`, `DELETE`)
+- Execucao de CGI
+- Servir arquivos estaticos, paginas de erro e roteamento por `location`
 
-### Current Pipeline State
+Arquiteturalmente, o projeto segue separacao por camadas (dominio, aplicacao, infraestrutura e interfaces), com classes pequenas e responsabilidades bem definidas.
 
-| Stage              | Status      | Description                                         |
-|--------------------|-------------|-----------------------------------------------------|
-| Lexer              | ✅ Done      | Tokenizes `.conf` files into typed tokens           |
-| Parser             | ✅ Done      | Builds an AST from tokens (directives + blocks)     |
-| AST Nodes          | ✅ Done      | `ASTRoot`, `ASTBlock`, `ASTDirective`, `ASTValue`   |
-| Semantic Validator | 🔲 Pending  | Validates config semantics against HTTP/1.1 rules   |
-| ServerConfig       | 🔲 Pending  | Domain model for virtual hosts, routes, CGI         |
-| HTTP Server        | 🔲 Pending  | Non-blocking I/O loop with `poll()`                 |
-| CGI Handler        | 🔲 Pending  | `fork()` + pipe-based CGI execution                 |
 
----
+### Funcionalidades Implementadas
 
-## Architecture
+- Servidor orientado a eventos com `epoll` e I/O nao bloqueante
+- Parsing completo de configuracao (`Lexer -> Parser -> AST -> ConfigBuilder`)
+- Parsing/validacao incremental de requests HTTP por conexao
+- Fluxo funcional de `GET`, `POST` basico e `DELETE` basico
+- CGI integrado ao event loop com timeout e tratamento de resposta
+- Suporte a multiplos listeners no mesmo processo
 
-The project follows **Domain-Driven Design (DDD)** layering:
 
-```
-src/
-├── application/        # Use cases and port interfaces (ILogger)
-├── domain/             # Core logic — entities, services, value objects, errors
-│   ├── entities/       # Token, SourceLocation, AST nodes
-│   ├── services/       # Lexer, Parser
-│   ├── errors/         # CompilerError, ErrorList
-│   └── value_objects/  # TokenType, ASTNodeType, ErrorCode, ErrorSeverity
-├── infrastructure/     # I/O, logging, result types
-│   ├── common/         # Result wrappers (LexerResult, TokenResult, ASTResult)
-│   ├── io/             # FileReader, FileValidator
-│   └── logging/        # Logger (ILogger implementation)
-└── interfaces/         # CLI entry point (main.cpp)
-```
+## Instruções
 
-### Key Design Patterns
+### Requisitos
 
-**Result / Either pattern** — all fallible operations return a typed result object instead of throwing exceptions or returning raw pointers:
+- Linux
+- `c++` com suporte a C++98
+- `make`
 
-```cpp
-TokenResult res = CompileSourceFile::execute(argv[1], &logger);
-if (res.isErr()) { res.error().formatAllErrors(); return 1; }
-std::vector<Token>* tokens = res.unwrap(); // transfers ownership
+Ferramentas opcionais para qualidade de codigo:
+
+- `clang-format`
+- `clang-tidy`
+- `bear`
+
+### Compilacao
+
+```bash
+make
 ```
 
-Result types: [`LexerResult`](src/infrastructure/common/config/LexerResult.hpp), [`TokenResult`](src/infrastructure/common/TokenResult.hpp), [`ASTResult`](src/infrastructure/common/ASTResult.hpp) — all inherit from [`ResultBase`](src/infrastructure/common/ResultBase.hpp).
+Isso gera o binario `./webserv` na raiz do repositorio.
 
-**Static Factory Methods** on [`CompilerError`](src/domain/errors/common/CompilerError.hpp) produce typed, contextual errors (file errors, parse errors, lexer errors) with optional source location, hints, and notes.
+### Execucao
 
----
+```bash
+./webserv config.conf
+```
 
-## Hard Constraints (grade = 0 if violated)
+Depois de iniciar, voce pode testar em outro terminal:
 
-- Single `poll()` loop for **all** I/O — including `listen`
-- No `read`/`write`/`recv`/`send` outside poll readiness check
-- No `errno` usage to drive server decisions after I/O
-- `fork()` only for CGI
+```bash
+curl -i http://localhost:8080/
+curl -i http://localhost:8080/listener/
+curl -i http://localhost:8080/cgi-bin/hello.py
+```
 
----
+### Testes
 
-## Makefile Commands
+Executar todos os testes disponiveis:
 
-| Target                  | Description                                                       |
-|-------------------------|-------------------------------------------------------------------|
-| `all`                   | Builds the project                                                |
-| `clean`                 | Removes object files and dependency files                         |
-| `fclean`                | Full cleanup — removes all build artifacts including the binary   |
-| `re`                    | `fclean` + `all`                                                  |
-| `format`                | Runs `clang-format` on all `.cpp` and `.hpp` files                |
-| `tidy`                  | Runs `clang-tidy` using `compile_commands.json`                   |
-| `compile_commands_json` | Generates `compile_commands.json` via `bear`                      |
-| `check-tools`           | Verifies required tools are installed                             |
-| `clean_logs`            | Removes all log files from `./` and `./log/`                      |
+```bash
+make test
+```
 
----
+Executar/alvo por suite:
 
-## Stack & Tooling
+```bash
+make test_http_request
+make test_http_validation
+make test_parse_validate_usecase
+make test_cgi
+```
 
-| Concern        | Tool / Standard            |
-|----------------|----------------------------|
-| Language       | C++98 (`-std=c++98`)       |
-| Warnings       | `-Wall -Wextra -Werror -Wshadow` |
-| Formatter      | `clang-format` (LLVM style)|
-| Static Analysis| `clang-tidy` + `bear`      |
-| Git hooks      | `pre-commit` + custom `commit-msg` hook |
+### Limpeza e rebuild
+
+```bash
+make clean
+make fclean
+make re
+```
+
+### Onde encontrar mais informacoes
+
+- Contexto do projeto: `doc/webserver_context.txt`
+- Documento base da 42: `subject.txt` e `doc/subject.txt`
+- Status e fluxo de desenvolvimento: `PROJECT_STATUS.md` e `PROJECT_FLOW.md`
+- Diagnostico tecnico detalhado (progresso, gaps e proximos passos): `PROJECT_STATUS.md`
+
+## Recursos
+
+### Referencias tecnicas
+
+- RFC 7230 (HTTP/1.1 Message Syntax and Routing): https://datatracker.ietf.org/doc/html/rfc7230
+- RFC 7231 (HTTP/1.1 Semantics and Content): https://datatracker.ietf.org/doc/html/rfc7231
+- RFC 3875 (CGI/1.1): https://datatracker.ietf.org/doc/html/rfc3875
+- NGINX documentation: https://nginx.org/en/docs/
+- `epoll(7)`: https://man7.org/linux/man-pages/man7/epoll.7.html
+
+### Uso de IA no projeto
+
+A IA foi usada como ferramenta de apoio tecnico, sem substituir o entendimento da equipe sobre o codigo. Principais usos:
+
+- Revisao de clareza arquitetural (separacao de responsabilidades entre camadas)
+- Apoio na redacao e melhoria de documentacao tecnica
+- Sugestoes para casos de teste e validacao de cenarios HTTP/CGI
+- Aceleracao de refatoracoes localizadas (nomes, organizacao e pequenas simplificacoes)
+
+Partes com apoio mais direto de IA:
+
+- Documentacao (`README.md` e ajustes de guias auxiliares)
+- Revisoes pontuais de codigo para legibilidade e manutencao
+
+Partes implementadas e validadas manualmente pela equipe:
+
+- Logica principal do servidor (rede, parser, validacoes e orquestracao de metodos)
+- Integracao de CGI e comportamento de runtime
+- Decisoes finais de arquitetura, comportamento HTTP e criterios de teste

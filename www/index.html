@@ -154,22 +154,26 @@
 
 			<article class="card">
 				<h2>POST Test</h2>
-				<p>Creates or replaces <code>/uploads/&lt;filename&gt;</code> with <code>?filename=...</code>.</p>
+				<p>Creates or replaces <code>/uploads/&lt;filename&gt;</code> with <code>?filename=...</code>. Select a file or send textarea content.</p>
 				<input id="uploadFilename" type="text" value="post_upload.txt" placeholder="example.txt" style="width:100%; border:1px solid var(--line); border-radius:8px; padding:10px; margin-bottom:10px;" />
+				<input id="uploadFile" type="file" style="width:100%; border:1px solid var(--line); border-radius:8px; padding:8px; margin-bottom:10px; background:#fff;" />
 				<textarea id="postBody">hello from POST\ncreated by dashboard</textarea>
 				<button id="postBtn">POST /uploads?filename=...</button>
 			</article>
 
 			<article class="card">
 				<h2>DELETE Test</h2>
-				<p>Deletes selected file from <code>/uploads/</code>.</p>
-				<button class="danger" id="deleteBtn">DELETE /uploads/&lt;filename&gt;</button>
+				<p>Deletes the resource at the path you provide.</p>
+				<input id="deletePath" type="text" value="/uploads/post_upload.txt" placeholder="/uploads/post_upload.txt" style="width:100%; border:1px solid var(--line); border-radius:8px; padding:10px; margin-bottom:10px;" />
+				<button class="danger" id="deleteBtn">DELETE path</button>
 			</article>
 
 			<article class="card">
 				<h2>Error Page Checks</h2>
-				<p>Generates status errors to validate your custom error pages.</p>
+				<p>Generate errors or open error pages directly to validate your custom templates.</p>
 				<a href="/does-not-exist" target="_blank">404 Not Found</a>
+				<a href="/error_pages/405.html" target="_blank">View 405 Page</a>
+				<a href="/error_pages/413.html" target="_blank">View 413 Page</a>
 				<button class="secondary" id="method405Btn">POST /readonly/info.txt (405)</button>
 				<button class="secondary" id="tooLargeBtn">POST /uploads (413)</button>
 			</article>
@@ -210,23 +214,63 @@
 			function getUploadFileName() {
 				var name = document.getElementById("uploadFilename").value;
 				name = name.replace(/^\s+|\s+$/g, "");
-				return name || "post_upload.txt";
+				if (name) {
+					return name;
+				}
+				var selectedFile = document.getElementById("uploadFile").files[0];
+				if (selectedFile && selectedFile.name) {
+					return selectedFile.name;
+				}
+				return "post_upload.txt";
+			}
+
+			function getDeletePath() {
+				var path = document.getElementById("deletePath").value;
+				path = path.replace(/^\s+|\s+$/g, "");
+				if (!path) {
+					return "/uploads/post_upload.txt";
+				}
+				if (path.charAt(0) !== "/") {
+					return "/" + path;
+				}
+				return path;
 			}
 
 			document.getElementById("postBtn").addEventListener("click", function () {
-				var body = document.getElementById("postBody").value;
+				var selectedFile = document.getElementById("uploadFile").files[0];
 				var fileName = getUploadFileName();
 				var path = "/uploads/?filename=" + encodeURIComponent(fileName);
-				runFetch("POST test", path, {
+
+				if (selectedFile) {
+					selectedFile.text().then(function (textBody) {
+						runFetch("POST file test", path, {
+							method: "POST",
+							headers: { "Content-Type": selectedFile.type || "application/octet-stream" },
+							body: textBody
+						});
+					}).catch(function (error) {
+						result.textContent = "POST file test failed:\n" + String(error);
+					});
+					return;
+				}
+
+				var body = document.getElementById("postBody").value;
+				runFetch("POST text test", path, {
 					method: "POST",
 					headers: { "Content-Type": "text/plain" },
 					body: body
 				});
 			});
 
+			document.getElementById("uploadFile").addEventListener("change", function () {
+				var selectedFile = this.files[0];
+				if (selectedFile) {
+					document.getElementById("uploadFilename").value = selectedFile.name;
+				}
+			});
+
 			document.getElementById("deleteBtn").addEventListener("click", function () {
-				var fileName = getUploadFileName();
-				var path = "/uploads/" + encodeURIComponent(fileName);
+				var path = getDeletePath();
 				runFetch("DELETE test", path, {
 					method: "DELETE"
 				});
